@@ -1,0 +1,106 @@
+{
+  "persona": {
+    "id": "quiet-luxury-casual",
+    "display_name": "Demo: Maya",
+    "description": "A synthetic persona whose saved style is more structured and formal than her everyday purchases."
+  },
+  "aspiration": {
+    "dimensions": {
+      "color_boldness": 0.72,
+      "formality": 0.81,
+      "price_tier": 0.76,
+      "silhouette_structure": 0.84
+    },
+    "evidence_ids": ["pin-01", "pin-02", "pin-03", "pin-04"]
+  },
+  "behavior": {
+    "dimensions": {
+      "color_boldness": 0.44,
+      "formality": 0.39,
+      "price_tier": 0.47,
+      "silhouette_structure": 0.36
+    },
+    "evidence_ids": ["purchase-01", "purchase-02", "purchase-03", "survey-01"],
+    "typical_spend_range": [25, 120],
+    "regret_profile": {
+      "color_boldness": 0.68,
+      "formality": 0.75,
+      "price_tier": 0.82,
+      "silhouette_structure": 0.79
+    }
+  },
+  "evidence": [
+    {
+      "id": "pin-01",
+      "source": "pinterest_fixture",
+      "label": "Tailored camel blazer",
+      "kind": "aspirational"
+    },
+    {
+      "id": "pin-02",
+      "source": "pinterest_fixture",
+      "label": "Structured woven tote",
+      "kind": "aspirational"
+    },
+    {
+      "id": "pin-03",
+      "source": "pinterest_fixture",
+      "label": "Minimal gold jewelry",
+      "kind": "aspirational"
+    },
+    {
+      "id": "pin-04",
+      "source": "pinterest_fixture",
+      "label": "Wide-leg tailored trousers",
+      "kind": "aspirational"
+    },
+    {
+      "id": "purchase-01",
+      "source": "gmail_fixture",
+      "label": "Everyday cotton hoodie",
+      "kind": "purchase"
+    },
+    {
+      "id": "purchase-02",
+      "source": "gmail_fixture",
+      "label": "Running sneakers",
+      "kind": "purchase"
+    },
+    {
+      "id": "purchase-03",
+      "source": "gmail_fixture",
+      "label": "Soft unstructured tote",
+      "kind": "purchase"
+    },
+    {
+      "id": "survey-01",
+      "source": "survey_fixture",
+      "label": "Rarely wears a returned structured blazer",
+      "kind": "survey"
+    }
+  ],
+  "survey": [
+    {
+      "id": "survey-question-01",
+      "item_id": "purchase-01",
+      "question": "How often do you still wear the everyday cotton hoodie?",
+      "options": ["often", "rarely", "never"]
+    },
+    {
+      "id": "survey-question-02",
+      "item_id": "purchase-03",
+      "question": "How do you feel about the soft unstructured tote now?",
+      "options": ["love it", "neutral", "regret it"]
+    }
+  ],
+  "candidate": {
+    "name": "Structured saffron shoulder bag",
+    "price": 145,
+    "dimensions": {
+      "color_boldness": 0.78,
+      "formality": 0.72,
+      "price_tier": 0.73,
+      "silhouette_structure": 0.86
+    }
+  }
+}

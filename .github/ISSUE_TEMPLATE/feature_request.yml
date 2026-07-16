@@ -1,0 +1,19 @@
+name: Feature request
+description: Propose a scoped RealCart improvement
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: What user problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Include testable, fixture-safe completion criteria.
+    validations:
+      required: true
