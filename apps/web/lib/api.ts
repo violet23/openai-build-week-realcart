@@ -29,27 +29,37 @@ export interface GapReport {
   evidence: EvidenceItem[];
 }
 
-export interface AnalysisStage {
+export interface SurveyQuestion {
+  id: string;
+  item_id: string;
+  question: string;
+  options: string[];
+}
+
+export interface CandidateItem {
   name: string;
-  status: "completed";
-  detail: string;
+  price: number;
+  dimensions: Record<string, number>;
 }
 
-export interface ModelRuntime {
-  provider: "fixture" | "openai";
-  specialist_model: string | null;
-  specialist_reasoning_effort: string | null;
-  synthesis_model: string | null;
-  synthesis_reasoning_effort: string | null;
-  trace_id: string | null;
-}
-
-export interface AnalysisRun {
-  data_mode: string;
-  analysis_mode: string;
-  model_runtime: ModelRuntime;
-  stages: AnalysisStage[];
+export interface DemoResponse {
+  persona: Record<string, string>;
   report: GapReport;
+  survey: SurveyQuestion[];
+  candidate: CandidateItem;
+}
+
+export interface OpinionDimension {
+  label: string;
+  score: number;
+  note: string;
+}
+
+export interface SecondOpinionResponse {
+  candidate_name: string;
+  reading: string;
+  dimensions: OpinionDimension[];
+  evidence_ids: string[];
 }
 
 const API_BASE_URL =
@@ -63,6 +73,16 @@ async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
-export function loadAnalysisRun(): Promise<AnalysisRun> {
-  return fetchJson<AnalysisRun>("/api/run");
+export function loadDemo(): Promise<DemoResponse> {
+  return fetchJson<DemoResponse>("/api/demo");
+}
+
+export function loadSecondOpinion(
+  candidate: CandidateItem,
+): Promise<SecondOpinionResponse> {
+  return fetchJson<SecondOpinionResponse>("/api/second-opinion", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(candidate),
+  });
 }
