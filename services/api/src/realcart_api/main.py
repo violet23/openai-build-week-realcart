@@ -3,6 +3,7 @@
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from realcart_api.connectors import FixtureConnector
 from realcart_api.pipeline import PipelineConfigurationError, run_pipeline
@@ -22,6 +23,13 @@ app = FastAPI(
     title="RealCart API",
     version="0.1.0",
     description="Evidence-led self-reflection without product recommendations.",
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:3000", "http://localhost:3000"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
 
 

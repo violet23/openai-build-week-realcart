@@ -24,6 +24,12 @@ report rendering, a CLI, and these optional HTTP endpoints:
 Fixture mode is implemented. Live mode is intentionally isolated behind
 connector interfaces.
 
+### Report viewer
+
+`apps/web` is a small Next.js client for the current milestone. It calls
+`GET /api/run` and displays the gap score, dimensions, grounded insights,
+evidence, and completed pipeline stages. It does not own analysis logic.
+
 ### Multi-agent workflow
 
 - **Aspirational Style Agent:** tags saved images on a shared style taxonomy.
@@ -39,8 +45,8 @@ never fetch OAuth data and never own the numeric gap calculation;
 
 ```text
 Pinterest/fixture --> connector --> aspiration agent --+
-                                                      |--> scoring --> synthesis --> JSON/Markdown/API
-Gmail/fixture -----> connector --> purchase agent -----+
+                                                      |--> scoring --> synthesis --> API --> report viewer
+Gmail/fixture -----> connector --> purchase agent -----+                         \--> JSON/Markdown
 survey -------------------------------------> evidence -+
 ```
 

@@ -7,9 +7,9 @@ aspirational style signals with real purchase behavior, presents an evidence-led
 Insight Report, and offers a user-initiated Second Opinion without product
 recommendations or affiliate incentives.
 
-This repository is a backend-first, fixture-first hackathon scaffold. It is
-intentionally safe to run without Gmail, Pinterest, or OpenAI credentials. A
-frontend is deliberately out of scope for the current milestone.
+This repository is a fixture-first hackathon scaffold with a backend
+multi-agent pipeline and a basic report viewer. It is intentionally safe to run
+without Gmail, Pinterest, or OpenAI credentials.
 
 ## Architecture
 
@@ -26,7 +26,7 @@ Synthetic fixtures or future live connectors
  deterministic scoring + report manager
               |
               v
-      JSON / Markdown / optional API
+ JSON / Markdown / API / report viewer
 ```
 
 The multi-agent workflow uses specialist agents for aspirational and
@@ -38,6 +38,7 @@ while application code owns all numeric scoring. See
 
 ```text
 services/api/      CLI, API, orchestration, connectors, agents, and scoring
+apps/web/          Basic Next.js report viewer
 fixtures/demo/     Synthetic demo persona
 evals/             Initial evaluation cases
 docs/              Architecture and submission guidance
@@ -47,6 +48,8 @@ docs/              Architecture and submission guidance
 ## Prerequisites
 
 - Python 3.12+
+- Node.js 24+
+- pnpm 11+
 - GNU Make (optional; commands can also be run directly)
 
 ## Setup
@@ -55,15 +58,23 @@ docs/              Architecture and submission guidance
 make setup
 ```
 
-Run the complete credential-free pipeline:
+Run the API and report viewer in separate terminals:
+
+```bash
+make dev-api
+```
+
+```bash
+make dev-web
+```
+
+Open [http://localhost:3000](http://localhost:3000). The page loads the
+credential-free fixture report from `GET /api/run`.
+
+You can also run the pipeline directly in the terminal:
 
 ```bash
 make run
-```
-
-Generate JSON instead:
-
-```bash
 make run-json
 ```
 
@@ -73,7 +84,7 @@ The CLI can also write an artifact:
 services/api/.venv/bin/realcart --format markdown --output tmp/report.md
 ```
 
-The FastAPI wrapper is optional. Start it with `make dev-api`, then inspect
+The API is also available directly at
 [http://localhost:8000/api/run](http://localhost:8000/api/run).
 
 To test the real agents against synthetic evidence before adding OAuth, export
