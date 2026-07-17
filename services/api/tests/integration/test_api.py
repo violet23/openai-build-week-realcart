@@ -40,6 +40,7 @@ async def test_pipeline_run() -> None:
     payload = response.json()
     assert payload["data_mode"] == "fixture"
     assert payload["analysis_mode"] == "fixture"
+    assert payload["model_runtime"]["provider"] == "fixture"
     assert payload["stages"][0]["name"] == "fetch"
 
 

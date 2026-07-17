@@ -34,6 +34,11 @@ purchase-signal analysis. A report manager synthesizes those bounded outputs,
 while application code owns all numeric scoring. See
 [`docs/architecture.md`](docs/architecture.md).
 
+In live agent mode, the two independent specialists use `gpt-5.6-terra` with
+low reasoning effort, then the report manager uses `gpt-5.6-sol` with medium
+reasoning effort. All three return typed structured outputs. The app uses the
+OpenAI Agents SDK, which runs on the Responses API.
+
 ## Repository layout
 
 ```text
@@ -87,16 +92,24 @@ services/api/.venv/bin/realcart --format markdown --output tmp/report.md
 The API is also available directly at
 [http://localhost:8000/api/run](http://localhost:8000/api/run).
 
-To test the real agents against synthetic evidence before adding OAuth, export
-the OpenAI key only in your local shell:
+To test the real GPT-5.6 agents against synthetic evidence before adding OAuth,
+create an API key in your OpenAI Platform project, make sure that project has
+API billing/credits, and export the key only in your local terminal. Do not paste
+the key into chat or commit it:
 
 ```bash
 export OPENAI_API_KEY="your-key"
-DATA_MODE=fixture ANALYSIS_MODE=agents services/api/.venv/bin/realcart --format markdown
+make run-agents
 ```
 
-`.env.example` documents the future variables, but the application does not
-automatically load `.env`. Never commit keys or OAuth tokens.
+This keeps `DATA_MODE=fixture`, so the real models analyze only the synthetic
+Pinterest/Gmail evidence in `fixtures/demo/persona.json`. A successful result
+reports the specialist model, synthesis model, reasoning levels, and trace ID.
+You can inspect traces in the OpenAI Platform trace dashboard.
+
+`.env.example` documents all runtime variables, but the application does not
+automatically load `.env`. Tracing is on by default while model inputs and
+outputs are excluded from traces by default. Never commit keys or OAuth tokens.
 
 ## Verification
 
@@ -116,6 +129,17 @@ Normal tests and CI use synthetic fixtures and do not require API keys.
 This separation lets the team test agent quality before handling private OAuth
 data. Live connector files raise a clear not-implemented error until consent,
 deletion, token storage, and privacy behavior are designed and tested.
+
+The default live model configuration can be changed without code edits:
+
+```bash
+TAGGER_MODEL=gpt-5.6-terra
+SYNTHESIS_MODEL=gpt-5.6-sol
+TAGGER_REASONING_EFFORT=low
+SYNTHESIS_REASONING_EFFORT=medium
+OPENAI_TRACING_ENABLED=true
+OPENAI_TRACE_INCLUDE_SENSITIVE_DATA=false
+```
 
 ## Team workflow
 

@@ -94,8 +94,18 @@ class AnalysisStage(BaseModel):
     detail: str
 
 
+class ModelRuntime(BaseModel):
+    provider: Literal["fixture", "openai"]
+    specialist_model: str | None = None
+    specialist_reasoning_effort: str | None = None
+    synthesis_model: str | None = None
+    synthesis_reasoning_effort: str | None = None
+    trace_id: str | None = None
+
+
 class AnalysisRun(BaseModel):
     data_mode: str
     analysis_mode: str
+    model_runtime: ModelRuntime
     stages: list[AnalysisStage]
     report: GapReport

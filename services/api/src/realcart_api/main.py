@@ -6,7 +6,11 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from realcart_api.connectors import FixtureConnector
-from realcart_api.pipeline import PipelineConfigurationError, run_pipeline
+from realcart_api.pipeline import (
+    PipelineConfigurationError,
+    PipelineExecutionError,
+    run_pipeline,
+)
 from realcart_api.schemas import (
     AnalysisRun,
     CandidateItem,
@@ -53,6 +57,8 @@ async def analysis_run() -> AnalysisRun:
         return await run_pipeline()
     except PipelineConfigurationError as error:
         raise HTTPException(status_code=503, detail=str(error)) from error
+    except PipelineExecutionError as error:
+        raise HTTPException(status_code=502, detail=str(error)) from error
 
 
 @app.get("/api/report", response_model=GapReport)

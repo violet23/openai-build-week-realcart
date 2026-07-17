@@ -2,10 +2,14 @@
 
 from typing import Any
 
+from realcart_api.agents.model_config import create_model_settings
 from realcart_api.schemas import StyleProfile
+from realcart_api.settings import ReasoningEffort
 
 
-def create_aspiration_agent(model: str = "gpt-5.6-terra") -> Any:
+def create_aspiration_agent(
+    model: str = "gpt-5.6-terra", reasoning_effort: ReasoningEffort = "low"
+) -> Any:
     from agents import Agent
 
     return Agent(
@@ -18,5 +22,6 @@ def create_aspiration_agent(model: str = "gpt-5.6-terra") -> Any:
             "purchases, recommend products, or invent evidence."
         ),
         model=model,
+        model_settings=create_model_settings(reasoning_effort),
         output_type=StyleProfile,
     )

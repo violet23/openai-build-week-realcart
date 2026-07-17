@@ -1,22 +1,38 @@
 """Backend-first orchestration for fetching, analysis, scoring, and synthesis."""
 
+from __future__ import annotations
+
 import asyncio
 import json
 from os import getenv
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
+from uuid import uuid4
 
 from realcart_api.agents.aspiration import create_aspiration_agent
 from realcart_api.agents.purchase_signal import create_purchase_signal_agent
 from realcart_api.agents.report_manager import create_report_manager_agent
 from realcart_api.connectors import FixtureConnector
 from realcart_api.connectors.base import SignalConnector
-from realcart_api.schemas import AnalysisRun, AnalysisStage, ReportNarrative, StyleProfile
+from realcart_api.schemas import (
+    AnalysisRun,
+    AnalysisStage,
+    ModelRuntime,
+    ReportNarrative,
+    StyleProfile,
+)
 from realcart_api.scoring import build_gap_report
 from realcart_api.settings import settings
+
+if TYPE_CHECKING:
+    from agents import RunConfig
 
 
 class PipelineConfigurationError(RuntimeError):
     """Raised when a requested pipeline mode cannot run safely."""
+
+
+class PipelineExecutionError(RuntimeError):
+    """Raised when a configured external model run fails."""
 
 
 def _connector_for(data_mode: str) -> SignalConnector:
@@ -34,7 +50,9 @@ def _evidence_for(payload: dict[str, Any], kind: str) -> list[dict[str, Any]]:
     return [item for item in payload["evidence"] if item["kind"] == kind]
 
 
-async def _run_specialist_agents(payload: dict[str, Any]) -> tuple[StyleProfile, StyleProfile]:
+async def _run_specialist_agents(
+    payload: dict[str, Any], run_config: RunConfig
+) -> tuple[StyleProfile, StyleProfile]:
     if not getenv("OPENAI_API_KEY"):
         raise PipelineConfigurationError(
             "ANALYSIS_MODE=agents requires OPENAI_API_KEY. Fixture analysis does not."
@@ -59,8 +77,20 @@ async def _run_specialist_agents(payload: dict[str, Any]) -> tuple[StyleProfile,
         }
     )
     aspiration_result, purchase_result = await asyncio.gather(
-        Runner.run(create_aspiration_agent(settings.tagger_model), aspiration_input),
-        Runner.run(create_purchase_signal_agent(settings.tagger_model), purchase_input),
+        Runner.run(
+            create_aspiration_agent(
+                settings.tagger_model, settings.tagger_reasoning_effort
+            ),
+            aspiration_input,
+            run_config=run_config,
+        ),
+        Runner.run(
+            create_purchase_signal_agent(
+                settings.tagger_model, settings.tagger_reasoning_effort
+            ),
+            purchase_input,
+            run_config=run_config,
+        ),
     )
     aspiration = cast(StyleProfile, aspiration_result.final_output)
     behavior = cast(StyleProfile, purchase_result.final_output)
@@ -70,7 +100,10 @@ async def _run_specialist_agents(payload: dict[str, Any]) -> tuple[StyleProfile,
 
 
 async def _synthesize_narrative(
-    payload: dict[str, Any], aspiration: StyleProfile, behavior: StyleProfile
+    payload: dict[str, Any],
+    aspiration: StyleProfile,
+    behavior: StyleProfile,
+    run_config: RunConfig,
 ) -> ReportNarrative:
     from agents import Runner
 
@@ -87,12 +120,32 @@ async def _synthesize_narrative(
         }
     )
     result = await Runner.run(
-        create_report_manager_agent(settings.synthesis_model), synthesis_input
+        create_report_manager_agent(
+            settings.synthesis_model, settings.synthesis_reasoning_effort
+        ),
+        synthesis_input,
+        run_config=run_config,
     )
     narrative = cast(ReportNarrative, result.final_output)
     if not isinstance(narrative, ReportNarrative):
         raise PipelineConfigurationError("Report manager did not return a typed narrative.")
     return narrative
+
+
+def _agent_run_config(*, trace_id: str | None, group_id: str) -> RunConfig:
+    from agents import RunConfig
+
+    return RunConfig(
+        tracing_disabled=not settings.openai_tracing_enabled,
+        trace_include_sensitive_data=settings.trace_include_sensitive_data,
+        workflow_name="RealCart GPT-5.6 analysis",
+        trace_id=trace_id,
+        group_id=group_id,
+        trace_metadata={
+            "specialist_model": settings.tagger_model,
+            "synthesis_model": settings.synthesis_model,
+        },
+    )
 
 
 async def run_pipeline(
@@ -115,6 +168,7 @@ async def run_pipeline(
 
     if selected_analysis_mode == "fixture":
         report = build_gap_report(payload)
+        model_runtime = ModelRuntime(provider="fixture")
         stages.extend(
             [
                 AnalysisStage(
@@ -132,19 +186,61 @@ async def run_pipeline(
             ]
         )
     elif selected_analysis_mode == "agents":
-        aspiration, behavior = await _run_specialist_agents(payload)
-        stages.append(
-            AnalysisStage(
-                name="specialist_analysis",
-                detail="Ran aspiration and purchase specialists concurrently.",
+        if not getenv("OPENAI_API_KEY"):
+            raise PipelineConfigurationError(
+                "ANALYSIS_MODE=agents requires OPENAI_API_KEY. Fixture analysis does not."
             )
-        )
-        narrative = await _synthesize_narrative(payload, aspiration, behavior)
-        report = build_gap_report(
-            payload,
-            aspiration=aspiration,
-            behavior=behavior,
-            narrative=narrative,
+
+        from agents import gen_trace_id, trace
+
+        trace_id = gen_trace_id() if settings.openai_tracing_enabled else None
+        group_id = f"realcart-{uuid4().hex}"
+        run_config = _agent_run_config(trace_id=trace_id, group_id=group_id)
+        try:
+            with trace(
+                "RealCart GPT-5.6 analysis",
+                trace_id=trace_id,
+                group_id=group_id,
+                metadata={
+                    "specialist_model": settings.tagger_model,
+                    "synthesis_model": settings.synthesis_model,
+                },
+                disabled=not settings.openai_tracing_enabled,
+            ):
+                aspiration, behavior = await _run_specialist_agents(payload, run_config)
+                stages.append(
+                    AnalysisStage(
+                        name="specialist_analysis",
+                        detail=(
+                            "Ran aspiration and purchase specialists concurrently with "
+                            f"{settings.tagger_model}."
+                        ),
+                    )
+                )
+                narrative = await _synthesize_narrative(
+                    payload, aspiration, behavior, run_config
+                )
+                report = build_gap_report(
+                    payload,
+                    aspiration=aspiration,
+                    behavior=behavior,
+                    narrative=narrative,
+                )
+        except PipelineConfigurationError:
+            raise
+        except Exception as error:
+            raise PipelineExecutionError(
+                "GPT-5.6 agent execution failed. Check the OpenAI API key, project "
+                "billing and model access, then inspect the agent trace."
+            ) from error
+
+        model_runtime = ModelRuntime(
+            provider="openai",
+            specialist_model=settings.tagger_model,
+            specialist_reasoning_effort=settings.tagger_reasoning_effort,
+            synthesis_model=settings.synthesis_model,
+            synthesis_reasoning_effort=settings.synthesis_reasoning_effort,
+            trace_id=trace_id,
         )
         stages.extend(
             [
@@ -154,7 +250,10 @@ async def run_pipeline(
                 ),
                 AnalysisStage(
                     name="synthesis",
-                    detail="Ran the report manager on typed profiles and precomputed scores.",
+                    detail=(
+                        "Ran the report manager on typed profiles and precomputed scores with "
+                        f"{settings.synthesis_model}."
+                    ),
                 ),
             ]
         )
@@ -166,6 +265,7 @@ async def run_pipeline(
     return AnalysisRun(
         data_mode=selected_data_mode,
         analysis_mode=selected_analysis_mode,
+        model_runtime=model_runtime,
         stages=stages,
         report=report,
     )

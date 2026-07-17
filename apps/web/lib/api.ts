@@ -35,9 +35,19 @@ export interface AnalysisStage {
   detail: string;
 }
 
+export interface ModelRuntime {
+  provider: "fixture" | "openai";
+  specialist_model: string | null;
+  specialist_reasoning_effort: string | null;
+  synthesis_model: string | null;
+  synthesis_reasoning_effort: string | null;
+  trace_id: string | null;
+}
+
 export interface AnalysisRun {
   data_mode: string;
   analysis_mode: string;
+  model_runtime: ModelRuntime;
   stages: AnalysisStage[];
   report: GapReport;
 }

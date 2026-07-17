@@ -80,6 +80,12 @@ export default function Home() {
               <div className="mode-row">
                 <span>Data: {run.data_mode}</span>
                 <span>Analysis: {run.analysis_mode}</span>
+                {run.model_runtime.specialist_model ? (
+                  <span>Specialists: {run.model_runtime.specialist_model}</span>
+                ) : null}
+                {run.model_runtime.synthesis_model ? (
+                  <span>Synthesis: {run.model_runtime.synthesis_model}</span>
+                ) : null}
               </div>
             </div>
             <div className="score-orbit" aria-label={`Gap score ${run.report.gap_score} out of 100`}>

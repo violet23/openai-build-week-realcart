@@ -41,6 +41,21 @@ Python orchestration runs the two independent specialists concurrently. Agents
 never fetch OAuth data and never own the numeric gap calculation;
 `scoring/gap.py` is the single source of truth for scores.
 
+### GPT-5.6 execution
+
+`ANALYSIS_MODE=agents` uses the OpenAI Agents SDK and typed Pydantic outputs:
+
+- The aspiration and purchase-signal specialists run concurrently on
+  `gpt-5.6-terra` with low reasoning effort.
+- Deterministic application code calculates the gap dimensions and score.
+- The report manager runs on `gpt-5.6-sol` with medium reasoning effort and may
+  only cite evidence IDs supplied by the pipeline.
+
+The model response store is disabled. SDK traces are grouped per pipeline run,
+and prompts/outputs are excluded from trace payloads by default. The API response
+includes the model configuration and trace ID so a developer can distinguish a
+fixture run from a real OpenAI run.
+
 ## Data flow
 
 ```text

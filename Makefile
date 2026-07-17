@@ -4,7 +4,7 @@ VENV := services/api/.venv
 API_PYTHON := $(VENV)/bin/python
 API_PIP := $(VENV)/bin/pip
 
-.PHONY: setup dev-api dev-web run run-json test lint typecheck build check
+.PHONY: setup dev-api dev-web run run-json run-agents test lint typecheck build check
 
 setup:
 	$(PYTHON) -m venv $(VENV)
@@ -22,6 +22,9 @@ run:
 
 run-json:
 	DATA_MODE=fixture ANALYSIS_MODE=fixture $(VENV)/bin/realcart --format json
+
+run-agents:
+	DATA_MODE=fixture $(VENV)/bin/realcart --analysis-mode agents --format markdown
 
 test:
 	$(API_PYTHON) -m pytest services/api/tests
