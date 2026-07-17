@@ -1,5 +1,10 @@
 PYTHON ?= python3
 PNPM ?= pnpm
+SYSTEM_NODE := $(shell command -v node 2>/dev/null)
+CODEX_NODE := $(HOME)/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node
+NODE ?= $(if $(SYSTEM_NODE),$(SYSTEM_NODE),$(CODEX_NODE))
+NODE_DIR := $(dir $(NODE))
+WEB_PATH := $(NODE_DIR):$(PATH)
 VENV := services/api/.venv
 API_PYTHON := $(VENV)/bin/python
 API_PIP := $(VENV)/bin/pip
@@ -15,7 +20,7 @@ dev-api:
 	DATA_MODE=fixture $(VENV)/bin/uvicorn realcart_api.main:app --app-dir services/api/src --reload --host 127.0.0.1 --port 8000
 
 dev-web:
-	$(PNPM) --dir apps/web dev
+	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/next dev
 
 run:
 	DATA_MODE=fixture ANALYSIS_MODE=fixture $(VENV)/bin/realcart --format markdown
@@ -28,17 +33,17 @@ run-agents:
 
 test:
 	$(API_PYTHON) -m pytest services/api/tests
-	$(PNPM) --dir apps/web test
+	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/vitest run
 
 lint:
 	$(VENV)/bin/ruff check services/api
-	$(PNPM) --dir apps/web lint
+	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/eslint .
 
 typecheck:
 	$(VENV)/bin/mypy services/api/src
-	$(PNPM) --dir apps/web typecheck
+	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/tsc --noEmit
 
 build:
-	$(PNPM) --dir apps/web build
+	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/next build
 
 check: lint typecheck test build
