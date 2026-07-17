@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "realcart-api"
 version = "0.1.0"
-description = "Fixture-first API and agent skeleton for RealCart"
+description = "Backend-first multi-agent analysis pipeline for RealCart"
 requires-python = ">=3.12"
 dependencies = [
   "fastapi>=0.115,<1",
@@ -13,6 +13,9 @@ dependencies = [
   "pydantic>=2.10,<3",
   "uvicorn[standard]>=0.34,<1",
 ]
+
+[project.scripts]
+realcart = "realcart_api.cli:main"
 
 [project.optional-dependencies]
 dev = [

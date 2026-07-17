@@ -1,12 +1,13 @@
-"""FastAPI entry point for the fixture-first RealCart skeleton."""
+"""FastAPI entry point for the backend-first RealCart pipeline."""
 
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 
 from realcart_api.connectors import FixtureConnector
+from realcart_api.pipeline import PipelineConfigurationError, run_pipeline
 from realcart_api.schemas import (
+    AnalysisRun,
     CandidateItem,
     DemoResponse,
     GapReport,
@@ -21,13 +22,6 @@ app = FastAPI(
     title="RealCart API",
     version="0.1.0",
     description="Evidence-led self-reflection without product recommendations.",
-)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://127.0.0.1:3000", "http://localhost:3000"],
-    allow_credentials=False,
-    allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type"],
 )
 
 
@@ -45,9 +39,17 @@ def health() -> dict[str, str]:
     return {"status": "ok", "data_mode": settings.data_mode}
 
 
+@app.get("/api/run", response_model=AnalysisRun)
+async def analysis_run() -> AnalysisRun:
+    try:
+        return await run_pipeline()
+    except PipelineConfigurationError as error:
+        raise HTTPException(status_code=503, detail=str(error)) from error
+
+
 @app.get("/api/report", response_model=GapReport)
-def report() -> GapReport:
-    return build_gap_report(_load_fixture())
+async def report() -> GapReport:
+    return (await analysis_run()).report
 
 
 @app.get("/api/demo", response_model=DemoResponse)

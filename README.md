@@ -7,37 +7,37 @@ aspirational style signals with real purchase behavior, presents an evidence-led
 Insight Report, and offers a user-initiated Second Opinion without product
 recommendations or affiliate incentives.
 
-This repository is a fixture-first hackathon scaffold. It is intentionally safe
-to run without Gmail, Pinterest, or OpenAI credentials.
+This repository is a backend-first, fixture-first hackathon scaffold. It is
+intentionally safe to run without Gmail, Pinterest, or OpenAI credentials. A
+frontend is deliberately out of scope for the current milestone.
 
 ## Architecture
 
 ```text
-Synthetic fixtures or live connectors
+Synthetic fixtures or future live connectors
               |
               v
-  typed evidence + style profiles
+       normalized evidence
               |
               v
- deterministic scoring engine
+ aspiration agent + purchase agent
               |
               v
- Insight Report / Second Opinion API
+ deterministic scoring + report manager
               |
               v
-         Next.js interface
+      JSON / Markdown / optional API
 ```
 
-The planned multi-agent workflow uses specialist agents for aspirational and
-purchase-signal analysis. A report manager coordinates those bounded outputs,
+The multi-agent workflow uses specialist agents for aspirational and
+purchase-signal analysis. A report manager synthesizes those bounded outputs,
 while application code owns all numeric scoring. See
 [`docs/architecture.md`](docs/architecture.md).
 
 ## Repository layout
 
 ```text
-apps/web/          Next.js frontend
-services/api/      FastAPI backend and agent definitions
+services/api/      CLI, API, orchestration, connectors, agents, and scoring
 fixtures/demo/     Synthetic demo persona
 evals/             Initial evaluation cases
 docs/              Architecture and submission guidance
@@ -47,26 +47,45 @@ docs/              Architecture and submission guidance
 ## Prerequisites
 
 - Python 3.12+
-- Node.js 22+
-- pnpm 11+
 - GNU Make (optional; commands can also be run directly)
 
 ## Setup
 
 ```bash
-cp .env.example .env
 make setup
 ```
 
-Start the services in two terminals:
+Run the complete credential-free pipeline:
 
 ```bash
-make dev-api
-make dev-web
+make run
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The API health endpoint is
-[http://localhost:8000/health](http://localhost:8000/health).
+Generate JSON instead:
+
+```bash
+make run-json
+```
+
+The CLI can also write an artifact:
+
+```bash
+services/api/.venv/bin/realcart --format markdown --output tmp/report.md
+```
+
+The FastAPI wrapper is optional. Start it with `make dev-api`, then inspect
+[http://localhost:8000/api/run](http://localhost:8000/api/run).
+
+To test the real agents against synthetic evidence before adding OAuth, export
+the OpenAI key only in your local shell:
+
+```bash
+export OPENAI_API_KEY="your-key"
+DATA_MODE=fixture ANALYSIS_MODE=agents services/api/.venv/bin/realcart --format markdown
+```
+
+`.env.example` documents the future variables, but the application does not
+automatically load `.env`. Never commit keys or OAuth tokens.
 
 ## Verification
 
@@ -76,13 +95,16 @@ make check
 
 Normal tests and CI use synthetic fixtures and do not require API keys.
 
-## Data modes
+## Runtime modes
 
-- `fixture`: default, deterministic, credential-free demo.
-- `live`: reserved for explicit Gmail, Pinterest, and OpenAI integrations.
+- `DATA_MODE=fixture`, `ANALYSIS_MODE=fixture`: default deterministic demo; no credentials.
+- `DATA_MODE=fixture`, `ANALYSIS_MODE=agents`: real agents over synthetic evidence; only
+  `OPENAI_API_KEY` is required.
+- `DATA_MODE=live`, `ANALYSIS_MODE=agents`: reserved for Pinterest Sandbox and Gmail OAuth.
 
-The live connector files deliberately raise a clear not-implemented error until
-OAuth, consent, deletion, and privacy behavior are designed and tested.
+This separation lets the team test agent quality before handling private OAuth
+data. Live connector files raise a clear not-implemented error until consent,
+deletion, token storage, and privacy behavior are designed and tested.
 
 ## Team workflow
 

@@ -30,6 +30,20 @@ async def test_demo_vertical_slice() -> None:
 
 
 @pytest.mark.asyncio
+async def test_pipeline_run() -> None:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
+        response = await client.get("/api/run")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["data_mode"] == "fixture"
+    assert payload["analysis_mode"] == "fixture"
+    assert payload["stages"][0]["name"] == "fetch"
+
+
+@pytest.mark.asyncio
 async def test_second_opinion() -> None:
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"

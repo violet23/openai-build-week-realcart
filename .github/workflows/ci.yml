@@ -26,25 +26,3 @@ jobs:
         run: mypy services/api/src
       - name: Test
         run: pytest services/api/tests
-
-  frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11.7.0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          cache: pnpm
-      - name: Install frontend
-        run: pnpm install --frozen-lockfile
-      - name: Lint
-        run: pnpm --dir apps/web lint
-      - name: Type check
-        run: pnpm --dir apps/web typecheck
-      - name: Test
-        run: pnpm --dir apps/web test
-      - name: Build
-        run: pnpm --dir apps/web build

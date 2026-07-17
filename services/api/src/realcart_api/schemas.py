@@ -86,3 +86,16 @@ class ReportNarrative(BaseModel):
 class SecondOpinionNarrative(BaseModel):
     reading: str
     notes: list[str]
+
+
+class AnalysisStage(BaseModel):
+    name: str
+    status: Literal["completed"] = "completed"
+    detail: str
+
+
+class AnalysisRun(BaseModel):
+    data_mode: str
+    analysis_mode: str
+    stages: list[AnalysisStage]
+    report: GapReport

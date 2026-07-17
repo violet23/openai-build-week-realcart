@@ -10,6 +10,7 @@ from realcart_api.schemas import (
     GapReport,
     GroundedInsight,
     OpinionDimension,
+    ReportNarrative,
     SecondOpinionResponse,
     StyleProfile,
 )
@@ -81,22 +82,48 @@ def _build_insights(
     return insights
 
 
-def build_gap_report(payload: dict[str, Any]) -> GapReport:
-    aspiration = StyleProfile.model_validate(payload["aspiration"])
-    behavior = StyleProfile.model_validate(payload["behavior"])
+def build_gap_report(
+    payload: dict[str, Any],
+    aspiration: StyleProfile | None = None,
+    behavior: StyleProfile | None = None,
+    narrative: ReportNarrative | None = None,
+) -> GapReport:
+    aspiration = aspiration or StyleProfile.model_validate(payload["aspiration"])
+    behavior = behavior or StyleProfile.model_validate(payload["behavior"])
     dimensions = calculate_gap_dimensions(aspiration, behavior)
     persona: dict[str, str] = payload["persona"]
+    evidence = [EvidenceItem.model_validate(item) for item in payload["evidence"]]
+    known_evidence_ids = {item.id for item in evidence}
+    insights = (
+        narrative.insights
+        if narrative is not None
+        else _build_insights(dimensions, aspiration.evidence_ids, behavior.evidence_ids)
+    )
+    unknown_evidence_ids = {
+        evidence_id
+        for insight in insights
+        for evidence_id in insight.evidence_ids
+        if evidence_id not in known_evidence_ids
+    }
+    if unknown_evidence_ids:
+        unknown = ", ".join(sorted(unknown_evidence_ids))
+        raise ValueError(f"Narrative cited unknown evidence IDs: {unknown}")
+
     return GapReport(
         persona_id=persona["id"],
         persona_name=persona["display_name"],
         summary=(
-            "Your saved style is more structured and formal than the choices represented "
-            "in this synthetic purchase history."
+            narrative.summary
+            if narrative is not None
+            else (
+                "Your saved style is more structured and formal than the choices represented "
+                "in this synthetic purchase history."
+            )
         ),
         gap_score=calculate_gap_score(dimensions),
         dimensions=dimensions,
-        insights=_build_insights(dimensions, aspiration.evidence_ids, behavior.evidence_ids),
-        evidence=[EvidenceItem.model_validate(item) for item in payload["evidence"]],
+        insights=insights,
+        evidence=evidence,
     )
 
 

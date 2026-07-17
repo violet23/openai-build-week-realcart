@@ -12,9 +12,10 @@ def create_aspiration_agent(model: str = "gpt-5.6-terra") -> Any:
         name="Aspirational Style Agent",
         handoff_description="Tags saved images on RealCart's shared style taxonomy.",
         instructions=(
-            "Analyze only the supplied saved-item evidence. Return a StyleProfile with "
-            "normalized dimensions from 0 to 1 and evidence IDs. Do not infer purchases, "
-            "recommend products, or invent evidence."
+            "Analyze only the supplied Pinterest or fixture evidence. Use exactly these "
+            "dimensions: color_boldness, formality, price_tier, and silhouette_structure. "
+            "Return values from 0 to 1 and cite only supplied evidence IDs. Do not infer "
+            "purchases, recommend products, or invent evidence."
         ),
         model=model,
         output_type=StyleProfile,
