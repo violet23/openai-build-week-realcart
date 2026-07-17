@@ -8,8 +8,22 @@ from realcart_api.scoring.gap import (
 
 
 def test_gap_score_is_deterministic() -> None:
-    aspiration = StyleProfile(dimensions={"formality": 0.8, "price_tier": 0.7})
-    behavior = StyleProfile(dimensions={"formality": 0.4, "price_tier": 0.5})
+    aspiration = StyleProfile(
+        dimensions={
+            "color_boldness": 0.7,
+            "formality": 0.8,
+            "price_tier": 0.7,
+            "silhouette_structure": 0.8,
+        }
+    )
+    behavior = StyleProfile(
+        dimensions={
+            "color_boldness": 0.4,
+            "formality": 0.4,
+            "price_tier": 0.5,
+            "silhouette_structure": 0.5,
+        }
+    )
     dimensions = calculate_gap_dimensions(aspiration, behavior)
 
     assert calculate_gap_score(dimensions) == 30

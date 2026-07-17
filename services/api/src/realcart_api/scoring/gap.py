@@ -38,7 +38,9 @@ def _score_similarity(left: Mapping[str, float], right: Mapping[str, float]) -> 
 def calculate_gap_dimensions(
     aspiration: StyleProfile, behavior: StyleProfile
 ) -> list[GapDimension]:
-    shared = sorted(set(aspiration.dimensions) & set(behavior.dimensions))
+    aspiration_dimensions = aspiration.dimensions.model_dump()
+    behavior_dimensions = behavior.dimensions.model_dump()
+    shared = sorted(set(aspiration_dimensions) & set(behavior_dimensions))
     if not shared:
         raise ValueError("Aspiration and behavior profiles must share at least one dimension")
 
@@ -46,9 +48,9 @@ def calculate_gap_dimensions(
         GapDimension(
             key=key,
             label=DIMENSION_LABELS.get(key, key.replace("_", " ").title()),
-            aspiration=round(_clamp(aspiration.dimensions[key]), 2),
-            behavior=round(_clamp(behavior.dimensions[key]), 2),
-            gap=round(abs(aspiration.dimensions[key] - behavior.dimensions[key]), 2),
+            aspiration=round(_clamp(aspiration_dimensions[key]), 2),
+            behavior=round(_clamp(behavior_dimensions[key]), 2),
+            gap=round(abs(aspiration_dimensions[key] - behavior_dimensions[key]), 2),
         )
         for key in shared
     ]
@@ -141,7 +143,9 @@ def build_second_opinion(
 ) -> SecondOpinionResponse:
     aspiration = StyleProfile.model_validate(payload["aspiration"])
     behavior: dict[str, Any] = payload["behavior"]
-    aesthetic_fit = _score_similarity(candidate.dimensions, aspiration.dimensions)
+    aesthetic_fit = _score_similarity(
+        candidate.dimensions, aspiration.dimensions.model_dump()
+    )
     spend_fit = _spend_fit(candidate.price, behavior["typical_spend_range"])
     regret_similarity = _score_similarity(candidate.dimensions, behavior["regret_profile"])
 

@@ -2,11 +2,22 @@
 
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class StyleDimensions(BaseModel):
+    """Fixed taxonomy shared by specialist agents and deterministic scoring."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    color_boldness: float
+    formality: float
+    price_tier: float
+    silhouette_structure: float
 
 
 class StyleProfile(BaseModel):
-    dimensions: dict[str, float]
+    dimensions: StyleDimensions
     evidence_ids: list[str] = Field(default_factory=list)
 
 

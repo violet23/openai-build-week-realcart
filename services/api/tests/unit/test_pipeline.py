@@ -6,6 +6,7 @@ import agents
 import httpx
 import openai
 import pytest
+from agents import AgentOutputSchema
 
 from realcart_api.output import render_markdown
 from realcart_api.pipeline import (
@@ -55,6 +56,21 @@ def test_quota_error_message_is_specific_and_safe() -> None:
     assert "insufficient_quota" in message
     assert "project budget is above $0" in message
     assert "quota reached" not in message
+
+
+def test_agent_outputs_have_strict_json_schemas() -> None:
+    style_schema = AgentOutputSchema(StyleProfile).json_schema()
+    narrative_schema = AgentOutputSchema(ReportNarrative).json_schema()
+
+    dimensions_schema = style_schema["$defs"]["StyleDimensions"]
+    assert dimensions_schema["additionalProperties"] is False
+    assert set(dimensions_schema["required"]) == {
+        "color_boldness",
+        "formality",
+        "price_tier",
+        "silhouette_structure",
+    }
+    assert narrative_schema["additionalProperties"] is False
 
 
 @pytest.mark.asyncio
