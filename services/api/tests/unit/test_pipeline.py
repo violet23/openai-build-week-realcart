@@ -3,10 +3,16 @@ from types import SimpleNamespace
 from typing import Any
 
 import agents
+import httpx
+import openai
 import pytest
 
 from realcart_api.output import render_markdown
-from realcart_api.pipeline import PipelineConfigurationError, run_pipeline
+from realcart_api.pipeline import (
+    PipelineConfigurationError,
+    _model_execution_error_message,
+    run_pipeline,
+)
 from realcart_api.schemas import GroundedInsight, ReportNarrative, StyleProfile
 
 
@@ -31,6 +37,24 @@ async def test_agent_mode_requires_api_key(monkeypatch: pytest.MonkeyPatch) -> N
 
     with pytest.raises(PipelineConfigurationError, match="OPENAI_API_KEY"):
         await run_pipeline(data_mode="fixture", analysis_mode="agents")
+
+
+def test_quota_error_message_is_specific_and_safe() -> None:
+    response = httpx.Response(
+        429,
+        request=httpx.Request("POST", "https://api.openai.com/v1/responses"),
+    )
+    error = openai.RateLimitError(
+        "quota reached",
+        response=response,
+        body={"code": "insufficient_quota", "type": "insufficient_quota"},
+    )
+
+    message = _model_execution_error_message(error)
+
+    assert "insufficient_quota" in message
+    assert "project budget is above $0" in message
+    assert "quota reached" not in message
 
 
 @pytest.mark.asyncio

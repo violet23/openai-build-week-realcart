@@ -35,6 +35,64 @@ class PipelineExecutionError(RuntimeError):
     """Raised when a configured external model run fails."""
 
 
+def _openai_error_code(error: Exception) -> str | None:
+    body = getattr(error, "body", None)
+    if not isinstance(body, dict):
+        return None
+    details = body.get("error", body)
+    if not isinstance(details, dict):
+        return None
+    for field in ("code", "type"):
+        value = details.get(field)
+        if isinstance(value, str):
+            return value
+    return None
+
+
+def _model_execution_error_message(error: Exception) -> str:
+    """Return an actionable external-error message without leaking request contents."""
+
+    from openai import (
+        APIConnectionError,
+        AuthenticationError,
+        BadRequestError,
+        NotFoundError,
+        PermissionDeniedError,
+        RateLimitError,
+    )
+
+    code = _openai_error_code(error)
+    if isinstance(error, AuthenticationError):
+        return (
+            "OpenAI rejected the API key. Confirm it is active and belongs to the "
+            "intended Platform project."
+        )
+    if isinstance(error, RateLimitError):
+        if code == "insufficient_quota":
+            return (
+                "OpenAI API returned insufficient_quota. Add API credits to the "
+                "organization that owns this key and make sure the project budget is above $0."
+            )
+        return "OpenAI API rate limit reached. Wait briefly, then retry the agent run."
+    if isinstance(error, (PermissionDeniedError, NotFoundError)):
+        return (
+            "This OpenAI Platform project cannot access one of the configured models "
+            f"({settings.tagger_model}, {settings.synthesis_model})."
+        )
+    if isinstance(error, BadRequestError):
+        suffix = f" ({code})" if code else ""
+        return (
+            f"OpenAI rejected the GPT-5.6 request{suffix}. Check the configured model "
+            "parameters and structured-output schema."
+        )
+    if isinstance(error, APIConnectionError):
+        return "Could not connect to the OpenAI API. Check the network, proxy, and firewall."
+    return (
+        "GPT-5.6 agent execution failed "
+        f"({type(error).__name__}). Inspect the agent trace for this run."
+    )
+
+
 def _connector_for(data_mode: str) -> SignalConnector:
     if data_mode == "fixture":
         return FixtureConnector()
@@ -229,10 +287,7 @@ async def run_pipeline(
         except PipelineConfigurationError:
             raise
         except Exception as error:
-            raise PipelineExecutionError(
-                "GPT-5.6 agent execution failed. Check the OpenAI API key, project "
-                "billing and model access, then inspect the agent trace."
-            ) from error
+            raise PipelineExecutionError(_model_execution_error_message(error)) from error
 
         model_runtime = ModelRuntime(
             provider="openai",
