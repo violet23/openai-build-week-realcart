@@ -10,15 +10,23 @@ class StyleDimensions(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    color_boldness: float
-    formality: float
-    price_tier: float
-    silhouette_structure: float
+    color_boldness: float = Field(ge=0, le=1)
+    formality: float = Field(ge=0, le=1)
+    price_tier: float = Field(ge=0, le=1)
+    silhouette_structure: float = Field(ge=0, le=1)
 
 
 class StyleProfile(BaseModel):
     dimensions: StyleDimensions
     evidence_ids: list[str] = Field(default_factory=list)
+
+
+class StyleSignalItem(BaseModel):
+    id: str
+    source: str
+    label: str
+    dimensions: StyleDimensions
+    returned: bool = False
 
 
 class EvidenceItem(BaseModel):
@@ -68,6 +76,14 @@ class GroundedInsight(BaseModel):
     evidence_ids: list[str]
 
 
+class ScoreProvenance(BaseModel):
+    aspirational_item_count: int = Field(ge=0)
+    purchase_item_count: int = Field(ge=0)
+    kept_purchase_count: int = Field(ge=0)
+    returned_item_count: int = Field(ge=0)
+    profile_method: Literal["fixture_item_average", "agent_profiles"]
+
+
 class GapReport(BaseModel):
     persona_id: str
     persona_name: str
@@ -76,6 +92,7 @@ class GapReport(BaseModel):
     dimensions: list[GapDimension]
     insights: list[GroundedInsight]
     evidence: list[EvidenceItem]
+    score_provenance: ScoreProvenance
 
 
 class CandidateItem(BaseModel):

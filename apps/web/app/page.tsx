@@ -113,6 +113,38 @@ export default function Home() {
             </div>
           </section>
 
+          <section className="score-provenance" aria-label="How the gap score was calculated">
+            <div>
+              <p className="eyebrow">HOW THIS SCORE WAS CALCULATED</p>
+              <h3>Individual signals become two profiles, then one gap.</h3>
+            </div>
+            <div className="provenance-flow">
+              <span>
+                <strong>{demo.report.score_provenance.aspirational_item_count}</strong>
+                synthetic Pinterest saves
+              </span>
+              <b aria-hidden="true">→</b>
+              <span>
+                <strong>{demo.report.score_provenance.kept_purchase_count}</strong>
+                kept Gmail purchases
+              </span>
+              <span>
+                <strong>{demo.report.score_provenance.returned_item_count}</strong>
+                returned item excluded
+              </span>
+              <b aria-hidden="true">→</b>
+              <span>
+                <strong>{demo.report.gap_score}</strong>
+                average dimension gap
+              </span>
+            </div>
+            <p className="provenance-note">
+              Item-level style scores are hand-authored for Maya. RealCart calculates both
+              profiles and the final score automatically. Returns inform regret patterns but do
+              not count as everyday behavior.
+            </p>
+          </section>
+
           <section className="dimension-grid" aria-label="Taste gap dimensions">
             {demo.report.dimensions.map((dimension) => (
               <article className="dimension-card" key={dimension.key}>

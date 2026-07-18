@@ -309,6 +309,13 @@ the frontend report redesign.
     "persona_name": "Demo: Maya",
     "summary": "Your saved style is more structured and formal than the choices represented in this synthetic purchase history.",
     "gap_score": 37,
+    "score_provenance": {
+      "aspirational_item_count": 4,
+      "purchase_item_count": 4,
+      "kept_purchase_count": 3,
+      "returned_item_count": 1,
+      "profile_method": "fixture_item_average"
+    },
     "dimensions": [
       {
         "key": "formality",

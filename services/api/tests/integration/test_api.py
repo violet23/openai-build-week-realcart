@@ -26,6 +26,13 @@ async def test_demo_vertical_slice() -> None:
     payload = response.json()
     assert payload["persona"]["display_name"] == "Demo: Maya"
     assert payload["report"]["gap_score"] > 0
+    assert payload["report"]["score_provenance"] == {
+        "aspirational_item_count": 4,
+        "purchase_item_count": 4,
+        "kept_purchase_count": 3,
+        "returned_item_count": 1,
+        "profile_method": "fixture_item_average",
+    }
     assert len(payload["survey"]) == 2
     assert payload["survey"][0]["merchant"] == "Everlane"
     assert payload["survey"][0]["price"] == 68

@@ -74,7 +74,8 @@ make dev-web
 ```
 
 Open [http://localhost:3000](http://localhost:3000). The page loads the
-credential-free fixture report from `GET /api/run`.
+credential-free Maya report, score provenance, purchase survey, and Second Opinion
+fixture from `GET /api/demo`.
 
 You can also run the pipeline directly in the terminal:
 
@@ -82,6 +83,12 @@ You can also run the pipeline directly in the terminal:
 make run
 make run-json
 ```
+
+Fixture analysis is traceable rather than storing a finished Maya profile: each
+synthetic Pinterest save and Gmail purchase has hand-authored item-level style
+scores. Application code averages the four saves into the aspiration profile,
+averages the three kept purchases into the behavior profile, excludes the returned
+purchase from everyday behavior, and calculates the final dimension gaps and score.
 
 The CLI can also write an artifact:
 

@@ -19,6 +19,14 @@ export interface GroundedInsight {
   evidence_ids: string[];
 }
 
+export interface ScoreProvenance {
+  aspirational_item_count: number;
+  purchase_item_count: number;
+  kept_purchase_count: number;
+  returned_item_count: number;
+  profile_method: "fixture_item_average" | "agent_profiles";
+}
+
 export interface GapReport {
   persona_id: string;
   persona_name: string;
@@ -27,6 +35,7 @@ export interface GapReport {
   dimensions: GapDimension[];
   insights: GroundedInsight[];
   evidence: EvidenceItem[];
+  score_provenance: ScoreProvenance;
 }
 
 export type SurveyPromptKey =

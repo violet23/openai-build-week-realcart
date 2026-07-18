@@ -4,7 +4,8 @@
 
 1. **Fixture first.** The complete judge path must work without third-party credentials.
 2. **Evidence before prose.** Every derived insight points to source evidence IDs.
-3. **Deterministic scores.** Models may tag or summarize; code calculates numbers.
+3. **Deterministic scores.** Models may tag or summarize; code aggregates item-level
+   profiles and calculates numbers.
 4. **Minimal data.** Connectors normalize only the fields required for analysis.
 5. **No recommendation loop.** RealCart never searches, ranks, or monetizes alternatives.
 
@@ -27,8 +28,9 @@ connector interfaces.
 ### Report viewer
 
 `apps/web` is a small Next.js client for the current milestone. It calls
-`GET /api/run` and displays the gap score, dimensions, grounded insights,
-evidence, and completed pipeline stages. It does not own analysis logic.
+`GET /api/demo` and displays the gap score, its item-count provenance, dimensions,
+grounded insights, purchase surveys, and Second Opinion fixture. It does not own
+analysis logic.
 
 ### Multi-agent workflow
 
@@ -40,6 +42,13 @@ evidence, and completed pipeline stages. It does not own analysis logic.
 Python orchestration runs the two independent specialists concurrently. Agents
 never fetch OAuth data and never own the numeric gap calculation;
 `scoring/gap.py` is the single source of truth for scores.
+
+In fixture analysis mode, each synthetic Pinterest save and Gmail purchase has
+hand-authored style dimensions. Application code averages the pin records into an
+aspiration profile and averages only kept purchases into a behavior profile.
+Returned purchases remain evidence for return/regret analysis but are excluded
+from everyday behavior. The four dimension gaps are then averaged into the final
+0–100 gap score.
 
 ### GPT-5.6 execution
 

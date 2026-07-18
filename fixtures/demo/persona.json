@@ -4,31 +4,146 @@
     "display_name": "Demo: Maya",
     "description": "A synthetic persona whose saved style is more structured and formal than her everyday purchases."
   },
-  "aspiration": {
-    "dimensions": {
-      "color_boldness": 0.72,
-      "formality": 0.81,
-      "price_tier": 0.76,
-      "silhouette_structure": 0.84
+  "aspirational_items": [
+    {
+      "id": "pin-01",
+      "source": "pinterest_fixture",
+      "label": "Tailored camel blazer",
+      "board_name": "Dream wardrobe",
+      "category": "outerwear",
+      "colors": ["camel", "cream"],
+      "style_tags": ["tailored", "minimal", "structured"],
+      "dimensions": {
+        "color_boldness": 0.6,
+        "formality": 0.9,
+        "price_tier": 0.8,
+        "silhouette_structure": 0.95
+      }
     },
-    "evidence_ids": ["pin-01", "pin-02", "pin-03", "pin-04"]
-  },
-  "behavior": {
-    "dimensions": {
-      "color_boldness": 0.44,
-      "formality": 0.39,
-      "price_tier": 0.47,
-      "silhouette_structure": 0.36
+    {
+      "id": "pin-02",
+      "source": "pinterest_fixture",
+      "label": "Structured woven tote",
+      "board_name": "Dream wardrobe",
+      "category": "bags",
+      "colors": ["ochre", "tan"],
+      "style_tags": ["woven", "polished", "structured"],
+      "dimensions": {
+        "color_boldness": 0.75,
+        "formality": 0.78,
+        "price_tier": 0.82,
+        "silhouette_structure": 0.9
+      }
     },
-    "evidence_ids": ["purchase-01", "purchase-02", "purchase-03", "survey-01"],
-    "typical_spend_range": [25, 120],
-    "regret_profile": {
-      "color_boldness": 0.68,
-      "formality": 0.75,
-      "price_tier": 0.82,
-      "silhouette_structure": 0.79
+    {
+      "id": "pin-03",
+      "source": "pinterest_fixture",
+      "label": "Minimal gold jewelry",
+      "board_name": "Finishing touches",
+      "category": "jewelry",
+      "colors": ["gold"],
+      "style_tags": ["minimal", "refined", "warm"],
+      "dimensions": {
+        "color_boldness": 0.8,
+        "formality": 0.72,
+        "price_tier": 0.72,
+        "silhouette_structure": 0.7
+      }
+    },
+    {
+      "id": "pin-04",
+      "source": "pinterest_fixture",
+      "label": "Wide-leg tailored trousers",
+      "board_name": "Workwear someday",
+      "category": "bottoms",
+      "colors": ["navy"],
+      "style_tags": ["tailored", "wide-leg", "structured"],
+      "dimensions": {
+        "color_boldness": 0.73,
+        "formality": 0.84,
+        "price_tier": 0.7,
+        "silhouette_structure": 0.81
+      }
     }
-  },
+  ],
+  "purchase_items": [
+    {
+      "id": "purchase-01",
+      "source": "gmail_fixture",
+      "label": "Everyday cotton hoodie",
+      "merchant": "Everlane",
+      "price": 68,
+      "currency": "USD",
+      "purchased_at": "2026-05-18",
+      "returned": false,
+      "category": "tops",
+      "colors": ["gray"],
+      "style_tags": ["casual", "soft", "everyday"],
+      "dimensions": {
+        "color_boldness": 0.35,
+        "formality": 0.22,
+        "price_tier": 0.35,
+        "silhouette_structure": 0.2
+      }
+    },
+    {
+      "id": "purchase-02",
+      "source": "gmail_fixture",
+      "label": "Running sneakers",
+      "merchant": "Asics",
+      "price": 120,
+      "currency": "USD",
+      "purchased_at": "2026-04-27",
+      "returned": false,
+      "category": "shoes",
+      "colors": ["blue", "white"],
+      "style_tags": ["sporty", "practical", "casual"],
+      "dimensions": {
+        "color_boldness": 0.52,
+        "formality": 0.37,
+        "price_tier": 0.55,
+        "silhouette_structure": 0.4
+      }
+    },
+    {
+      "id": "purchase-03",
+      "source": "gmail_fixture",
+      "label": "Soft unstructured tote",
+      "merchant": "Baggu",
+      "price": 25,
+      "currency": "USD",
+      "purchased_at": "2026-06-12",
+      "returned": false,
+      "category": "bags",
+      "colors": ["olive"],
+      "style_tags": ["soft", "practical", "unstructured"],
+      "dimensions": {
+        "color_boldness": 0.45,
+        "formality": 0.58,
+        "price_tier": 0.51,
+        "silhouette_structure": 0.48
+      }
+    },
+    {
+      "id": "purchase-04",
+      "source": "gmail_fixture",
+      "label": "Returned structured camel blazer",
+      "merchant": "Studio Archive",
+      "price": 189,
+      "currency": "USD",
+      "purchased_at": "2026-06-04",
+      "returned": true,
+      "category": "outerwear",
+      "colors": ["camel"],
+      "style_tags": ["tailored", "formal", "structured"],
+      "dimensions": {
+        "color_boldness": 0.68,
+        "formality": 0.75,
+        "price_tier": 0.82,
+        "silhouette_structure": 0.79
+      }
+    }
+  ],
   "evidence": [
     {
       "id": "pin-01",

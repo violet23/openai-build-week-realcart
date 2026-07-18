@@ -121,6 +121,7 @@ async def test_agent_mode_uses_real_gpt_5_6_configuration(
     run = await run_pipeline(data_mode="fixture", analysis_mode="agents")
 
     assert run.model_runtime.provider == "openai"
+    assert run.report.score_provenance.profile_method == "agent_profiles"
     assert run.model_runtime.specialist_model == "gpt-5.6-terra"
     assert run.model_runtime.synthesis_model == "gpt-5.6-sol"
     assert [agent.name for agent, _config in calls] == [
@@ -142,4 +143,5 @@ async def test_markdown_output_contains_evidence_and_pipeline() -> None:
     assert "# RealCart Insight Report" in rendered
     assert "Evidence:" in rendered
     assert "## Runtime" in rendered
+    assert "## Score provenance" in rendered
     assert "## Pipeline" in rendered

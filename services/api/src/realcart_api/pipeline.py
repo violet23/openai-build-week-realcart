@@ -108,6 +108,13 @@ def _evidence_for(payload: dict[str, Any], kind: str) -> list[dict[str, Any]]:
     return [item for item in payload["evidence"] if item["kind"] == kind]
 
 
+def _items_without_fixture_scores(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {key: value for key, value in item.items() if key != "dimensions"}
+        for item in items
+    ]
+
+
 async def _run_specialist_agents(
     payload: dict[str, Any], run_config: RunConfig
 ) -> tuple[StyleProfile, StyleProfile]:
@@ -122,6 +129,7 @@ async def _run_specialist_agents(
         {
             "task": "Build the aspirational style profile.",
             "evidence": _evidence_for(payload, "aspirational"),
+            "items": _items_without_fixture_scores(payload["aspirational_items"]),
         }
     )
     purchase_input = json.dumps(
@@ -131,6 +139,7 @@ async def _run_specialist_agents(
                 *_evidence_for(payload, "purchase"),
                 *_evidence_for(payload, "survey"),
             ],
+            "items": _items_without_fixture_scores(payload["purchase_items"]),
             "survey": payload.get("survey", []),
         }
     )
@@ -231,7 +240,10 @@ async def run_pipeline(
             [
                 AnalysisStage(
                     name="specialist_analysis",
-                    detail="Used deterministic synthetic specialist profiles for local testing.",
+                    detail=(
+                        "Averaged item-level synthetic Pinterest and kept-purchase scores into "
+                        "deterministic specialist profiles."
+                    ),
                 ),
                 AnalysisStage(
                     name="scoring",

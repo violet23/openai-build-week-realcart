@@ -1,7 +1,7 @@
 """Deterministic gap and Second Opinion calculations."""
 
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, Literal
 
 from realcart_api.schemas import (
     CandidateItem,
@@ -11,8 +11,11 @@ from realcart_api.schemas import (
     GroundedInsight,
     OpinionDimension,
     ReportNarrative,
+    ScoreProvenance,
     SecondOpinionResponse,
+    StyleDimensions,
     StyleProfile,
+    StyleSignalItem,
 )
 
 DIMENSION_LABELS = {
@@ -33,6 +36,29 @@ def _score_similarity(left: Mapping[str, float], right: Mapping[str, float]) -> 
         return 0
     distance = sum(abs(_clamp(left[key]) - _clamp(right[key])) for key in shared)
     return round((1 - distance / len(shared)) * 100)
+
+
+def aggregate_style_items(
+    raw_items: list[dict[str, Any]], *, exclude_returned: bool = False
+) -> StyleProfile:
+    """Build a profile from traceable item-level fixture scores."""
+
+    items = [StyleSignalItem.model_validate(item) for item in raw_items]
+    included = [item for item in items if not (exclude_returned and item.returned)]
+    if not included:
+        raise ValueError("At least one eligible style item is required")
+
+    dimensions = {
+        key: round(
+            sum(getattr(item.dimensions, key) for item in included) / len(included),
+            2,
+        )
+        for key in StyleDimensions.model_fields
+    }
+    return StyleProfile(
+        dimensions=StyleDimensions.model_validate(dimensions),
+        evidence_ids=[item.id for item in included],
+    )
 
 
 def calculate_gap_dimensions(
@@ -90,8 +116,15 @@ def build_gap_report(
     behavior: StyleProfile | None = None,
     narrative: ReportNarrative | None = None,
 ) -> GapReport:
-    aspiration = aspiration or StyleProfile.model_validate(payload["aspiration"])
-    behavior = behavior or StyleProfile.model_validate(payload["behavior"])
+    profile_method: Literal["fixture_item_average", "agent_profiles"] = (
+        "fixture_item_average"
+        if aspiration is None and behavior is None
+        else "agent_profiles"
+    )
+    aspiration = aspiration or aggregate_style_items(payload["aspirational_items"])
+    behavior = behavior or aggregate_style_items(
+        payload["purchase_items"], exclude_returned=True
+    )
     dimensions = calculate_gap_dimensions(aspiration, behavior)
     persona: dict[str, str] = payload["persona"]
     evidence = [EvidenceItem.model_validate(item) for item in payload["evidence"]]
@@ -126,6 +159,17 @@ def build_gap_report(
         dimensions=dimensions,
         insights=insights,
         evidence=evidence,
+        score_provenance=ScoreProvenance(
+            aspirational_item_count=len(payload["aspirational_items"]),
+            purchase_item_count=len(payload["purchase_items"]),
+            kept_purchase_count=sum(
+                not bool(item.get("returned")) for item in payload["purchase_items"]
+            ),
+            returned_item_count=sum(
+                bool(item.get("returned")) for item in payload["purchase_items"]
+            ),
+            profile_method=profile_method,
+        ),
     )
 
 
@@ -141,13 +185,24 @@ def _spend_fit(price: float, spend_range: list[float]) -> int:
 def build_second_opinion(
     payload: dict[str, Any], candidate: CandidateItem
 ) -> SecondOpinionResponse:
-    aspiration = StyleProfile.model_validate(payload["aspiration"])
-    behavior: dict[str, Any] = payload["behavior"]
+    aspiration = aggregate_style_items(payload["aspirational_items"])
+    kept_purchases = [
+        item for item in payload["purchase_items"] if not bool(item.get("returned"))
+    ]
+    returned_purchases = [
+        item for item in payload["purchase_items"] if bool(item.get("returned"))
+    ]
+    prices = [float(item["price"]) for item in kept_purchases]
+    if not prices or not returned_purchases:
+        raise ValueError("Second Opinion requires kept and returned purchase fixtures")
+    regret_profile = aggregate_style_items(returned_purchases)
     aesthetic_fit = _score_similarity(
         candidate.dimensions, aspiration.dimensions.model_dump()
     )
-    spend_fit = _spend_fit(candidate.price, behavior["typical_spend_range"])
-    regret_similarity = _score_similarity(candidate.dimensions, behavior["regret_profile"])
+    spend_fit = _spend_fit(candidate.price, [min(prices), max(prices)])
+    regret_similarity = _score_similarity(
+        candidate.dimensions, regret_profile.dimensions.model_dump()
+    )
 
     return SecondOpinionResponse(
         candidate_name=candidate.name,

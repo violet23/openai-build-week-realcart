@@ -34,6 +34,14 @@ def render_markdown(run: AnalysisRun) -> str:
     lines.extend(
         [
         "",
+        "## Score provenance",
+        "",
+        f"- **Synthetic Pinterest saves:** {report.score_provenance.aspirational_item_count}",
+        f"- **Synthetic purchases:** {report.score_provenance.purchase_item_count}",
+        f"- **Kept purchases in behavior profile:** {report.score_provenance.kept_purchase_count}",
+        f"- **Returned purchases excluded:** {report.score_provenance.returned_item_count}",
+        f"- **Profile method:** {report.score_provenance.profile_method}",
+        "",
         "## Dimensions",
         "",
         "| Dimension | Aspiration | Behavior | Gap |",
