@@ -401,8 +401,10 @@ array rather than inventing one response format per card:
 
 ## 6. Decision Reflection — partial
 
-The public product name is Decision Reflection. The existing endpoint remains
-`POST /api/second-opinion` for API compatibility during the hackathon.
+Decision Reflection is an optional follow-on to the standalone Analysis Report; a
+user does not need a candidate item to receive value from RealCart. The existing
+endpoint remains `POST /api/second-opinion` for API compatibility during the
+hackathon.
 
 Current request accepted by `POST /api/second-opinion`:
 

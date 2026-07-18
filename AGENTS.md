@@ -3,8 +3,10 @@
 ## Mission
 
 RealCart turns a user's Style World, purchase history, returns, usage, and
-emotional feedback into a personal shopping-pattern model. It reflects the factors
-shaping a decision without telling the user what to buy.
+emotional feedback into a personal shopping-pattern model. Its primary value is
+revealing patterns the user may not have noticed, even when they are not shopping.
+Optional Decision Reflection surfaces the factors shaping a later decision without
+telling the user what to buy.
 
 ## Repository map
 

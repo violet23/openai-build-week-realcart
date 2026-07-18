@@ -3,14 +3,16 @@
 **Get closer to yourself. Know what you actually like.**
 
 RealCart turns your Style World, purchase history, returns, usage and emotional
-feedback into a personal shopping-pattern model. When you consider something new,
-it reflects the factors shaping the decision—without telling you what to buy.
+feedback into a personal shopping-pattern model. It first reveals patterns in your
+taste and behavior you may not have noticed—an overlooked part of yourself worth
+understanding even when you are not shopping. If you later consider something new,
+it reflects the factors shaping that decision without telling you what to buy.
 
 Style World interprets Pinterest as a fashion-and-lifestyle vision board, not a
 product wishlist. Purchase Reality combines receipts with what was kept, returned,
 used, loved, or regretted. Decision Reflection brings those patterns into view when
-the user considers a new item. RealCart has no product rankings, affiliate
-incentives, or buy/do-not-buy verdicts.
+the user considers a new item; it is optional, not the reason the report exists.
+RealCart has no product rankings, affiliate incentives, or buy/do-not-buy verdicts.
 
 This repository is a fixture-first hackathon scaffold with a backend
 multi-agent pipeline and a basic report viewer. It is intentionally safe to run

@@ -29,8 +29,9 @@ connector interfaces.
 
 `apps/web` is a small Next.js client for the current milestone. It calls
 `GET /api/demo` and displays the Style Gap, its item-count provenance, dimensions,
-grounded insights, Purchase Reality check-ins, and Decision Reflection fixture. It
-does not own analysis logic.
+grounded insights, and Purchase Reality check-ins. Decision Reflection is an
+optional follow-on experience; the report remains useful without a candidate item.
+The viewer does not own analysis logic.
 
 ### Multi-agent workflow
 

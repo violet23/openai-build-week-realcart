@@ -93,8 +93,10 @@ export default function Home() {
         <p className="tagline">Get closer to yourself. Know what you actually like.</p>
         <p className="hero-philosophy">
           RealCart turns your Style World, purchase history, returns, usage and emotional
-          feedback into a personal shopping-pattern model. When you consider something new, it
-          reflects the factors shaping the decision—without telling you what to buy.
+          feedback into a personal shopping-pattern model. It first reveals patterns in your
+          taste and behavior you may not have noticed—an overlooked part of yourself worth
+          understanding even when you are not shopping. If you later consider something new, it
+          reflects the factors shaping that decision without telling you what to buy.
         </p>
         <p className="privacy-note">
           This demo uses a synthetic persona. No mailbox, Pinterest account, or personal data is connected.
