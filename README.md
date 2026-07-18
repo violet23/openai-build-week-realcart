@@ -1,12 +1,14 @@
 # RealCart
 
-**Understand yourself a little better — not to sell you anything.**
+**Get closer to yourself. Know what you actually like.**
 
 RealCart is the first product in the Un-Algorithm concept. It interprets Pinterest
 as a vision board—not a product wishlist—then compares its repeated visual world
 with real purchase behavior. It presents an evidence-led Insight Report and a
 user-initiated Second Opinion without product recommendations or affiliate
-incentives.
+incentives. It is not about self-control or self-optimization: it makes repeated
+spending, keeping, and returning patterns visible so choosing like yourself can
+become more natural.
 
 This repository is a fixture-first hackathon scaffold with a backend
 multi-agent pipeline and a basic report viewer. It is intentionally safe to run

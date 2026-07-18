@@ -90,7 +90,12 @@ export default function Home() {
       <header className="hero">
         <p className="eyebrow">UN-ALGORITHM / FIXTURE DEMO</p>
         <h1>RealCart</h1>
-        <p className="tagline">Understand yourself a little better — not to sell you anything.</p>
+        <p className="tagline">Get closer to yourself. Know what you actually like.</p>
+        <p className="hero-philosophy">
+          See where your time and money go—including the things you keep buying and returning.
+          RealCart is not about self-control or self-optimization. When you understand your
+          patterns, being yourself takes less effort.
+        </p>
         <p className="privacy-note">
           This demo uses a synthetic persona. No mailbox, Pinterest account, or personal data is connected.
         </p>
