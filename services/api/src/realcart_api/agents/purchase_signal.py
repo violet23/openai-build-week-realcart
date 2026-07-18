@@ -18,9 +18,10 @@ def create_purchase_signal_agent(
         instructions=(
             "Use only normalized receipt, return, and survey evidence. Exclude likely gifts "
             "and pure consumables. Separate logistical returns from taste-driven returns. "
-            "Use exactly these dimensions: color_boldness, formality, price_tier, and "
-            "silhouette_structure. Return values from 0 to 1 and cite only supplied "
-            "evidence IDs. Never recommend products or invent evidence."
+            "Use the same transferable visual dimensions as the Vision Taste Agent: "
+            "color_warmth, color_saturation, visual_contrast, structure, "
+            "texture_naturalness, ornamentation, and polish. Return values from 0 to 1 and "
+            "cite only supplied evidence IDs. Never recommend products or invent evidence."
         ),
         model=model,
         model_settings=create_model_settings(reasoning_effort),

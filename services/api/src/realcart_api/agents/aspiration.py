@@ -1,9 +1,9 @@
-"""Aspirational-style specialist definition."""
+"""Vision-board specialist definition."""
 
 from typing import Any
 
 from realcart_api.agents.model_config import create_model_settings
-from realcart_api.schemas import StyleProfile
+from realcart_api.schemas import VisionProfile
 from realcart_api.settings import ReasoningEffort
 
 
@@ -13,15 +13,19 @@ def create_aspiration_agent(
     from agents import Agent
 
     return Agent(
-        name="Aspirational Style Agent",
-        handoff_description="Tags saved images on RealCart's shared style taxonomy.",
+        name="Vision Taste Agent",
+        handoff_description="Interprets the repeated visual world across saved images.",
         instructions=(
-            "Analyze only the supplied Pinterest or fixture evidence. Use exactly these "
-            "dimensions: color_boldness, formality, price_tier, and silhouette_structure. "
-            "Return values from 0 to 1 and cite only supplied evidence IDs. Do not infer "
-            "purchases, recommend products, or invent evidence."
+            "Treat Pinterest as a vision board, not a wishlist. Analyze literal content, "
+            "scene, palette, material, form, and atmosphere across the supplied items. Do "
+            "not assume a saved object is something the user wants to buy. Use exactly these "
+            "transferable dimensions: color_warmth, color_saturation, visual_contrast, "
+            "structure, texture_naturalness, ornamentation, and polish. Return values from "
+            "0 to 1. Include only themes repeated across multiple pins, with confidence and "
+            "supporting evidence IDs. Cite only supplied IDs. Never infer purchases, identity, "
+            "or psychological traits; never recommend products or invent evidence."
         ),
         model=model,
         model_settings=create_model_settings(reasoning_effort),
-        output_type=StyleProfile,
+        output_type=VisionProfile,
     )

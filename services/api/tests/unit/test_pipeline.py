@@ -14,7 +14,13 @@ from realcart_api.pipeline import (
     _model_execution_error_message,
     run_pipeline,
 )
-from realcart_api.schemas import GroundedInsight, ReportNarrative, StyleProfile
+from realcart_api.schemas import (
+    GroundedInsight,
+    ReportNarrative,
+    StyleProfile,
+    VisionProfile,
+    VisionTheme,
+)
 
 
 @pytest.mark.asyncio
@@ -59,16 +65,19 @@ def test_quota_error_message_is_specific_and_safe() -> None:
 
 
 def test_agent_outputs_have_strict_json_schemas() -> None:
-    style_schema = AgentOutputSchema(StyleProfile).json_schema()
+    style_schema = AgentOutputSchema(VisionProfile).json_schema()
     narrative_schema = AgentOutputSchema(ReportNarrative).json_schema()
 
     dimensions_schema = style_schema["$defs"]["StyleDimensions"]
     assert dimensions_schema["additionalProperties"] is False
     assert set(dimensions_schema["required"]) == {
-        "color_boldness",
-        "formality",
-        "price_tier",
-        "silhouette_structure",
+        "color_warmth",
+        "color_saturation",
+        "visual_contrast",
+        "structure",
+        "texture_naturalness",
+        "ornamentation",
+        "polish",
     }
     assert narrative_schema["additionalProperties"] is False
 
@@ -81,23 +90,37 @@ async def test_agent_mode_uses_real_gpt_5_6_configuration(
 
     async def fake_run(agent: Any, _input: str, *, run_config: Any) -> Any:
         calls.append((agent, run_config))
-        if agent.name == "Aspirational Style Agent":
-            output: Any = StyleProfile(
+        if agent.name == "Vision Taste Agent":
+            output: Any = VisionProfile(
                 dimensions={
-                    "color_boldness": 0.72,
-                    "formality": 0.81,
-                    "price_tier": 0.76,
-                    "silhouette_structure": 0.84,
+                    "color_warmth": 0.85,
+                    "color_saturation": 0.34,
+                    "visual_contrast": 0.49,
+                    "structure": 0.63,
+                    "texture_naturalness": 0.85,
+                    "ornamentation": 0.49,
+                    "polish": 0.77,
                 },
                 evidence_ids=["pin-01", "pin-02"],
+                themes=[
+                    VisionTheme(
+                        name="Warm natural calm",
+                        strength=0.8,
+                        confidence=0.9,
+                        evidence_ids=["pin-01", "pin-02"],
+                    )
+                ],
             )
         elif agent.name == "Purchase Signal Agent":
             output = StyleProfile(
                 dimensions={
-                    "color_boldness": 0.44,
-                    "formality": 0.39,
-                    "price_tier": 0.47,
-                    "silhouette_structure": 0.36,
+                    "color_warmth": 0.38,
+                    "color_saturation": 0.38,
+                    "visual_contrast": 0.44,
+                    "structure": 0.32,
+                    "texture_naturalness": 0.48,
+                    "ornamentation": 0.2,
+                    "polish": 0.26,
                 },
                 evidence_ids=["purchase-01", "survey-01"],
             )
@@ -125,7 +148,7 @@ async def test_agent_mode_uses_real_gpt_5_6_configuration(
     assert run.model_runtime.specialist_model == "gpt-5.6-terra"
     assert run.model_runtime.synthesis_model == "gpt-5.6-sol"
     assert [agent.name for agent, _config in calls] == [
-        "Aspirational Style Agent",
+        "Vision Taste Agent",
         "Purchase Signal Agent",
         "Insight Report Manager",
     ]
@@ -144,4 +167,5 @@ async def test_markdown_output_contains_evidence_and_pipeline() -> None:
     assert "Evidence:" in rendered
     assert "## Runtime" in rendered
     assert "## Score provenance" in rendered
+    assert "## Vision-board themes" in rendered
     assert "## Pipeline" in rendered

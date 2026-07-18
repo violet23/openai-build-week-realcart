@@ -19,6 +19,7 @@ from realcart_api.schemas import (
     ModelRuntime,
     ReportNarrative,
     StyleProfile,
+    VisionProfile,
 )
 from realcart_api.scoring import build_gap_report
 from realcart_api.settings import settings
@@ -117,7 +118,7 @@ def _items_without_fixture_scores(items: list[dict[str, Any]]) -> list[dict[str,
 
 async def _run_specialist_agents(
     payload: dict[str, Any], run_config: RunConfig
-) -> tuple[StyleProfile, StyleProfile]:
+) -> tuple[VisionProfile, StyleProfile]:
     if not getenv("OPENAI_API_KEY"):
         raise PipelineConfigurationError(
             "ANALYSIS_MODE=agents requires OPENAI_API_KEY. Fixture analysis does not."
@@ -127,7 +128,7 @@ async def _run_specialist_agents(
 
     aspiration_input = json.dumps(
         {
-            "task": "Build the aspirational style profile.",
+            "task": "Build the Vision Taste profile and repeated board themes.",
             "evidence": _evidence_for(payload, "aspirational"),
             "items": _items_without_fixture_scores(payload["aspirational_items"]),
         }
@@ -159,27 +160,33 @@ async def _run_specialist_agents(
             run_config=run_config,
         ),
     )
-    aspiration = cast(StyleProfile, aspiration_result.final_output)
+    aspiration = cast(VisionProfile, aspiration_result.final_output)
     behavior = cast(StyleProfile, purchase_result.final_output)
-    if not isinstance(aspiration, StyleProfile) or not isinstance(behavior, StyleProfile):
+    if not isinstance(aspiration, VisionProfile) or not isinstance(behavior, StyleProfile):
         raise PipelineConfigurationError("Specialist agents did not return typed style profiles.")
     return aspiration, behavior
 
 
 async def _synthesize_narrative(
     payload: dict[str, Any],
-    aspiration: StyleProfile,
+    aspiration: VisionProfile,
     behavior: StyleProfile,
     run_config: RunConfig,
 ) -> ReportNarrative:
     from agents import Runner
 
-    scored_report = build_gap_report(payload, aspiration=aspiration, behavior=behavior)
+    scored_report = build_gap_report(
+        payload,
+        aspiration=aspiration,
+        behavior=behavior,
+        vision_themes=aspiration.themes,
+    )
     synthesis_input = json.dumps(
         {
             "task": "Write a grounded RealCart self-reflection narrative.",
             "persona": payload["persona"],
             "aspiration_profile": aspiration.model_dump(),
+            "vision_themes": [theme.model_dump() for theme in aspiration.themes],
             "behavior_profile": behavior.model_dump(),
             "gap_score": scored_report.gap_score,
             "dimensions": [item.model_dump() for item in scored_report.dimensions],
@@ -238,12 +245,12 @@ async def run_pipeline(
         model_runtime = ModelRuntime(provider="fixture")
         stages.extend(
             [
-                AnalysisStage(
-                    name="specialist_analysis",
-                    detail=(
-                        "Averaged item-level synthetic Pinterest and kept-purchase scores into "
-                        "deterministic specialist profiles."
-                    ),
+                    AnalysisStage(
+                        name="specialist_analysis",
+                        detail=(
+                            "Aggregated confidence-weighted vision-board signals and kept "
+                            "purchases into deterministic profiles."
+                        ),
                 ),
                 AnalysisStage(
                     name="scoring",
@@ -282,7 +289,7 @@ async def run_pipeline(
                     AnalysisStage(
                         name="specialist_analysis",
                         detail=(
-                            "Ran aspiration and purchase specialists concurrently with "
+                            "Ran Vision Taste and purchase specialists concurrently with "
                             f"{settings.tagger_model}."
                         ),
                     )
@@ -295,6 +302,7 @@ async def run_pipeline(
                     aspiration=aspiration,
                     behavior=behavior,
                     narrative=narrative,
+                    vision_themes=aspiration.themes,
                 )
         except PipelineConfigurationError:
             raise

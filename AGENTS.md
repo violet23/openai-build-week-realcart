@@ -2,8 +2,9 @@
 
 ## Mission
 
-RealCart compares a user's aspirational style signals with their actual purchase
-signals and returns self-understanding, not shopping recommendations.
+RealCart compares the transferable visual world in a user's vision boards with
+their actual purchase signals and returns self-understanding, not shopping
+recommendations.
 
 ## Repository map
 

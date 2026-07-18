@@ -34,7 +34,8 @@ analysis logic.
 
 ### Multi-agent workflow
 
-- **Aspirational Style Agent:** tags saved images on a shared style taxonomy.
+- **Vision Taste Agent:** treats boards as visual worlds, separating literal content
+  from transferable visual signals and repeated atmosphere themes.
 - **Purchase Signal Agent:** extracts aesthetic-relevant purchases, returns, gifts, and survey signals.
 - **Report Manager Agent:** synthesizes grounded prose from specialist profiles and precomputed scores.
 - **Second Opinion Agent:** evaluates a user-provided candidate against the existing profile.
@@ -43,18 +44,20 @@ Python orchestration runs the two independent specialists concurrently. Agents
 never fetch OAuth data and never own the numeric gap calculation;
 `scoring/gap.py` is the single source of truth for scores.
 
-In fixture analysis mode, each synthetic Pinterest save and Gmail purchase has
-hand-authored style dimensions. Application code averages the pin records into an
-aspiration profile and averages only kept purchases into a behavior profile.
+In fixture analysis mode, each synthetic Pinterest pin has an intent type, literal
+content, visual evidence, confidence, repeated themes, and seven transferable
+dimensions: warmth, saturation, contrast, structure, natural texture,
+ornamentation, and polish. Application code confidence-weights the pin records into
+a Vision Taste profile and averages only kept purchases into a behavior profile.
 Returned purchases remain evidence for return/regret analysis but are excluded
-from everyday behavior. The four dimension gaps are then averaged into the final
-0–100 gap score.
+from everyday behavior. Atmosphere themes remain narrative context; the seven
+transferable dimension gaps are averaged into the final 0–100 score.
 
 ### GPT-5.6 execution
 
 `ANALYSIS_MODE=agents` uses the OpenAI Agents SDK and typed Pydantic outputs:
 
-- The aspiration and purchase-signal specialists run concurrently on
+- The Vision Taste and purchase-signal specialists run concurrently on
   `gpt-5.6-terra` with low reasoning effort.
 - Deterministic application code calculates the gap dimensions and score.
 - The report manager runs on `gpt-5.6-sol` with medium reasoning effort and may
@@ -68,10 +71,10 @@ fixture run from a real OpenAI run.
 ## Data flow
 
 ```text
-Pinterest/fixture --> connector --> aspiration agent --+
-                                                      |--> scoring --> synthesis --> API --> report viewer
-Gmail/fixture -----> connector --> purchase agent -----+                         \--> JSON/Markdown
-survey -------------------------------------> evidence -+
+Pinterest/fixture --> connector --> Vision Taste agent --+
+                                                        |--> scoring --> synthesis --> API --> report viewer
+Gmail/fixture -----> connector --> purchase agent -------+                         \--> JSON/Markdown
+survey --------------------------------------- evidence -+
 ```
 
 ## Runtime modes

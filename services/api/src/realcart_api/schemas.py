@@ -10,15 +10,29 @@ class StyleDimensions(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    color_boldness: float = Field(ge=0, le=1)
-    formality: float = Field(ge=0, le=1)
-    price_tier: float = Field(ge=0, le=1)
-    silhouette_structure: float = Field(ge=0, le=1)
+    color_warmth: float = Field(ge=0, le=1)
+    color_saturation: float = Field(ge=0, le=1)
+    visual_contrast: float = Field(ge=0, le=1)
+    structure: float = Field(ge=0, le=1)
+    texture_naturalness: float = Field(ge=0, le=1)
+    ornamentation: float = Field(ge=0, le=1)
+    polish: float = Field(ge=0, le=1)
 
 
 class StyleProfile(BaseModel):
     dimensions: StyleDimensions
     evidence_ids: list[str] = Field(default_factory=list)
+
+
+class VisionTheme(BaseModel):
+    name: str
+    strength: float = Field(ge=0, le=1)
+    confidence: float = Field(ge=0, le=1)
+    evidence_ids: list[str]
+
+
+class VisionProfile(StyleProfile):
+    themes: list[VisionTheme]
 
 
 class StyleSignalItem(BaseModel):
@@ -27,6 +41,13 @@ class StyleSignalItem(BaseModel):
     label: str
     dimensions: StyleDimensions
     returned: bool = False
+    confidence: float = Field(default=1, ge=0, le=1)
+    intent_type: Literal[
+        "atmosphere_reference", "scene_reference", "product_reference", "mixed"
+    ] | None = None
+    literal_content: list[str] = Field(default_factory=list)
+    themes: list[str] = Field(default_factory=list)
+    visual_evidence: list[str] = Field(default_factory=list)
 
 
 class EvidenceItem(BaseModel):
@@ -93,6 +114,7 @@ class GapReport(BaseModel):
     insights: list[GroundedInsight]
     evidence: list[EvidenceItem]
     score_provenance: ScoreProvenance
+    vision_themes: list[VisionTheme]
 
 
 class CandidateItem(BaseModel):

@@ -27,6 +27,13 @@ export interface ScoreProvenance {
   profile_method: "fixture_item_average" | "agent_profiles";
 }
 
+export interface VisionTheme {
+  name: string;
+  strength: number;
+  confidence: number;
+  evidence_ids: string[];
+}
+
 export interface GapReport {
   persona_id: string;
   persona_name: string;
@@ -36,6 +43,7 @@ export interface GapReport {
   insights: GroundedInsight[];
   evidence: EvidenceItem[];
   score_provenance: ScoreProvenance;
+  vision_themes: VisionTheme[];
 }
 
 export type SurveyPromptKey =

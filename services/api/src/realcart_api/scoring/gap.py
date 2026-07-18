@@ -16,13 +16,17 @@ from realcart_api.schemas import (
     StyleDimensions,
     StyleProfile,
     StyleSignalItem,
+    VisionTheme,
 )
 
 DIMENSION_LABELS = {
-    "color_boldness": "Color boldness",
-    "formality": "Formality",
-    "price_tier": "Price tier",
-    "silhouette_structure": "Silhouette structure",
+    "color_warmth": "Color warmth",
+    "color_saturation": "Color saturation",
+    "visual_contrast": "Visual contrast",
+    "structure": "Structure",
+    "texture_naturalness": "Natural texture",
+    "ornamentation": "Ornamentation",
+    "polish": "Polish",
 }
 
 
@@ -47,10 +51,16 @@ def aggregate_style_items(
     included = [item for item in items if not (exclude_returned and item.returned)]
     if not included:
         raise ValueError("At least one eligible style item is required")
+    total_weight = sum(item.confidence for item in included)
+    if total_weight <= 0:
+        raise ValueError("Style item confidence must include a positive value")
 
     dimensions = {
         key: round(
-            sum(getattr(item.dimensions, key) for item in included) / len(included),
+            sum(
+                getattr(item.dimensions, key) * item.confidence for item in included
+            )
+            / total_weight,
             2,
         )
         for key in StyleDimensions.model_fields
@@ -59,6 +69,39 @@ def aggregate_style_items(
         dimensions=StyleDimensions.model_validate(dimensions),
         evidence_ids=[item.id for item in included],
     )
+
+
+def aggregate_vision_themes(raw_items: list[dict[str, Any]]) -> list[VisionTheme]:
+    """Keep repeated board-level themes without forcing them into the gap score."""
+
+    items = [StyleSignalItem.model_validate(item) for item in raw_items]
+    total_confidence = sum(item.confidence for item in items)
+    if total_confidence <= 0:
+        return []
+
+    support: dict[str, list[StyleSignalItem]] = {}
+    for item in items:
+        for theme in set(item.themes):
+            support.setdefault(theme, []).append(item)
+
+    themes = [
+        VisionTheme(
+            name=name.replace("_", " ").title(),
+            strength=round(
+                sum(item.confidence for item in supporting_items) / total_confidence,
+                2,
+            ),
+            confidence=round(
+                sum(item.confidence for item in supporting_items)
+                / len(supporting_items),
+                2,
+            ),
+            evidence_ids=[item.id for item in supporting_items],
+        )
+        for name, supporting_items in support.items()
+        if len(supporting_items) >= 2
+    ]
+    return sorted(themes, key=lambda theme: (-theme.strength, theme.name))
 
 
 def calculate_gap_dimensions(
@@ -98,10 +141,11 @@ def _build_insights(
         direction = "higher" if dimension.aspiration > dimension.behavior else "lower"
         insights.append(
             GroundedInsight(
-                title=f"Your saved {dimension.label.lower()} is {direction}",
+                title=f"Your vision {dimension.label.lower()} is {direction}",
                 body=(
                     f"The {dimension.label.lower()} signal differs by "
-                    f"{round(dimension.gap * 100)} points between saved and purchased items. "
+                    f"{round(dimension.gap * 100)} points between the vision board "
+                    "and kept purchases. "
                     "Treat this as a reflection prompt rather than a shopping verdict."
                 ),
                 evidence_ids=evidence_ids,
@@ -115,6 +159,7 @@ def build_gap_report(
     aspiration: StyleProfile | None = None,
     behavior: StyleProfile | None = None,
     narrative: ReportNarrative | None = None,
+    vision_themes: list[VisionTheme] | None = None,
 ) -> GapReport:
     profile_method: Literal["fixture_item_average", "agent_profiles"] = (
         "fixture_item_average"
@@ -129,6 +174,9 @@ def build_gap_report(
     persona: dict[str, str] = payload["persona"]
     evidence = [EvidenceItem.model_validate(item) for item in payload["evidence"]]
     known_evidence_ids = {item.id for item in evidence}
+    vision_themes = vision_themes or aggregate_vision_themes(
+        payload["aspirational_items"]
+    )
     insights = (
         narrative.insights
         if narrative is not None
@@ -140,6 +188,12 @@ def build_gap_report(
         for evidence_id in insight.evidence_ids
         if evidence_id not in known_evidence_ids
     }
+    unknown_evidence_ids.update(
+        evidence_id
+        for theme in vision_themes
+        for evidence_id in theme.evidence_ids
+        if evidence_id not in known_evidence_ids
+    )
     if unknown_evidence_ids:
         unknown = ", ".join(sorted(unknown_evidence_ids))
         raise ValueError(f"Narrative cited unknown evidence IDs: {unknown}")
@@ -151,8 +205,8 @@ def build_gap_report(
             narrative.summary
             if narrative is not None
             else (
-                "Your saved style is more structured and formal than the choices represented "
-                "in this synthetic purchase history."
+                "Your vision board repeatedly points to a warm, natural, calm world, while "
+                "your kept purchases lean more practical, cooler, and less polished."
             )
         ),
         gap_score=calculate_gap_score(dimensions),
@@ -170,6 +224,7 @@ def build_gap_report(
             ),
             profile_method=profile_method,
         ),
+        vision_themes=vision_themes,
     )
 
 
@@ -207,7 +262,8 @@ def build_second_opinion(
     return SecondOpinionResponse(
         candidate_name=candidate.name,
         reading=(
-            "This item resembles the structured style in the saved profile, sits above the "
+            "This item resembles the warm, polished visual world in the vision profile, "
+            "sits above the "
             "synthetic usual spend range, and overlaps with a prior regret pattern. "
             "Those are signals to consider; the interpretation and decision remain yours."
         ),
@@ -215,7 +271,7 @@ def build_second_opinion(
             OpinionDimension(
                 label="Aesthetic fit",
                 score=aesthetic_fit,
-                note="Similarity to the aspirational style profile.",
+                note="Similarity to the transferable signals in the Vision Taste profile.",
             ),
             OpinionDimension(
                 label="Spend-range fit",

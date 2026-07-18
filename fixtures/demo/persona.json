@@ -2,67 +2,87 @@
   "persona": {
     "id": "quiet-luxury-casual",
     "display_name": "Demo: Maya",
-    "description": "A synthetic persona whose saved style is more structured and formal than her everyday purchases."
+    "description": "A synthetic persona whose vision board is warmer, calmer, more natural, and more polished than her everyday purchases."
   },
   "aspirational_items": [
     {
       "id": "pin-01",
       "source": "pinterest_fixture",
-      "label": "Tailored camel blazer",
-      "board_name": "Dream wardrobe",
-      "category": "outerwear",
-      "colors": ["camel", "cream"],
-      "style_tags": ["tailored", "minimal", "structured"],
+      "label": "Sunlit Mediterranean courtyard",
+      "board_name": "The life I want to inhabit",
+      "intent_type": "atmosphere_reference",
+      "literal_content": ["limestone courtyard", "olive tree", "linen seating"],
+      "themes": ["warm", "natural", "calm", "timeless"],
+      "visual_evidence": ["warm limestone", "soft sunlight", "linen texture", "muted earth tones"],
+      "confidence": 0.9,
       "dimensions": {
-        "color_boldness": 0.6,
-        "formality": 0.9,
-        "price_tier": 0.8,
-        "silhouette_structure": 0.95
+        "color_warmth": 0.92,
+        "color_saturation": 0.38,
+        "visual_contrast": 0.45,
+        "structure": 0.62,
+        "texture_naturalness": 0.94,
+        "ornamentation": 0.58,
+        "polish": 0.72
       }
     },
     {
       "id": "pin-02",
       "source": "pinterest_fixture",
-      "label": "Structured woven tote",
-      "board_name": "Dream wardrobe",
-      "category": "bags",
-      "colors": ["ochre", "tan"],
-      "style_tags": ["woven", "polished", "structured"],
+      "label": "Linen bedroom in warm morning light",
+      "board_name": "The life I want to inhabit",
+      "intent_type": "scene_reference",
+      "literal_content": ["linen bedroom", "plaster walls", "morning light"],
+      "themes": ["warm", "natural", "calm", "soft"],
+      "visual_evidence": ["unbleached linen", "diffused light", "low contrast", "organic texture"],
+      "confidence": 0.88,
       "dimensions": {
-        "color_boldness": 0.75,
-        "formality": 0.78,
-        "price_tier": 0.82,
-        "silhouette_structure": 0.9
+        "color_warmth": 0.88,
+        "color_saturation": 0.25,
+        "visual_contrast": 0.28,
+        "structure": 0.35,
+        "texture_naturalness": 0.96,
+        "ornamentation": 0.3,
+        "polish": 0.62
       }
     },
     {
       "id": "pin-03",
       "source": "pinterest_fixture",
-      "label": "Minimal gold jewelry",
-      "board_name": "Finishing touches",
-      "category": "jewelry",
-      "colors": ["gold"],
-      "style_tags": ["minimal", "refined", "warm"],
+      "label": "Candlelit restaurant with aged brass",
+      "board_name": "Evenings with atmosphere",
+      "intent_type": "atmosphere_reference",
+      "literal_content": ["intimate restaurant", "aged brass", "dark wood", "candlelight"],
+      "themes": ["warm", "romantic", "intimate", "polished"],
+      "visual_evidence": ["amber light", "aged brass", "dark wood", "layered table setting"],
+      "confidence": 0.8,
       "dimensions": {
-        "color_boldness": 0.8,
-        "formality": 0.72,
-        "price_tier": 0.72,
-        "silhouette_structure": 0.7
+        "color_warmth": 0.84,
+        "color_saturation": 0.42,
+        "visual_contrast": 0.72,
+        "structure": 0.68,
+        "texture_naturalness": 0.78,
+        "ornamentation": 0.74,
+        "polish": 0.86
       }
     },
     {
       "id": "pin-04",
       "source": "pinterest_fixture",
-      "label": "Wide-leg tailored trousers",
-      "board_name": "Workwear someday",
-      "category": "bottoms",
-      "colors": ["navy"],
-      "style_tags": ["tailored", "wide-leg", "structured"],
+      "label": "Camel coat on a quiet city street",
+      "board_name": "How I want to move through the city",
+      "intent_type": "mixed",
+      "literal_content": ["tailored camel coat", "stone street", "minimal storefront"],
+      "themes": ["structured", "minimal", "calm", "polished"],
+      "visual_evidence": ["clean coat silhouette", "restrained palette", "orderly composition"],
+      "confidence": 0.84,
       "dimensions": {
-        "color_boldness": 0.73,
-        "formality": 0.84,
-        "price_tier": 0.7,
-        "silhouette_structure": 0.81
+        "color_warmth": 0.76,
+        "color_saturation": 0.32,
+        "visual_contrast": 0.55,
+        "structure": 0.88,
+        "texture_naturalness": 0.72,
+        "ornamentation": 0.36,
+        "polish": 0.9
       }
     }
   ],
@@ -79,11 +99,15 @@
       "category": "tops",
       "colors": ["gray"],
       "style_tags": ["casual", "soft", "everyday"],
+      "confidence": 1,
       "dimensions": {
-        "color_boldness": 0.35,
-        "formality": 0.22,
-        "price_tier": 0.35,
-        "silhouette_structure": 0.2
+        "color_warmth": 0.35,
+        "color_saturation": 0.2,
+        "visual_contrast": 0.28,
+        "structure": 0.18,
+        "texture_naturalness": 0.65,
+        "ornamentation": 0.08,
+        "polish": 0.22
       }
     },
     {
@@ -98,11 +122,15 @@
       "category": "shoes",
       "colors": ["blue", "white"],
       "style_tags": ["sporty", "practical", "casual"],
+      "confidence": 1,
       "dimensions": {
-        "color_boldness": 0.52,
-        "formality": 0.37,
-        "price_tier": 0.55,
-        "silhouette_structure": 0.4
+        "color_warmth": 0.32,
+        "color_saturation": 0.55,
+        "visual_contrast": 0.68,
+        "structure": 0.48,
+        "texture_naturalness": 0.28,
+        "ornamentation": 0.35,
+        "polish": 0.3
       }
     },
     {
@@ -117,11 +145,15 @@
       "category": "bags",
       "colors": ["olive"],
       "style_tags": ["soft", "practical", "unstructured"],
+      "confidence": 1,
       "dimensions": {
-        "color_boldness": 0.45,
-        "formality": 0.58,
-        "price_tier": 0.51,
-        "silhouette_structure": 0.48
+        "color_warmth": 0.47,
+        "color_saturation": 0.39,
+        "visual_contrast": 0.36,
+        "structure": 0.3,
+        "texture_naturalness": 0.51,
+        "ornamentation": 0.17,
+        "polish": 0.26
       }
     },
     {
@@ -136,11 +168,15 @@
       "category": "outerwear",
       "colors": ["camel"],
       "style_tags": ["tailored", "formal", "structured"],
+      "confidence": 1,
       "dimensions": {
-        "color_boldness": 0.68,
-        "formality": 0.75,
-        "price_tier": 0.82,
-        "silhouette_structure": 0.79
+        "color_warmth": 0.78,
+        "color_saturation": 0.3,
+        "visual_contrast": 0.5,
+        "structure": 0.86,
+        "texture_naturalness": 0.7,
+        "ornamentation": 0.35,
+        "polish": 0.88
       }
     }
   ],
@@ -148,25 +184,25 @@
     {
       "id": "pin-01",
       "source": "pinterest_fixture",
-      "label": "Tailored camel blazer",
+      "label": "Sunlit Mediterranean courtyard",
       "kind": "aspirational"
     },
     {
       "id": "pin-02",
       "source": "pinterest_fixture",
-      "label": "Structured woven tote",
+      "label": "Linen bedroom in warm morning light",
       "kind": "aspirational"
     },
     {
       "id": "pin-03",
       "source": "pinterest_fixture",
-      "label": "Minimal gold jewelry",
+      "label": "Candlelit restaurant with aged brass",
       "kind": "aspirational"
     },
     {
       "id": "pin-04",
       "source": "pinterest_fixture",
-      "label": "Wide-leg tailored trousers",
+      "label": "Camel coat on a quiet city street",
       "kind": "aspirational"
     },
     {
@@ -268,10 +304,13 @@
     "name": "Structured saffron shoulder bag",
     "price": 145,
     "dimensions": {
-      "color_boldness": 0.78,
-      "formality": 0.72,
-      "price_tier": 0.73,
-      "silhouette_structure": 0.86
+      "color_warmth": 0.84,
+      "color_saturation": 0.7,
+      "visual_contrast": 0.65,
+      "structure": 0.86,
+      "texture_naturalness": 0.68,
+      "ornamentation": 0.55,
+      "polish": 0.82
     }
   }
 }

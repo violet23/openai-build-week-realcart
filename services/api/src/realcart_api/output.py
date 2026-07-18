@@ -36,16 +36,27 @@ def render_markdown(run: AnalysisRun) -> str:
         "",
         "## Score provenance",
         "",
-        f"- **Synthetic Pinterest saves:** {report.score_provenance.aspirational_item_count}",
+        f"- **Synthetic vision-board pins:** {report.score_provenance.aspirational_item_count}",
         f"- **Synthetic purchases:** {report.score_provenance.purchase_item_count}",
         f"- **Kept purchases in behavior profile:** {report.score_provenance.kept_purchase_count}",
         f"- **Returned purchases excluded:** {report.score_provenance.returned_item_count}",
         f"- **Profile method:** {report.score_provenance.profile_method}",
-        "",
-        "## Dimensions",
-        "",
-        "| Dimension | Aspiration | Behavior | Gap |",
-        "| --- | ---: | ---: | ---: |",
+        ]
+    )
+    lines.extend(["", "## Vision-board themes", ""])
+    lines.extend(
+        f"- **{theme.name}:** {round(theme.strength * 100)}% strength, "
+        f"{round(theme.confidence * 100)}% confidence "
+        f"(evidence: {', '.join(theme.evidence_ids)})"
+        for theme in report.vision_themes
+    )
+    lines.extend(
+        [
+            "",
+            "## Dimensions",
+            "",
+            "| Dimension | Vision | Behavior | Gap |",
+            "| --- | ---: | ---: | ---: |",
         ]
     )
     lines.extend(

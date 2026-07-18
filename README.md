@@ -2,10 +2,11 @@
 
 **Understand yourself a little better — not to sell you anything.**
 
-RealCart is the first product in the Un-Algorithm concept. It compares
-aspirational style signals with real purchase behavior, presents an evidence-led
-Insight Report, and offers a user-initiated Second Opinion without product
-recommendations or affiliate incentives.
+RealCart is the first product in the Un-Algorithm concept. It interprets Pinterest
+as a vision board—not a product wishlist—then compares its repeated visual world
+with real purchase behavior. It presents an evidence-led Insight Report and a
+user-initiated Second Opinion without product recommendations or affiliate
+incentives.
 
 This repository is a fixture-first hackathon scaffold with a backend
 multi-agent pipeline and a basic report viewer. It is intentionally safe to run
@@ -20,7 +21,7 @@ Synthetic fixtures or future live connectors
        normalized evidence
               |
               v
- aspiration agent + purchase agent
+ Vision Taste agent + purchase agent
               |
               v
  deterministic scoring + report manager
@@ -29,9 +30,10 @@ Synthetic fixtures or future live connectors
  JSON / Markdown / API / report viewer
 ```
 
-The multi-agent workflow uses specialist agents for aspirational and
-purchase-signal analysis. A report manager synthesizes those bounded outputs,
-while application code owns all numeric scoring. See
+The multi-agent workflow uses specialists for vision-board interpretation and
+purchase-signal analysis. The Vision Taste Agent distinguishes literal content
+from transferable visual signals and repeated atmosphere themes. A report manager
+synthesizes those bounded outputs, while application code owns all numeric scoring. See
 [`docs/architecture.md`](docs/architecture.md).
 
 In live agent mode, the two independent specialists use `gpt-5.6-terra` with
@@ -85,10 +87,12 @@ make run-json
 ```
 
 Fixture analysis is traceable rather than storing a finished Maya profile: each
-synthetic Pinterest save and Gmail purchase has hand-authored item-level style
-scores. Application code averages the four saves into the aspiration profile,
-averages the three kept purchases into the behavior profile, excludes the returned
-purchase from everyday behavior, and calculates the final dimension gaps and score.
+synthetic vision-board pin has literal content, intent type, visual evidence,
+confidence, themes, and seven transferable dimensions. Application code creates a
+confidence-weighted Vision Taste profile, averages the three kept purchases into the
+behavior profile, excludes the returned purchase from everyday behavior, and
+calculates the final dimension gaps and score. Atmosphere themes remain narrative
+context rather than being forced into the numeric gap.
 
 The CLI can also write an artifact:
 

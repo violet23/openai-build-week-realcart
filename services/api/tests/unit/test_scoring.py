@@ -13,18 +13,24 @@ from realcart_api.scoring.gap import (
 def test_gap_score_is_deterministic() -> None:
     aspiration = StyleProfile(
         dimensions={
-            "color_boldness": 0.7,
-            "formality": 0.8,
-            "price_tier": 0.7,
-            "silhouette_structure": 0.8,
+            "color_warmth": 0.7,
+            "color_saturation": 0.7,
+            "visual_contrast": 0.7,
+            "structure": 0.7,
+            "texture_naturalness": 0.7,
+            "ornamentation": 0.7,
+            "polish": 0.7,
         }
     )
     behavior = StyleProfile(
         dimensions={
-            "color_boldness": 0.4,
-            "formality": 0.4,
-            "price_tier": 0.5,
-            "silhouette_structure": 0.5,
+            "color_warmth": 0.4,
+            "color_saturation": 0.4,
+            "visual_contrast": 0.4,
+            "structure": 0.4,
+            "texture_naturalness": 0.4,
+            "ornamentation": 0.4,
+            "polish": 0.4,
         }
     )
     dimensions = calculate_gap_dimensions(aspiration, behavior)
@@ -41,16 +47,22 @@ def test_fixture_profiles_are_derived_from_item_records(
     )
 
     assert aspiration.dimensions.model_dump() == {
-        "color_boldness": 0.72,
-        "formality": 0.81,
-        "price_tier": 0.76,
-        "silhouette_structure": 0.84,
+        "color_warmth": 0.85,
+        "color_saturation": 0.34,
+        "visual_contrast": 0.49,
+        "structure": 0.63,
+        "texture_naturalness": 0.85,
+        "ornamentation": 0.49,
+        "polish": 0.77,
     }
     assert behavior.dimensions.model_dump() == {
-        "color_boldness": 0.44,
-        "formality": 0.39,
-        "price_tier": 0.47,
-        "silhouette_structure": 0.36,
+        "color_warmth": 0.38,
+        "color_saturation": 0.38,
+        "visual_contrast": 0.44,
+        "structure": 0.32,
+        "texture_naturalness": 0.48,
+        "ornamentation": 0.2,
+        "polish": 0.26,
     }
     assert behavior.evidence_ids == ["purchase-01", "purchase-02", "purchase-03"]
 
@@ -59,12 +71,18 @@ def test_fixture_report_is_grounded(fixture_payload: dict[str, Any]) -> None:
     report = build_gap_report(fixture_payload)
     known_ids = {item.id for item in report.evidence}
 
-    assert report.gap_score == 37
+    assert report.gap_score == 29
     assert report.score_provenance.aspirational_item_count == 4
     assert report.score_provenance.purchase_item_count == 4
     assert report.score_provenance.kept_purchase_count == 3
     assert report.score_provenance.returned_item_count == 1
     assert report.score_provenance.profile_method == "fixture_item_average"
+    assert [theme.name for theme in report.vision_themes] == [
+        "Calm",
+        "Warm",
+        "Natural",
+        "Polished",
+    ]
     assert report.insights
     assert all(set(insight.evidence_ids) <= known_ids for insight in report.insights)
 

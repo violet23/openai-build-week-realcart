@@ -113,15 +113,39 @@ export default function Home() {
             </div>
           </section>
 
+          <section className="vision-profile">
+            <div>
+              <p className="eyebrow">VISION TASTE PROFILE</p>
+              <h2>The visual world Maya returns to.</h2>
+              <p>
+                RealCart treats Pinterest as a vision board—not a list of products Maya wants.
+                Repeated scenes, colors, textures, forms, and atmosphere become themes only when
+                multiple pins support them.
+              </p>
+            </div>
+            <div className="vision-theme-grid">
+              {demo.report.vision_themes.map((theme) => (
+                <article key={theme.name}>
+                  <strong>{Math.round(theme.strength * 100)}%</strong>
+                  <h3>{theme.name}</h3>
+                  <p>
+                    {theme.evidence_ids.length} supporting pins · {Math.round(theme.confidence * 100)}%
+                    confidence
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+
           <section className="score-provenance" aria-label="How the gap score was calculated">
             <div>
               <p className="eyebrow">HOW THIS SCORE WAS CALCULATED</p>
-              <h3>Individual signals become two profiles, then one gap.</h3>
+              <h3>Transferable visual signals become two profiles, then one gap.</h3>
             </div>
             <div className="provenance-flow">
               <span>
                 <strong>{demo.report.score_provenance.aspirational_item_count}</strong>
-                synthetic Pinterest saves
+                vision-board pins
               </span>
               <b aria-hidden="true">→</b>
               <span>
@@ -139,9 +163,9 @@ export default function Home() {
               </span>
             </div>
             <p className="provenance-note">
-              Item-level style scores are hand-authored for Maya. RealCart calculates both
-              profiles and the final score automatically. Returns inform regret patterns but do
-              not count as everyday behavior.
+              Maya&apos;s item-level visual signals are hand-authored fixtures. RealCart calculates
+              both profiles and the final score automatically. Scenes and atmosphere stay in the
+              narrative; returns inform regret patterns but do not count as everyday behavior.
             </p>
           </section>
 
@@ -153,7 +177,7 @@ export default function Home() {
                   <span>{formatScore(dimension.gap * 100)}</span>
                 </div>
                 <div className="bar-row">
-                  <span>Saved</span>
+                  <span>Vision</span>
                   <div className="bar"><i style={{ width: `${dimension.aspiration * 100}%` }} /></div>
                   <b>{Math.round(dimension.aspiration * 100)}</b>
                 </div>

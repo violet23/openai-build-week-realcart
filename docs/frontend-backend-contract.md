@@ -126,12 +126,14 @@ Returned after source import and used by the editable Data Review screen.
     {
       "id": "pin-01",
       "source": "pinterest",
-      "title": "Tailored camel blazer",
-      "board_name": "Dream wardrobe",
+      "title": "Sunlit Mediterranean courtyard",
+      "board_name": "The life I want to inhabit",
       "image_url": "https://example.com/pin-01.jpg",
-      "category": "outerwear",
-      "colors": ["camel", "cream"],
-      "style_tags": ["tailored", "minimal"],
+      "intent_type": "atmosphere_reference",
+      "literal_content": ["limestone courtyard", "olive tree", "linen seating"],
+      "visual_evidence": ["warm limestone", "soft sunlight", "linen texture"],
+      "themes": ["warm", "natural", "calm", "timeless"],
+      "confidence": 0.9,
       "included": true
     }
   ],
@@ -307,8 +309,8 @@ the frontend report redesign.
   "report": {
     "persona_id": "quiet-luxury-casual",
     "persona_name": "Demo: Maya",
-    "summary": "Your saved style is more structured and formal than the choices represented in this synthetic purchase history.",
-    "gap_score": 37,
+    "summary": "Your vision board repeatedly points to a warm, natural, calm world, while your kept purchases lean more practical, cooler, and less polished.",
+    "gap_score": 29,
     "score_provenance": {
       "aspirational_item_count": 4,
       "purchase_item_count": 4,
@@ -316,19 +318,27 @@ the frontend report redesign.
       "returned_item_count": 1,
       "profile_method": "fixture_item_average"
     },
+    "vision_themes": [
+      {
+        "name": "Calm",
+        "strength": 0.77,
+        "confidence": 0.87,
+        "evidence_ids": ["pin-01", "pin-02", "pin-04"]
+      }
+    ],
     "dimensions": [
       {
-        "key": "formality",
-        "label": "Formality",
-        "aspiration": 0.81,
-        "behavior": 0.39,
-        "gap": 0.42
+        "key": "polish",
+        "label": "Polish",
+        "aspiration": 0.77,
+        "behavior": 0.26,
+        "gap": 0.51
       }
     ],
     "insights": [
       {
-        "title": "Your saved formality is higher",
-        "body": "The formality signal differs between saved and purchased items.",
+        "title": "Your vision polish is higher",
+        "body": "The polish signal differs between the vision board and kept purchases.",
         "evidence_ids": ["pin-01", "purchase-01"]
       }
     ],
@@ -336,13 +346,16 @@ the frontend report redesign.
       {
         "id": "pin-01",
         "source": "pinterest_fixture",
-        "label": "Tailored camel blazer",
+        "label": "Sunlit Mediterranean courtyard",
         "kind": "aspirational"
       }
     ]
   }
 }
 ```
+
+For compatibility, each dimension still uses the JSON field `aspiration`; its
+meaning is now the Vision Taste profile, not a literal product wishlist.
 
 When real agents run successfully, the same shape is returned with:
 
@@ -376,7 +389,7 @@ array rather than inventing one response format per card:
       "key": "best_match",
       "title": "Your best-aligned purchase",
       "value": "Structured woven tote",
-      "detail": "This purchase most closely matches your saved style.",
+      "detail": "This purchase most closely matches the transferable signals in your vision board.",
       "evidence_ids": ["pin-02", "purchase-03"]
     }
   ]
@@ -394,10 +407,13 @@ Current request accepted by `POST /api/second-opinion`:
   "name": "Structured saffron shoulder bag",
   "price": 145,
   "dimensions": {
-    "color_boldness": 0.78,
-    "formality": 0.72,
-    "price_tier": 0.73,
-    "silhouette_structure": 0.86
+    "color_warmth": 0.84,
+    "color_saturation": 0.70,
+    "visual_contrast": 0.65,
+    "structure": 0.86,
+    "texture_naturalness": 0.68,
+    "ornamentation": 0.55,
+    "polish": 0.82
   }
 }
 ```
@@ -407,12 +423,12 @@ Current response:
 ```json
 {
   "candidate_name": "Structured saffron shoulder bag",
-  "reading": "This item resembles the structured style in the saved profile.",
+  "reading": "This item resembles the warm, polished visual world in the Vision Taste profile.",
   "dimensions": [
     {
       "label": "Aesthetic fit",
       "score": 82,
-      "note": "Similarity to the aspirational style profile."
+      "note": "Similarity to the transferable signals in the Vision Taste profile."
     }
   ],
   "evidence_ids": ["pin-01", "survey-01"]
@@ -428,7 +444,7 @@ In `ANALYSIS_MODE=agents`, the backend performs:
 
 ```text
 1. Load normalized evidence
-2. Run Aspirational Style Agent (gpt-5.6-terra) -------+
+2. Run Vision Taste Agent (gpt-5.6-terra) -------------+
 3. Run Purchase Signal Agent (gpt-5.6-terra) ----------+ concurrently
 4. Calculate numeric gap scores in Python
 5. Run Insight Report Manager (gpt-5.6-sol)
