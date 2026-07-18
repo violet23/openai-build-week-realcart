@@ -10,11 +10,30 @@ import {
 } from "@/lib/api";
 import { formatScore } from "@/lib/scoring";
 
+function formatCurrency(value: number, currency: string) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
+function formatPurchaseDate(value: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${value}T00:00:00Z`));
+}
+
 export default function Home() {
   const [demo, setDemo] = useState<DemoResponse | null>(null);
   const [opinion, setOpinion] = useState<SecondOpinionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loadingOpinion, setLoadingOpinion] = useState(false);
+  const [surveyAnswers, setSurveyAnswers] = useState<Record<string, Record<string, string>>>({});
+  const [surveySaved, setSurveySaved] = useState(false);
 
   useEffect(() => {
     loadDemo().then(setDemo).catch((reason: unknown) => {
@@ -26,6 +45,26 @@ export default function Home() {
     () => new Map(demo?.report.evidence.map((item) => [item.id, item.label]) ?? []),
     [demo],
   );
+
+  const surveyProgress = useMemo(() => {
+    const total = demo?.survey.reduce((count, item) => count + item.prompts.length, 0) ?? 0;
+    const answered = Object.values(surveyAnswers).reduce(
+      (count, answers) => count + Object.keys(answers).length,
+      0,
+    );
+    return { answered, total, complete: total > 0 && answered === total };
+  }, [demo, surveyAnswers]);
+
+  function selectSurveyAnswer(itemId: string, promptKey: string, answer: string) {
+    setSurveyAnswers((current) => ({
+      ...current,
+      [itemId]: {
+        ...current[itemId],
+        [promptKey]: answer,
+      },
+    }));
+    setSurveySaved(false);
+  }
 
   async function requestOpinion() {
     if (!demo) return;
@@ -103,20 +142,85 @@ export default function Home() {
           </section>
 
           <section className="survey-section">
-            <p className="eyebrow">30-SECOND SIGNAL CHECK</p>
-            <h2>A purchase is not proof of taste.</h2>
+            <div className="survey-heading">
+              <div>
+                <p className="eyebrow">GMAIL RECEIPT CHECK-IN</p>
+                <h2>A receipt says you bought it. You tell us what happened next.</h2>
+                <p>
+                  RealCart pairs order and return records with a few human signals: how the item
+                  feels now, whether it became part of your life, and what drove the decision.
+                </p>
+              </div>
+              <strong>{surveyProgress.answered}/{surveyProgress.total} signals</strong>
+            </div>
             <div className="survey-grid">
-              {demo.survey.map((question) => (
-                <fieldset key={question.id}>
-                  <legend>{question.question}</legend>
-                  <div className="option-row">
-                    {question.options.map((option) => (
-                      <button type="button" key={option}>{option}</button>
+              {demo.survey.map((item) => (
+                <article className="survey-card" key={item.id}>
+                  <header className="survey-item-heading">
+                    <div>
+                      <span className="source-chip">Gmail receipt</span>
+                      <h3>{item.item_name}</h3>
+                      <p>{item.merchant}</p>
+                    </div>
+                    <strong>{formatCurrency(item.price, item.currency)}</strong>
+                  </header>
+
+                  <div className="receipt-facts">
+                    <span>
+                      Bought <strong>{formatPurchaseDate(item.purchased_at)}</strong>
+                    </span>
+                    <span>
+                      Return status <strong>{item.returned ? "Returned" : "Kept"}</strong>
+                    </span>
+                  </div>
+
+                  <div className="survey-prompts">
+                    {item.prompts.map((prompt) => (
+                      <fieldset key={prompt.id}>
+                        <legend>{prompt.question}</legend>
+                        <div className="option-row">
+                          {prompt.options.map((option) => {
+                            const selected = surveyAnswers[item.item_id]?.[prompt.key] === option;
+                            return (
+                              <button
+                                aria-pressed={selected}
+                                className={selected ? "selected" : undefined}
+                                type="button"
+                                key={option}
+                                onClick={() => selectSurveyAnswer(item.item_id, prompt.key, option)}
+                              >
+                                {option}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </fieldset>
                     ))}
                   </div>
-                </fieldset>
+                </article>
               ))}
             </div>
+
+            <div className="survey-actions">
+              <p>
+                These answers become evidence for the Purchase Signal Agent—not a shopping
+                recommendation.
+              </p>
+              <button
+                className="primary-button"
+                type="button"
+                disabled={!surveyProgress.complete}
+                onClick={() => setSurveySaved(true)}
+              >
+                Add signals to Maya&apos;s profile
+              </button>
+            </div>
+            {surveySaved ? (
+              <p className="survey-confirmation" role="status">
+                Added for this demo session. A live build would save these responses and rerun the
+                Taste Gap report.
+              </p>
+            ) : null}
           </section>
 
           <section className="opinion-section">

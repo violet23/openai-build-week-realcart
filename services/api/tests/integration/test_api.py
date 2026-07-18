@@ -27,6 +27,15 @@ async def test_demo_vertical_slice() -> None:
     assert payload["persona"]["display_name"] == "Demo: Maya"
     assert payload["report"]["gap_score"] > 0
     assert len(payload["survey"]) == 2
+    assert payload["survey"][0]["merchant"] == "Everlane"
+    assert payload["survey"][0]["price"] == 68
+    assert payload["survey"][0]["returned"] is False
+    assert payload["survey"][1]["returned"] is True
+    assert {prompt["key"] for prompt in payload["survey"][0]["prompts"]} == {
+        "emotional_feedback",
+        "usage_frequency",
+        "purchase_motivation",
+    }
 
 
 @pytest.mark.asyncio

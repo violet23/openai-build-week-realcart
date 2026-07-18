@@ -28,11 +28,23 @@ class EvidenceItem(BaseModel):
     kind: Literal["aspirational", "purchase", "survey"]
 
 
-class SurveyQuestion(BaseModel):
+class SurveyPrompt(BaseModel):
     id: str
-    item_id: str
+    key: Literal["emotional_feedback", "usage_frequency", "purchase_motivation"]
     question: str
     options: list[str]
+
+
+class PurchaseSurveyItem(BaseModel):
+    id: str
+    item_id: str
+    item_name: str
+    merchant: str
+    price: float = Field(ge=0)
+    currency: str = "USD"
+    purchased_at: str
+    returned: bool
+    prompts: list[SurveyPrompt]
 
 
 class GapDimension(BaseModel):
@@ -85,7 +97,7 @@ class SecondOpinionResponse(BaseModel):
 class DemoResponse(BaseModel):
     persona: dict[str, str]
     report: GapReport
-    survey: list[SurveyQuestion]
+    survey: list[PurchaseSurveyItem]
     candidate: CandidateItem
 
 

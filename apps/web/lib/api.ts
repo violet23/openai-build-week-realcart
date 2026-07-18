@@ -29,11 +29,28 @@ export interface GapReport {
   evidence: EvidenceItem[];
 }
 
-export interface SurveyQuestion {
+export type SurveyPromptKey =
+  | "emotional_feedback"
+  | "usage_frequency"
+  | "purchase_motivation";
+
+export interface SurveyPrompt {
   id: string;
-  item_id: string;
+  key: SurveyPromptKey;
   question: string;
   options: string[];
+}
+
+export interface PurchaseSurveyItem {
+  id: string;
+  item_id: string;
+  item_name: string;
+  merchant: string;
+  price: number;
+  currency: string;
+  purchased_at: string;
+  returned: boolean;
+  prompts: SurveyPrompt[];
 }
 
 export interface CandidateItem {
@@ -45,7 +62,7 @@ export interface CandidateItem {
 export interface DemoResponse {
   persona: Record<string, string>;
   report: GapReport;
-  survey: SurveyQuestion[];
+  survey: PurchaseSurveyItem[];
   candidate: CandidateItem;
 }
 

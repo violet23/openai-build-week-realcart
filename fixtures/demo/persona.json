@@ -73,6 +73,12 @@
       "kind": "purchase"
     },
     {
+      "id": "purchase-04",
+      "source": "gmail_fixture",
+      "label": "Returned structured camel blazer",
+      "kind": "purchase"
+    },
+    {
       "id": "survey-01",
       "source": "survey_fixture",
       "label": "Rarely wears a returned structured blazer",
@@ -81,16 +87,64 @@
   ],
   "survey": [
     {
-      "id": "survey-question-01",
+      "id": "purchase-check-in-01",
       "item_id": "purchase-01",
-      "question": "How often do you still wear the everyday cotton hoodie?",
-      "options": ["often", "rarely", "never"]
+      "item_name": "Everyday cotton hoodie",
+      "merchant": "Everlane",
+      "price": 68,
+      "currency": "USD",
+      "purchased_at": "2026-05-18",
+      "returned": false,
+      "prompts": [
+        {
+          "id": "hoodie-feeling",
+          "key": "emotional_feedback",
+          "question": "How do you feel about it now?",
+          "options": ["Love it", "Neutral", "Regret it"]
+        },
+        {
+          "id": "hoodie-frequency",
+          "key": "usage_frequency",
+          "question": "How often do you wear or use it?",
+          "options": ["Often", "Sometimes", "Rarely", "Never"]
+        },
+        {
+          "id": "hoodie-motivation",
+          "key": "purchase_motivation",
+          "question": "What drove the purchase?",
+          "options": ["Needed it", "Matched my taste", "On sale", "Impulse or influence"]
+        }
+      ]
     },
     {
-      "id": "survey-question-02",
-      "item_id": "purchase-03",
-      "question": "How do you feel about the soft unstructured tote now?",
-      "options": ["love it", "neutral", "regret it"]
+      "id": "purchase-check-in-02",
+      "item_id": "purchase-04",
+      "item_name": "Structured camel blazer",
+      "merchant": "Studio Archive",
+      "price": 189,
+      "currency": "USD",
+      "purchased_at": "2026-06-04",
+      "returned": true,
+      "prompts": [
+        {
+          "id": "blazer-feeling",
+          "key": "emotional_feedback",
+          "question": "How do you feel about it now?",
+          "options": ["Love it", "Neutral", "Regret it"]
+        },
+        {
+          "id": "blazer-frequency",
+          "key": "usage_frequency",
+          "question": "How often did you wear or use it?",
+          "options": ["Often", "Sometimes", "Rarely", "Never"]
+        },
+        {
+          "id": "blazer-motivation",
+          "key": "purchase_motivation",
+          "question": "What drove the purchase?",
+          "options": ["Needed it", "Matched my taste", "On sale", "Impulse or influence"]
+        }
+      ]
     }
   ],
   "candidate": {

@@ -174,26 +174,43 @@ Proposed review-update request:
 
 ## 3. Survey Package — partial
 
-Fixture survey questions are available from `GET /api/demo`. Submission and
-persistence are not implemented.
+Fixture purchase check-ins are available from `GET /api/demo`. Each item pairs
+synthetic Gmail order/return metadata with prompts for emotional feedback, usage,
+and purchase motivation. The demo UI stores selections only in browser memory;
+API submission and persistence are not implemented.
 
-Proposed question package:
+Current fixture package:
 
 ```json
 {
-  "session_id": "session_demo_001",
-  "items": [
+  "survey": [
     {
+      "id": "purchase-check-in-01",
       "item_id": "purchase-01",
-      "item_title": "Cotton hoodie",
-      "questions": [
+      "item_name": "Everyday cotton hoodie",
+      "merchant": "Everlane",
+      "price": 68,
+      "currency": "USD",
+      "purchased_at": "2026-05-18",
+      "returned": false,
+      "prompts": [
         {
-          "key": "usage_frequency",
-          "options": ["often", "rarely", "never"]
+          "id": "hoodie-feeling",
+          "key": "emotional_feedback",
+          "question": "How do you feel about it now?",
+          "options": ["Love it", "Neutral", "Regret it"]
         },
         {
-          "key": "feeling",
-          "options": ["love", "neutral", "regret"]
+          "id": "hoodie-frequency",
+          "key": "usage_frequency",
+          "question": "How often do you wear or use it?",
+          "options": ["Often", "Sometimes", "Rarely", "Never"]
+        },
+        {
+          "id": "hoodie-motivation",
+          "key": "purchase_motivation",
+          "question": "What drove the purchase?",
+          "options": ["Needed it", "Matched my taste", "On sale", "Impulse or influence"]
         }
       ]
     }
@@ -208,8 +225,9 @@ Proposed answer submission:
   "answers": [
     {
       "item_id": "purchase-01",
-      "usage_frequency": "often",
-      "feeling": "love",
+      "usage_frequency": "Often",
+      "emotional_feedback": "Love it",
+      "purchase_motivation": "Needed it",
       "return_reason": null,
       "notes": ""
     }
@@ -480,4 +498,3 @@ Before implementing the proposed contracts, both developers should agree on:
 4. Which survey questions are required.
 5. Which Wrapped-style highlights are in the MVP.
 6. Whether Second Opinion accepts description only or also URLs/images.
-

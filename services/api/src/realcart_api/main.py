@@ -16,9 +16,9 @@ from realcart_api.schemas import (
     CandidateItem,
     DemoResponse,
     GapReport,
+    PurchaseSurveyItem,
     SecondOpinionRequest,
     SecondOpinionResponse,
-    SurveyQuestion,
 )
 from realcart_api.scoring import build_gap_report, build_second_opinion
 from realcart_api.settings import settings
@@ -72,7 +72,7 @@ def demo() -> DemoResponse:
     return DemoResponse(
         persona=payload["persona"],
         report=build_gap_report(payload),
-        survey=[SurveyQuestion.model_validate(item) for item in payload["survey"]],
+        survey=[PurchaseSurveyItem.model_validate(item) for item in payload["survey"]],
         candidate=CandidateItem.model_validate(payload["candidate"]),
     )
 
