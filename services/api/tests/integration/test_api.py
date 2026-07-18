@@ -30,10 +30,16 @@ async def test_demo_vertical_slice() -> None:
     assert payload["survey"][0]["merchant"] == "Everlane"
     assert payload["survey"][0]["price"] == 68
     assert payload["survey"][0]["returned"] is False
+    assert payload["survey"][0]["comment_prompt"]
     assert payload["survey"][1]["returned"] is True
     assert {prompt["key"] for prompt in payload["survey"][0]["prompts"]} == {
         "emotional_feedback",
         "usage_frequency",
+        "purchase_motivation",
+    }
+    assert {prompt["key"] for prompt in payload["survey"][1]["prompts"]} == {
+        "return_reason",
+        "return_sentiment",
         "purchase_motivation",
     }
 

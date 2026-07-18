@@ -32,7 +32,9 @@ export interface GapReport {
 export type SurveyPromptKey =
   | "emotional_feedback"
   | "usage_frequency"
-  | "purchase_motivation";
+  | "purchase_motivation"
+  | "return_reason"
+  | "return_sentiment";
 
 export interface SurveyPrompt {
   id: string;
@@ -51,6 +53,7 @@ export interface PurchaseSurveyItem {
   purchased_at: string;
   returned: boolean;
   prompts: SurveyPrompt[];
+  comment_prompt: string;
 }
 
 export interface CandidateItem {

@@ -95,6 +95,7 @@
       "currency": "USD",
       "purchased_at": "2026-05-18",
       "returned": false,
+      "comment_prompt": "Anything else about how this hoodie fits into your life?",
       "prompts": [
         {
           "id": "hoodie-feeling",
@@ -125,18 +126,19 @@
       "currency": "USD",
       "purchased_at": "2026-06-04",
       "returned": true,
+      "comment_prompt": "Anything else you want us to understand about this return?",
       "prompts": [
         {
-          "id": "blazer-feeling",
-          "key": "emotional_feedback",
-          "question": "How do you feel about it now?",
-          "options": ["Love it", "Neutral", "Regret it"]
+          "id": "blazer-return-reason",
+          "key": "return_reason",
+          "question": "Why did you return it?",
+          "options": ["Fit or comfort", "Quality", "Looked different", "Price or value", "Changed my mind"]
         },
         {
-          "id": "blazer-frequency",
-          "key": "usage_frequency",
-          "question": "How often did you wear or use it?",
-          "options": ["Often", "Sometimes", "Rarely", "Never"]
+          "id": "blazer-return-sentiment",
+          "key": "return_sentiment",
+          "question": "How did returning it feel?",
+          "options": ["Relieved", "Neutral", "Still wanted it", "Regret returning it"]
         },
         {
           "id": "blazer-motivation",

@@ -30,7 +30,13 @@ class EvidenceItem(BaseModel):
 
 class SurveyPrompt(BaseModel):
     id: str
-    key: Literal["emotional_feedback", "usage_frequency", "purchase_motivation"]
+    key: Literal[
+        "emotional_feedback",
+        "usage_frequency",
+        "purchase_motivation",
+        "return_reason",
+        "return_sentiment",
+    ]
     question: str
     options: list[str]
 
@@ -45,6 +51,7 @@ class PurchaseSurveyItem(BaseModel):
     purchased_at: str
     returned: bool
     prompts: list[SurveyPrompt]
+    comment_prompt: str
 
 
 class GapDimension(BaseModel):

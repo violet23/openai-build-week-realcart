@@ -179,6 +179,10 @@ synthetic Gmail order/return metadata with prompts for emotional feedback, usage
 and purchase motivation. The demo UI stores selections only in browser memory;
 API submission and persistence are not implemented.
 
+Kept items request emotional feedback, usage frequency, and purchase motivation.
+Returned items replace the first two prompts with return reason and return sentiment.
+Every item also includes an optional free-text comment prompt.
+
 Current fixture package:
 
 ```json
@@ -193,6 +197,7 @@ Current fixture package:
       "currency": "USD",
       "purchased_at": "2026-05-18",
       "returned": false,
+      "comment_prompt": "Anything else about how this hoodie fits into your life?",
       "prompts": [
         {
           "id": "hoodie-feeling",

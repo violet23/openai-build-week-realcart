@@ -33,6 +33,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [loadingOpinion, setLoadingOpinion] = useState(false);
   const [surveyAnswers, setSurveyAnswers] = useState<Record<string, Record<string, string>>>({});
+  const [surveyComments, setSurveyComments] = useState<Record<string, string>>({});
   const [surveySaved, setSurveySaved] = useState(false);
 
   useEffect(() => {
@@ -63,6 +64,11 @@ export default function Home() {
         [promptKey]: answer,
       },
     }));
+    setSurveySaved(false);
+  }
+
+  function updateSurveyComment(itemId: string, comment: string) {
+    setSurveyComments((current) => ({ ...current, [itemId]: comment }));
     setSurveySaved(false);
   }
 
@@ -197,6 +203,18 @@ export default function Home() {
                       </fieldset>
                     ))}
                   </div>
+
+                  <label className="survey-comment">
+                    <span>{item.comment_prompt}</span>
+                    <textarea
+                      maxLength={500}
+                      placeholder="Optional — add context a receipt cannot show."
+                      rows={3}
+                      value={surveyComments[item.item_id] ?? ""}
+                      onChange={(event) => updateSurveyComment(item.item_id, event.target.value)}
+                    />
+                    <small>Optional · {surveyComments[item.item_id]?.length ?? 0}/500</small>
+                  </label>
                 </article>
               ))}
             </div>
