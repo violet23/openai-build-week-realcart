@@ -13,12 +13,14 @@ def create_aspiration_agent(
     from agents import Agent
 
     return Agent(
-        name="Vision Taste Agent",
-        handoff_description="Interprets the repeated visual world across saved images.",
+        name="Style World Agent",
+        handoff_description="Interprets the repeated fashion world across saved images.",
         instructions=(
-            "Treat Pinterest as a vision board, not a wishlist. Analyze literal content, "
-            "scene, palette, material, form, and atmosphere across the supplied items. Do "
-            "not assume a saved object is something the user wants to buy. Use exactly these "
+            "Build the user's Style World. Treat Pinterest as a vision board, not a wishlist. "
+            "Analyze literal content, scene, palette, material, form, and atmosphere across "
+            "the supplied items, focusing on signals relevant to fashion and its surrounding "
+            "lifestyle. Do not assume a saved object is something the user wants to buy. Use "
+            "exactly these "
             "transferable dimensions: color_warmth, color_saturation, visual_contrast, "
             "structure, texture_naturalness, ornamentation, and polish. Return values from "
             "0 to 1. Include only themes repeated across multiple pins, with confidence and "

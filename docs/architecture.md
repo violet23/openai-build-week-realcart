@@ -28,17 +28,19 @@ connector interfaces.
 ### Report viewer
 
 `apps/web` is a small Next.js client for the current milestone. It calls
-`GET /api/demo` and displays the gap score, its item-count provenance, dimensions,
-grounded insights, purchase surveys, and Second Opinion fixture. It does not own
-analysis logic.
+`GET /api/demo` and displays the Style Gap, its item-count provenance, dimensions,
+grounded insights, Purchase Reality check-ins, and Decision Reflection fixture. It
+does not own analysis logic.
 
 ### Multi-agent workflow
 
-- **Vision Taste Agent:** treats boards as visual worlds, separating literal content
-  from transferable visual signals and repeated atmosphere themes.
-- **Purchase Signal Agent:** extracts aesthetic-relevant purchases, returns, gifts, and survey signals.
+- **Style World Agent:** treats boards as fashion-and-lifestyle worlds, separating
+  literal content from transferable visual signals and repeated atmosphere themes.
+- **Purchase Reality Agent:** extracts aesthetic-relevant purchases, returns, gifts,
+  usage, and emotional-feedback signals.
 - **Report Manager Agent:** synthesizes grounded prose from specialist profiles and precomputed scores.
-- **Second Opinion Agent:** evaluates a user-provided candidate against the existing profile.
+- **Decision Reflection Agent:** reflects the factors surrounding a user-provided
+  candidate without issuing a shopping verdict.
 
 Python orchestration runs the two independent specialists concurrently. Agents
 never fetch OAuth data and never own the numeric gap calculation;
@@ -48,7 +50,7 @@ In fixture analysis mode, each synthetic Pinterest pin has an intent type, liter
 content, visual evidence, confidence, repeated themes, and seven transferable
 dimensions: warmth, saturation, contrast, structure, natural texture,
 ornamentation, and polish. Application code confidence-weights the pin records into
-a Vision Taste profile and averages only kept purchases into a behavior profile.
+a Style World profile and averages only kept purchases into Purchase Reality.
 Returned purchases remain evidence for return/regret analysis but are excluded
 from everyday behavior. Atmosphere themes remain narrative context; the seven
 transferable dimension gaps are averaged into the final 0–100 score.
@@ -57,7 +59,7 @@ transferable dimension gaps are averaged into the final 0–100 score.
 
 `ANALYSIS_MODE=agents` uses the OpenAI Agents SDK and typed Pydantic outputs:
 
-- The Vision Taste and purchase-signal specialists run concurrently on
+- The Style World and Purchase Reality specialists run concurrently on
   `gpt-5.6-terra` with low reasoning effort.
 - Deterministic application code calculates the gap dimensions and score.
 - The report manager runs on `gpt-5.6-sol` with medium reasoning effort and may
@@ -71,10 +73,10 @@ fixture run from a real OpenAI run.
 ## Data flow
 
 ```text
-Pinterest/fixture --> connector --> Vision Taste agent --+
-                                                        |--> scoring --> synthesis --> API --> report viewer
-Gmail/fixture -----> connector --> purchase agent -------+                         \--> JSON/Markdown
-survey --------------------------------------- evidence -+
+Pinterest/fixture --> connector --> Style World agent ------+
+                                                           |--> scoring --> synthesis --> API --> report viewer
+Gmail/fixture -----> connector --> Purchase Reality agent --+                         \--> JSON/Markdown
+survey ------------------------------------------ evidence -+
 ```
 
 ## Runtime modes

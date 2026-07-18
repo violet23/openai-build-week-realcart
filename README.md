@@ -2,13 +2,15 @@
 
 **Get closer to yourself. Know what you actually like.**
 
-RealCart is the first product in the Un-Algorithm concept. It interprets Pinterest
-as a vision board—not a product wishlist—then compares its repeated visual world
-with real purchase behavior. It presents an evidence-led Insight Report and a
-user-initiated Second Opinion without product recommendations or affiliate
-incentives. It is not about self-control or self-optimization: it makes repeated
-spending, keeping, and returning patterns visible so choosing like yourself can
-become more natural.
+RealCart turns your Style World, purchase history, returns, usage and emotional
+feedback into a personal shopping-pattern model. When you consider something new,
+it reflects the factors shaping the decision—without telling you what to buy.
+
+Style World interprets Pinterest as a fashion-and-lifestyle vision board, not a
+product wishlist. Purchase Reality combines receipts with what was kept, returned,
+used, loved, or regretted. Decision Reflection brings those patterns into view when
+the user considers a new item. RealCart has no product rankings, affiliate
+incentives, or buy/do-not-buy verdicts.
 
 This repository is a fixture-first hackathon scaffold with a backend
 multi-agent pipeline and a basic report viewer. It is intentionally safe to run
@@ -23,7 +25,7 @@ Synthetic fixtures or future live connectors
        normalized evidence
               |
               v
- Vision Taste agent + purchase agent
+ Style World agent + Purchase Reality agent
               |
               v
  deterministic scoring + report manager
@@ -32,11 +34,12 @@ Synthetic fixtures or future live connectors
  JSON / Markdown / API / report viewer
 ```
 
-The multi-agent workflow uses specialists for vision-board interpretation and
-purchase-signal analysis. The Vision Taste Agent distinguishes literal content
-from transferable visual signals and repeated atmosphere themes. A report manager
-synthesizes those bounded outputs, while application code owns all numeric scoring. See
-[`docs/architecture.md`](docs/architecture.md).
+The multi-agent workflow uses specialists for Style World interpretation and
+Purchase Reality analysis. The Style World Agent distinguishes literal content
+from transferable fashion signals and repeated atmosphere themes. The Purchase
+Reality Agent analyzes receipts, returns, usage, and emotional feedback. A report
+manager synthesizes those bounded outputs, while application code owns all numeric
+scoring. See [`docs/architecture.md`](docs/architecture.md).
 
 In live agent mode, the two independent specialists use `gpt-5.6-terra` with
 low reasoning effort, then the report manager uses `gpt-5.6-sol` with medium
@@ -78,8 +81,8 @@ make dev-web
 ```
 
 Open [http://localhost:3000](http://localhost:3000). The page loads the
-credential-free Maya report, score provenance, purchase survey, and Second Opinion
-fixture from `GET /api/demo`.
+credential-free Maya report, score provenance, Purchase Reality check-in, and
+Decision Reflection fixture from `GET /api/demo`.
 
 You can also run the pipeline directly in the terminal:
 
@@ -91,10 +94,10 @@ make run-json
 Fixture analysis is traceable rather than storing a finished Maya profile: each
 synthetic vision-board pin has literal content, intent type, visual evidence,
 confidence, themes, and seven transferable dimensions. Application code creates a
-confidence-weighted Vision Taste profile, averages the three kept purchases into the
-behavior profile, excludes the returned purchase from everyday behavior, and
-calculates the final dimension gaps and score. Atmosphere themes remain narrative
-context rather than being forced into the numeric gap.
+confidence-weighted Style World, averages the three kept purchases into Purchase
+Reality, excludes the returned purchase from kept-item behavior, and calculates the
+final dimension gaps and score. Atmosphere themes remain narrative context rather
+than being forced into the numeric gap.
 
 The CLI can also write an artifact:
 

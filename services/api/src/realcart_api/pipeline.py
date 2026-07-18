@@ -128,14 +128,14 @@ async def _run_specialist_agents(
 
     aspiration_input = json.dumps(
         {
-            "task": "Build the Vision Taste profile and repeated board themes.",
+            "task": "Build the Style World and its repeated board themes.",
             "evidence": _evidence_for(payload, "aspirational"),
             "items": _items_without_fixture_scores(payload["aspirational_items"]),
         }
     )
     purchase_input = json.dumps(
         {
-            "task": "Build the observed purchase style profile.",
+            "task": "Build Purchase Reality from observed shopping behavior.",
             "evidence": [
                 *_evidence_for(payload, "purchase"),
                 *_evidence_for(payload, "survey"),
@@ -248,8 +248,8 @@ async def run_pipeline(
                     AnalysisStage(
                         name="specialist_analysis",
                         detail=(
-                            "Aggregated confidence-weighted vision-board signals and kept "
-                            "purchases into deterministic profiles."
+                            "Aggregated confidence-weighted Style World signals and Purchase "
+                            "Reality into deterministic profiles."
                         ),
                 ),
                 AnalysisStage(
@@ -289,7 +289,7 @@ async def run_pipeline(
                     AnalysisStage(
                         name="specialist_analysis",
                         detail=(
-                            "Ran Vision Taste and purchase specialists concurrently with "
+                            "Ran Style World and Purchase Reality specialists concurrently with "
                             f"{settings.tagger_model}."
                         ),
                     )

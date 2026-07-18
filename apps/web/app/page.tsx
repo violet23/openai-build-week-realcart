@@ -79,7 +79,7 @@ export default function Home() {
     try {
       setOpinion(await loadSecondOpinion(demo.candidate));
     } catch (reason: unknown) {
-      setError(reason instanceof Error ? reason.message : "Unable to load a second opinion");
+      setError(reason instanceof Error ? reason.message : "Unable to load a decision reflection");
     } finally {
       setLoadingOpinion(false);
     }
@@ -92,9 +92,9 @@ export default function Home() {
         <h1>RealCart</h1>
         <p className="tagline">Get closer to yourself. Know what you actually like.</p>
         <p className="hero-philosophy">
-          See where your time and money go—including the things you keep buying and returning.
-          RealCart is not about self-control or self-optimization. When you understand your
-          patterns, being yourself takes less effort.
+          RealCart turns your Style World, purchase history, returns, usage and emotional
+          feedback into a personal shopping-pattern model. When you consider something new, it
+          reflects the factors shaping the decision—without telling you what to buy.
         </p>
         <p className="privacy-note">
           This demo uses a synthetic persona. No mailbox, Pinterest account, or personal data is connected.
@@ -108,24 +108,24 @@ export default function Home() {
         <>
           <section className="report-heading">
             <div>
-              <p className="eyebrow">INSIGHT REPORT</p>
+              <p className="eyebrow">SHOPPING-PATTERN MODEL</p>
               <h2>{demo.report.persona_name}</h2>
               <p>{demo.report.summary}</p>
             </div>
-            <div className="score-orbit" aria-label={`Gap score ${demo.report.gap_score} out of 100`}>
+            <div className="score-orbit" aria-label={`Style gap ${demo.report.gap_score} out of 100`}>
               <strong>{demo.report.gap_score}</strong>
-              <span>gap score</span>
+              <span>style gap</span>
             </div>
           </section>
 
           <section className="vision-profile">
             <div>
-              <p className="eyebrow">VISION TASTE PROFILE</p>
-              <h2>The visual world Maya returns to.</h2>
+              <p className="eyebrow">STYLE WORLD</p>
+              <h2>The fashion world Maya returns to.</h2>
               <p>
-                RealCart treats Pinterest as a vision board—not a list of products Maya wants.
-                Repeated scenes, colors, textures, forms, and atmosphere become themes only when
-                multiple pins support them.
+                Pinterest is a vision board, not a wishlist. RealCart finds the fashion and
+                lifestyle signals carried by repeated scenes, colors, textures, forms, and
+                atmosphere—only when multiple pins support them.
               </p>
             </div>
             <div className="vision-theme-grid">
@@ -142,20 +142,20 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="score-provenance" aria-label="How the gap score was calculated">
+          <section className="score-provenance" aria-label="How the style gap was calculated">
             <div>
-              <p className="eyebrow">HOW THIS SCORE WAS CALCULATED</p>
-              <h3>Transferable visual signals become two profiles, then one gap.</h3>
+              <p className="eyebrow">HOW THE STYLE GAP WAS CALCULATED</p>
+              <h3>Style World and Purchase Reality become one traceable comparison.</h3>
             </div>
             <div className="provenance-flow">
               <span>
                 <strong>{demo.report.score_provenance.aspirational_item_count}</strong>
-                vision-board pins
+                Style World pins
               </span>
               <b aria-hidden="true">→</b>
               <span>
                 <strong>{demo.report.score_provenance.kept_purchase_count}</strong>
-                kept Gmail purchases
+                kept purchases
               </span>
               <span>
                 <strong>{demo.report.score_provenance.returned_item_count}</strong>
@@ -164,17 +164,18 @@ export default function Home() {
               <b aria-hidden="true">→</b>
               <span>
                 <strong>{demo.report.gap_score}</strong>
-                average dimension gap
+                style gap
               </span>
             </div>
             <p className="provenance-note">
-              Maya&apos;s item-level visual signals are hand-authored fixtures. RealCart calculates
-              both profiles and the final score automatically. Scenes and atmosphere stay in the
-              narrative; returns inform regret patterns but do not count as everyday behavior.
+              Maya&apos;s item-level signals are hand-authored fixtures. RealCart calculates her Style
+              World, Purchase Reality, and final comparison automatically. Scenes and atmosphere
+              stay in the narrative; returns inform regret patterns but do not count as kept-item
+              behavior.
             </p>
           </section>
 
-          <section className="dimension-grid" aria-label="Taste gap dimensions">
+          <section className="dimension-grid" aria-label="Style gap dimensions">
             {demo.report.dimensions.map((dimension) => (
               <article className="dimension-card" key={dimension.key}>
                 <div className="dimension-title">
@@ -182,12 +183,12 @@ export default function Home() {
                   <span>{formatScore(dimension.gap * 100)}</span>
                 </div>
                 <div className="bar-row">
-                  <span>Vision</span>
+                  <span>World</span>
                   <div className="bar"><i style={{ width: `${dimension.aspiration * 100}%` }} /></div>
                   <b>{Math.round(dimension.aspiration * 100)}</b>
                 </div>
                 <div className="bar-row behavior">
-                  <span>Bought</span>
+                  <span>Reality</span>
                   <div className="bar"><i style={{ width: `${dimension.behavior * 100}%` }} /></div>
                   <b>{Math.round(dimension.behavior * 100)}</b>
                 </div>
@@ -211,7 +212,7 @@ export default function Home() {
           <section className="survey-section">
             <div className="survey-heading">
               <div>
-                <p className="eyebrow">GMAIL RECEIPT CHECK-IN</p>
+                <p className="eyebrow">PURCHASE REALITY CHECK-IN</p>
                 <h2>A receipt says you bought it. You tell us what happened next.</h2>
                 <p>
                   RealCart pairs order and return records with a few human signals: how the item
@@ -282,7 +283,7 @@ export default function Home() {
 
             <div className="survey-actions">
               <p>
-                These answers become evidence for the Purchase Signal Agent—not a shopping
+                These answers become evidence for the Purchase Reality Agent—not a shopping
                 recommendation.
               </p>
               <button
@@ -297,19 +298,22 @@ export default function Home() {
             {surveySaved ? (
               <p className="survey-confirmation" role="status">
                 Added for this demo session. A live build would save these responses and rerun the
-                Taste Gap report.
+                shopping-pattern model.
               </p>
             ) : null}
           </section>
 
           <section className="opinion-section">
             <div>
-              <p className="eyebrow">SECOND OPINION</p>
+              <p className="eyebrow">DECISION REFLECTION</p>
               <h2>{demo.candidate.name}</h2>
-              <p>${demo.candidate.price.toFixed(2)} · brought by the user, not recommended by RealCart</p>
+              <p>
+                ${demo.candidate.price.toFixed(2)} · brought by the user for reflection, not
+                recommended by RealCart
+              </p>
             </div>
             <button className="primary-button" type="button" onClick={requestOpinion} disabled={loadingOpinion}>
-              {loadingOpinion ? "Reading the signals…" : "Read against my profile"}
+              {loadingOpinion ? "Reflecting the factors…" : "Reflect against my patterns"}
             </button>
           </section>
 
@@ -330,7 +334,7 @@ export default function Home() {
         </>
       ) : null}
 
-      <footer>RealCart reflects signals back to you. The decision remains yours.</footer>
+      <footer>RealCart reflects the factors shaping a decision. What you do remains yours.</footer>
     </main>
   );
 }

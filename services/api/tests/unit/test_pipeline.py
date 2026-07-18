@@ -90,7 +90,7 @@ async def test_agent_mode_uses_real_gpt_5_6_configuration(
 
     async def fake_run(agent: Any, _input: str, *, run_config: Any) -> Any:
         calls.append((agent, run_config))
-        if agent.name == "Vision Taste Agent":
+        if agent.name == "Style World Agent":
             output: Any = VisionProfile(
                 dimensions={
                     "color_warmth": 0.85,
@@ -111,7 +111,7 @@ async def test_agent_mode_uses_real_gpt_5_6_configuration(
                     )
                 ],
             )
-        elif agent.name == "Purchase Signal Agent":
+        elif agent.name == "Purchase Reality Agent":
             output = StyleProfile(
                 dimensions={
                     "color_warmth": 0.38,
@@ -148,8 +148,8 @@ async def test_agent_mode_uses_real_gpt_5_6_configuration(
     assert run.model_runtime.specialist_model == "gpt-5.6-terra"
     assert run.model_runtime.synthesis_model == "gpt-5.6-sol"
     assert [agent.name for agent, _config in calls] == [
-        "Vision Taste Agent",
-        "Purchase Signal Agent",
+        "Style World Agent",
+        "Purchase Reality Agent",
         "Insight Report Manager",
     ]
     assert all(config.trace_include_sensitive_data is False for _agent, config in calls)
@@ -163,9 +163,9 @@ async def test_markdown_output_contains_evidence_and_pipeline() -> None:
     run = await run_pipeline(data_mode="fixture", analysis_mode="fixture")
     rendered = render_markdown(run)
 
-    assert "# RealCart Insight Report" in rendered
+    assert "# RealCart Shopping-Pattern Report" in rendered
     assert "Evidence:" in rendered
     assert "## Runtime" in rendered
-    assert "## Score provenance" in rendered
-    assert "## Vision-board themes" in rendered
+    assert "## Style-gap provenance" in rendered
+    assert "## Style World themes" in rendered
     assert "## Pipeline" in rendered

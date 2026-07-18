@@ -2,9 +2,9 @@
 
 ## Mission
 
-RealCart compares the transferable visual world in a user's vision boards with
-their actual purchase signals and returns self-understanding, not shopping
-recommendations.
+RealCart turns a user's Style World, purchase history, returns, usage, and
+emotional feedback into a personal shopping-pattern model. It reflects the factors
+shaping a decision without telling the user what to buy.
 
 ## Repository map
 
@@ -20,7 +20,7 @@ recommendations.
 - Never commit real emails, pins, OAuth tokens, credentials, or personal data.
 - Keep API retrieval deterministic. Gmail and Pinterest integrations are connectors/tools, not agents.
 - Agent outputs must use typed schemas and cite evidence IDs.
-- Calculate numeric gap scores in application code, not in model prose.
+- Calculate the numeric Style Gap in application code, not in model prose.
 - Do not add product search, ranked alternatives, affiliate links, or purchase verdicts.
 - Add or update tests with every behavior change.
 - Ask before adding a production dependency, database, authentication system, or deployment provider.

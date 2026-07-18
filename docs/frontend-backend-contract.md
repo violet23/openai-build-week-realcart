@@ -44,7 +44,7 @@ Current endpoints:
 | `GET` | `/api/run` | Current | Run the configured pipeline and return runtime plus report |
 | `GET` | `/api/report` | Current | Return only the report |
 | `GET` | `/api/demo` | Current | Return fixture report, survey questions, and candidate |
-| `POST` | `/api/second-opinion` | Current | Evaluate a normalized candidate item |
+| `POST` | `/api/second-opinion` | Current | Return a Decision Reflection for a normalized candidate item |
 | `POST` | `/api/analysis-runs` | Proposed | Intentionally start one real analysis run |
 | `GET` | `/api/analysis-runs/{run_id}` | Proposed | Poll run progress and retrieve the result |
 
@@ -77,8 +77,8 @@ FastAPI errors currently use:
 | Data review | Review Data | Proposed |
 | Survey | Survey Package | Partial |
 | Loading/progress | Analysis Run | Proposed |
-| Taste Gap Report | Analysis Report | Current |
-| Second Opinion | Second Opinion | Partial |
+| Shopping-Pattern Report | Analysis Report | Current |
+| Decision Reflection | Decision Reflection | Partial |
 
 There are six shared contract families. Some contain separate request and
 response bodies.
@@ -309,7 +309,7 @@ the frontend report redesign.
   "report": {
     "persona_id": "quiet-luxury-casual",
     "persona_name": "Demo: Maya",
-    "summary": "Your vision board repeatedly points to a warm, natural, calm world, while your kept purchases lean more practical, cooler, and less polished.",
+    "summary": "Your Style World repeatedly points to a warm, natural, calm fashion life, while your kept Purchase Reality leans more practical, cooler, and less polished.",
     "gap_score": 29,
     "score_provenance": {
       "aspirational_item_count": 4,
@@ -355,7 +355,8 @@ the frontend report redesign.
 ```
 
 For compatibility, each dimension still uses the JSON field `aspiration`; its
-meaning is now the Vision Taste profile, not a literal product wishlist.
+meaning is the Style World, not a literal product wishlist. The field name remains
+stable so existing frontend work does not break.
 
 When real agents run successfully, the same shape is returned with:
 
@@ -398,7 +399,10 @@ array rather than inventing one response format per card:
 
 `highlights` is proposed and is not in the current API response.
 
-## 6. Second Opinion — partial
+## 6. Decision Reflection — partial
+
+The public product name is Decision Reflection. The existing endpoint remains
+`POST /api/second-opinion` for API compatibility during the hackathon.
 
 Current request accepted by `POST /api/second-opinion`:
 
@@ -423,12 +427,12 @@ Current response:
 ```json
 {
   "candidate_name": "Structured saffron shoulder bag",
-  "reading": "This item resembles the warm, polished visual world in the Vision Taste profile.",
+  "reading": "This item aligns with the warm, polished Style World, sits above the synthetic usual spend range, and overlaps with a prior return or regret pattern. These are factors shaping the decision—not instructions about what to buy.",
   "dimensions": [
     {
-      "label": "Aesthetic fit",
+      "label": "Style World alignment",
       "score": 82,
-      "note": "Similarity to the transferable signals in the Vision Taste profile."
+      "note": "Similarity to the transferable signals in the Style World."
     }
   ],
   "evidence_ids": ["pin-01", "survey-01"]
@@ -444,9 +448,9 @@ In `ANALYSIS_MODE=agents`, the backend performs:
 
 ```text
 1. Load normalized evidence
-2. Run Vision Taste Agent (gpt-5.6-terra) -------------+
-3. Run Purchase Signal Agent (gpt-5.6-terra) ----------+ concurrently
-4. Calculate numeric gap scores in Python
+2. Run Style World Agent (gpt-5.6-terra) --------------+
+3. Run Purchase Reality Agent (gpt-5.6-terra) ----------+ concurrently
+4. Calculate the numeric Style Gap in Python
 5. Run Insight Report Manager (gpt-5.6-sol)
 6. Return one Analysis Report
 ```
@@ -525,4 +529,4 @@ Before implementing the proposed contracts, both developers should agree on:
 3. Which review fields are editable.
 4. Which survey questions are required.
 5. Which Wrapped-style highlights are in the MVP.
-6. Whether Second Opinion accepts description only or also URLs/images.
+6. Whether Decision Reflection accepts description only or also URLs/images.

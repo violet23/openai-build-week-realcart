@@ -7,9 +7,9 @@ def render_markdown(run: AnalysisRun) -> str:
     report = run.report
     runtime = run.model_runtime
     lines = [
-        f"# RealCart Insight Report: {report.persona_name}",
+        f"# RealCart Shopping-Pattern Report: {report.persona_name}",
         "",
-        f"**Gap score:** {report.gap_score}/100",
+        f"**Style gap:** {report.gap_score}/100",
         "",
         report.summary,
         "",
@@ -34,16 +34,16 @@ def render_markdown(run: AnalysisRun) -> str:
     lines.extend(
         [
         "",
-        "## Score provenance",
+        "## Style-gap provenance",
         "",
         f"- **Synthetic vision-board pins:** {report.score_provenance.aspirational_item_count}",
         f"- **Synthetic purchases:** {report.score_provenance.purchase_item_count}",
-        f"- **Kept purchases in behavior profile:** {report.score_provenance.kept_purchase_count}",
+        f"- **Kept purchases in Purchase Reality:** {report.score_provenance.kept_purchase_count}",
         f"- **Returned purchases excluded:** {report.score_provenance.returned_item_count}",
         f"- **Profile method:** {report.score_provenance.profile_method}",
         ]
     )
-    lines.extend(["", "## Vision-board themes", ""])
+    lines.extend(["", "## Style World themes", ""])
     lines.extend(
         f"- **{theme.name}:** {round(theme.strength * 100)}% strength, "
         f"{round(theme.confidence * 100)}% confidence "
@@ -55,7 +55,7 @@ def render_markdown(run: AnalysisRun) -> str:
             "",
             "## Dimensions",
             "",
-            "| Dimension | Vision | Behavior | Gap |",
+            "| Dimension | Style World | Purchase Reality | Gap |",
             "| --- | ---: | ---: | ---: |",
         ]
     )

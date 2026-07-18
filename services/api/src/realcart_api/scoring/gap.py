@@ -1,4 +1,4 @@
-"""Deterministic gap and Second Opinion calculations."""
+"""Deterministic Style Gap and Decision Reflection calculations."""
 
 from collections.abc import Mapping
 from typing import Any, Literal
@@ -72,7 +72,7 @@ def aggregate_style_items(
 
 
 def aggregate_vision_themes(raw_items: list[dict[str, Any]]) -> list[VisionTheme]:
-    """Keep repeated board-level themes without forcing them into the gap score."""
+    """Keep repeated board-level themes without forcing them into the Style Gap."""
 
     items = [StyleSignalItem.model_validate(item) for item in raw_items]
     total_confidence = sum(item.confidence for item in items)
@@ -111,7 +111,7 @@ def calculate_gap_dimensions(
     behavior_dimensions = behavior.dimensions.model_dump()
     shared = sorted(set(aspiration_dimensions) & set(behavior_dimensions))
     if not shared:
-        raise ValueError("Aspiration and behavior profiles must share at least one dimension")
+        raise ValueError("Style World and Purchase Reality must share at least one dimension")
 
     return [
         GapDimension(
@@ -141,11 +141,11 @@ def _build_insights(
         direction = "higher" if dimension.aspiration > dimension.behavior else "lower"
         insights.append(
             GroundedInsight(
-                title=f"Your vision {dimension.label.lower()} is {direction}",
+                title=f"Your Style World {dimension.label.lower()} is {direction}",
                 body=(
                     f"The {dimension.label.lower()} signal differs by "
-                    f"{round(dimension.gap * 100)} points between the vision board "
-                    "and kept purchases. "
+                    f"{round(dimension.gap * 100)} points between your Style World "
+                    "and kept Purchase Reality. "
                     "Treat this as a reflection prompt rather than a shopping verdict."
                 ),
                 evidence_ids=evidence_ids,
@@ -205,8 +205,9 @@ def build_gap_report(
             narrative.summary
             if narrative is not None
             else (
-                "Your vision board repeatedly points to a warm, natural, calm world, while "
-                "your kept purchases lean more practical, cooler, and less polished."
+                "Your Style World repeatedly points to a warm, natural, calm fashion life, "
+                "while your kept Purchase Reality leans more practical, cooler, and less "
+                "polished."
             )
         ),
         gap_score=calculate_gap_score(dimensions),
@@ -249,7 +250,9 @@ def build_second_opinion(
     ]
     prices = [float(item["price"]) for item in kept_purchases]
     if not prices or not returned_purchases:
-        raise ValueError("Second Opinion requires kept and returned purchase fixtures")
+        raise ValueError(
+            "Decision Reflection requires kept and returned purchase fixtures"
+        )
     regret_profile = aggregate_style_items(returned_purchases)
     aesthetic_fit = _score_similarity(
         candidate.dimensions, aspiration.dimensions.model_dump()
@@ -262,26 +265,25 @@ def build_second_opinion(
     return SecondOpinionResponse(
         candidate_name=candidate.name,
         reading=(
-            "This item resembles the warm, polished visual world in the vision profile, "
-            "sits above the "
-            "synthetic usual spend range, and overlaps with a prior regret pattern. "
-            "Those are signals to consider; the interpretation and decision remain yours."
+            "This item aligns with the warm, polished Style World, sits above the synthetic "
+            "usual spend range, and overlaps with a prior return or regret pattern. These are "
+            "factors shaping the decision—not instructions about what to buy."
         ),
         dimensions=[
             OpinionDimension(
-                label="Aesthetic fit",
+                label="Style World alignment",
                 score=aesthetic_fit,
-                note="Similarity to the transferable signals in the Vision Taste profile.",
+                note="Similarity to the transferable signals in the Style World.",
             ),
             OpinionDimension(
-                label="Spend-range fit",
+                label="Spending-pattern context",
                 score=spend_fit,
-                note="Position relative to the observed synthetic spend range.",
+                note="Position relative to the observed Purchase Reality spend range.",
             ),
             OpinionDimension(
-                label="Regret-pattern similarity",
+                label="Return or regret overlap",
                 score=regret_similarity,
-                note="Higher means more overlap with previously regretted style signals.",
+                note="Higher means more overlap with previously returned or regretted signals.",
             ),
         ],
         evidence_ids=[*aspiration.evidence_ids[:2], "survey-01"],
