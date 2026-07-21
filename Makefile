@@ -1,10 +1,20 @@
 PYTHON ?= python3
 PNPM ?= pnpm
+
+ifneq (,$(wildcard .env))
+include .env
+export
+endif
+SYSTEM_NODE := $(shell command -v node 2>/dev/null)
+CODEX_NODE := $(HOME)/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node
+NODE ?= $(if $(SYSTEM_NODE),$(SYSTEM_NODE),$(CODEX_NODE))
+NODE_DIR := $(dir $(NODE))
+WEB_PATH := $(NODE_DIR):$(PATH)
 VENV := services/api/.venv
 API_PYTHON := $(VENV)/bin/python
 API_PIP := $(VENV)/bin/pip
 
-.PHONY: setup dev-api dev-web test lint typecheck build check
+.PHONY: setup dev-api dev-agents dev-agents-images dev-live dev-web run run-json run-agents run-agents-images test lint typecheck build check
 
 setup:
 	$(PYTHON) -m venv $(VENV)
@@ -12,24 +22,45 @@ setup:
 	$(PNPM) install
 
 dev-api:
-	DATA_MODE=fixture $(VENV)/bin/uvicorn realcart_api.main:app --app-dir services/api/src --reload --host 127.0.0.1 --port 8000
+	DATA_MODE=fixture ANALYSIS_MODE=fixture IMAGE_GENERATION_MODE=fixture $(VENV)/bin/uvicorn realcart_api.main:app --app-dir services/api/src --reload --host 127.0.0.1 --port 8000
+
+dev-agents:
+	DATA_MODE=fixture ANALYSIS_MODE=agents IMAGE_GENERATION_MODE=fixture $(VENV)/bin/uvicorn realcart_api.main:app --app-dir services/api/src --reload --host 127.0.0.1 --port 8000
+
+dev-agents-images:
+	DATA_MODE=fixture ANALYSIS_MODE=agents IMAGE_GENERATION_MODE=openai $(VENV)/bin/uvicorn realcart_api.main:app --app-dir services/api/src --reload --host 127.0.0.1 --port 8000
+
+dev-live:
+	DATA_MODE=live ANALYSIS_MODE=agents IMAGE_GENERATION_MODE=openai $(VENV)/bin/uvicorn realcart_api.main:app --app-dir services/api/src --reload --host 127.0.0.1 --port 8000
 
 dev-web:
-	$(PNPM) --dir apps/web dev
+	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/next dev
+
+run:
+	DATA_MODE=fixture ANALYSIS_MODE=fixture IMAGE_GENERATION_MODE=fixture $(VENV)/bin/realcart --format markdown
+
+run-json:
+	DATA_MODE=fixture ANALYSIS_MODE=fixture IMAGE_GENERATION_MODE=fixture $(VENV)/bin/realcart --format json
+
+run-agents:
+	DATA_MODE=fixture ANALYSIS_MODE=agents IMAGE_GENERATION_MODE=fixture $(VENV)/bin/realcart --format markdown
+
+run-agents-images:
+	DATA_MODE=fixture ANALYSIS_MODE=agents IMAGE_GENERATION_MODE=openai $(VENV)/bin/realcart --format markdown
 
 test:
-	$(API_PYTHON) -m pytest services/api/tests
-	$(PNPM) --dir apps/web test
+	DATA_MODE=fixture ANALYSIS_MODE=fixture IMAGE_GENERATION_MODE=fixture OPENAI_TRACING_ENABLED=false $(API_PYTHON) -m pytest services/api/tests
+	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/vitest run
 
 lint:
 	$(VENV)/bin/ruff check services/api
-	$(PNPM) --dir apps/web lint
+	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/eslint .
 
 typecheck:
 	$(VENV)/bin/mypy services/api/src
-	$(PNPM) --dir apps/web typecheck
+	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/tsc --noEmit
 
 build:
-	$(PNPM) --dir apps/web build
+	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/next build
 
 check: lint typecheck test build

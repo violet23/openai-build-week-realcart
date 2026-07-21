@@ -1,72 +1,241 @@
 # RealCart
 
-**Understand yourself a little better — not to sell you anything.**
+**Get closer to yourself. Know what you actually like.**
 
-RealCart is the first product in the Un-Algorithm concept. It compares
-aspirational style signals with real purchase behavior, presents an evidence-led
-Insight Report, and offers a user-initiated Second Opinion without product
-recommendations or affiliate incentives.
+RealCart turns saved fashion-and-lifestyle signals, purchase history, returns,
+usage, and emotional feedback into a personal shopping-pattern model. Its purpose
+is self-understanding: it reveals patterns that may be valuable even when the user
+is not planning a purchase. RealCart does not search for products, rank choices,
+or issue buy/do-not-buy verdicts.
 
-This repository is a fixture-first hackathon scaffold. It is intentionally safe
-to run without Gmail, Pinterest, or OpenAI credentials.
+Shopping history—purchases, keeps, returns, exchanges, price, use, and feedback—is
+the primary record of observed buying outcomes. Pinterest saves provide a contextual
+style reference rather than a wishlist or ideal self. Two multimodal specialists read
+normalized records and images, deterministic code calculates the Pattern Difference,
+and a report manager writes evidence-grounded insights. The report can also contain
+two symbolic portraits; neither is presented as a complete or authentic self.
 
-## Architecture
+## What works now
 
-```text
-Synthetic fixtures or live connectors
-              |
-              v
-  typed evidence + style profiles
-              |
-              v
- deterministic scoring engine
-              |
-              v
- Insight Report / Second Opinion API
-              |
-              v
-         Next.js interface
-```
+- A credential-free fixture demo with image-backed surveys and two synthetic portraits.
+- Gmail read-only OAuth, purchase/return search, MIME parsing, and product-image import.
+- Pinterest Sandbox OAuth plus board, Pin, and image import.
+- Concurrent Saved Style Signals and Purchase Patterns agents using `gpt-5.6-terra`.
+- A report manager using `gpt-5.6-sol` and deterministic Python scoring.
+- Two optional report images generated with `gpt-image-2`.
+- Survey submission that reweights fixture shopping signals or informs the real agents.
+- A Next.js profile page with demo inputs, two portraits, a refinement survey, concise
+  comparisons, and shopping-pattern insight bubbles.
 
-The planned multi-agent workflow uses specialist agents for aspirational and
-purchase-signal analysis. A report manager coordinates those bounded outputs,
-while application code owns all numeric scoring. See
-[`docs/architecture.md`](docs/architecture.md).
+The removed Decision Reflection / “want to buy” feature is not part of the API or UI.
+
+## Hackathon submission facts
+
+- **Category:** Apps for Your Life
+- **Required tools:** Codex collaboration plus GPT-5.6 specialist and synthesis agents
+- **Judge path:** credential-free synthetic fixture; no API keys or test accounts required
+- **License:** MIT
+- **Repository:** public at `https://github.com/violet23/openai-build-week-realcart`
 
 ## Repository layout
 
 ```text
-apps/web/          Next.js frontend
-services/api/      FastAPI backend and agent definitions
-fixtures/demo/     Synthetic demo persona
-evals/             Initial evaluation cases
-docs/              Architecture and submission guidance
-.github/           CI and collaboration templates
+services/api/      API, OAuth, connectors, agents, scoring, CLI, image cache
+apps/web/          Next.js report and survey viewer
+fixtures/demo/     Synthetic data and visual fixtures safe for demos and CI
+evals/             Initial analysis evaluation cases
+docs/              Architecture and frontend/backend contract
 ```
 
-## Prerequisites
+## Quick start: safe fixture demo
 
-- Python 3.12+
-- Node.js 22+
-- pnpm 11+
-- GNU Make (optional; commands can also be run directly)
-
-## Setup
+Prerequisites are Python 3.12+, Node.js 24+, pnpm 11+, and optionally GNU Make.
 
 ```bash
-cp .env.example .env
 make setup
 ```
 
-Start the services in two terminals:
+Run these in two terminals:
 
 ```bash
 make dev-api
+```
+
+```bash
 make dev-web
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The API health endpoint is
-[http://localhost:8000/health](http://localhost:8000/health).
+Open [http://localhost:3000](http://localhost:3000). Fixture mode requires no
+third-party credentials and never reads Gmail or Pinterest.
+
+Terminal-only fixture reports are also available:
+
+```bash
+make run
+make run-json
+```
+
+## Real OpenAI models over fixtures
+
+Create `.env` from `.env.example`, add an OpenAI Platform API key with API billing,
+and leave `DATA_MODE=fixture`:
+
+```bash
+cp .env.example .env
+```
+
+```dotenv
+OPENAI_API_KEY=your-local-key
+```
+
+Then run:
+
+```bash
+make run-agents
+```
+
+To inspect the same real-agent path in the web interface, run `make dev-agents`
+instead of `make dev-api`, then start `make dev-web` in the second terminal.
+
+To generate new Saved Style Signals and Purchase Patterns portraits as well:
+
+```bash
+make run-agents-images
+```
+
+To show real agents and newly generated portraits in the web interface, use
+`make dev-agents-images` with `make dev-web`. Each report load makes two image
+requests, so use this explicit target only when you intend to generate them.
+
+`make` loads the local `.env`. Never commit it or put a key in frontend code.
+
+## Live Gmail + Pinterest Sandbox
+
+The local OAuth proof uses process-memory tokens: restarting the API requires a new
+connection. Imported images are stored under the gitignored `private-data/assets`
+directory. This is appropriate for a local hackathon demo; production requires
+encrypted persistent token storage, deletion controls, and provider verification.
+
+### 1. Configure Gmail
+
+In Google Cloud:
+
+1. Enable the Gmail API.
+2. Configure an OAuth consent screen and add your account as a test user.
+3. Create a Web application OAuth client.
+4. Add the exact redirect URI
+   `http://127.0.0.1:8000/api/auth/gmail/callback`.
+5. Put the client ID and secret in `.env`.
+
+RealCart requests the read-only Gmail scope and searches recent order, receipt,
+shipping, return, and refund subjects. Gmail classifies `gmail.readonly` as a
+restricted scope; an external public release needs Google verification. See the
+[Google web-server OAuth guide](https://developers.google.com/workspace/gmail/api/auth/web-server)
+and [Gmail scope reference](https://developers.google.com/workspace/gmail/api/auth/scopes).
+
+### 2. Configure Pinterest Sandbox
+
+Create a Pinterest developer app. The quickest hackathon path is to generate a
+30-day Sandbox token on the app management page and set `PINTEREST_ACCESS_TOKEN`
+in `.env`. To demo the browser OAuth flow instead, register
+`http://127.0.0.1:8000/api/auth/pinterest/callback` and add the app ID and secret.
+The connector requests `boards:read,pins:read` and uses
+`https://api-sandbox.pinterest.com/v5`. Sandbox tokens and data are separate from
+production. See [Pinterest authentication](https://developers.pinterest.com/docs/getting-started/set-up-authentication-and-authorization/)
+and [Pinterest Sandbox](https://developers.pinterest.com/docs/developer-tools/sandbox/).
+
+### 3. Set local variables
+
+```dotenv
+OPENAI_API_KEY=your-local-key
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+PINTEREST_CLIENT_ID=your-pinterest-app-id
+PINTEREST_CLIENT_SECRET=your-pinterest-app-secret
+# Or use the faster portal-generated Sandbox token:
+PINTEREST_ACCESS_TOKEN=your-sandbox-token
+```
+
+### 4. Run live mode
+
+```bash
+make dev-live
+```
+
+```bash
+make dev-web
+```
+
+With the API running, authorize Gmail at
+`http://127.0.0.1:8000/api/auth/gmail/start` and Pinterest at
+`http://127.0.0.1:8000/api/auth/pinterest/start`. After both callbacks complete,
+open the web app. Live mode uses the two GPT-5.6 specialists, the report manager,
+and `gpt-image-2`.
+
+Product images are best-effort: many receipt templates contain only logos, block
+remote images, or use expired/authenticated URLs. RealCart prefers attached/inline
+images, then caches a meaningful public HTTPS image from the receipt. It shows a
+clear fallback when no product image is available.
+
+The live defaults cap one run at 12 Gmail messages and 16 Pinterest Pins to keep
+latency and multimodal API cost predictable. Adjust `GMAIL_MAX_MESSAGES` and
+`PINTEREST_MAX_PINS` in `.env` after validating a smaller sample.
+
+## Runtime modes
+
+| Data | Analysis | Images | Purpose |
+| --- | --- | --- | --- |
+| fixture | fixture | fixture | Default, deterministic, credential-free demo |
+| fixture | agents | fixture/openai | Test real agents on synthetic evidence |
+| live | agents | openai | Gmail + Pinterest Sandbox + generated portraits |
+
+## How we collaborated with Codex
+
+Codex was our implementation partner throughout the build. It accelerated the
+initial monorepo scaffold, the typed frontend/backend contract, the FastAPI and
+Next.js vertical slice, synthetic evidence fixtures, deterministic scoring,
+agent definitions, tests, OAuth connector prototypes, multimodal image handling,
+and repeated debugging of local tooling and OpenAI API errors. Codex also helped
+turn product-language discussions into concrete changes across prompts, schemas,
+copy, fixtures, and UI behavior rather than leaving those decisions in a separate
+proposal document.
+
+The team retained the important product and design decisions. We defined
+Pinterest as saved visual attention rather than a wishlist or ideal self; narrowed “taste” to fashion
+and its surrounding lifestyle; removed the buy/do-not-buy Second Opinion flow;
+made self-understanding the primary outcome; designed different surveys for kept
+and returned items; and required every score and insight to remain traceable to
+specific evidence. We also chose a privacy-safe fixture experience as the judge
+default and kept live Gmail/Pinterest access explicit and optional.
+
+GPT-5.6 contributes reasoning, not hidden arithmetic. Two `gpt-5.6-terra`
+specialists concurrently convert saved-image and purchase-pattern evidence into
+the same typed visual dimensions. Deterministic Python calculates the differences,
+then `gpt-5.6-sol` writes a grounded narrative from those precomputed scores.
+This division was an intentional engineering decision: models interpret ambiguous
+visual and behavioral signals, while inspectable application code owns the score.
+A real fixture-backed agent run was verified on July 21, 2026.
+
+## Judge testing path
+
+The recommended judge path is the credential-free fixture demo. It exercises the
+complete report, evidence provenance, product-image surveys, returned-item logic,
+and portraits without reading personal accounts or consuming API credit:
+
+```bash
+make setup
+make dev-api
+```
+
+In a second terminal:
+
+```bash
+make dev-web
+```
+
+Then open [http://localhost:3000](http://localhost:3000). The optional real-model
+and live-connector paths are documented above, but judges never need our API keys,
+OAuth secrets, personal Gmail, or Pinterest account.
 
 ## Verification
 
@@ -74,32 +243,12 @@ Open [http://localhost:3000](http://localhost:3000). The API health endpoint is
 make check
 ```
 
-Normal tests and CI use synthetic fixtures and do not require API keys.
+CI and normal tests use only fixtures and provider-shaped mocks. They do not require
+OAuth credentials or an OpenAI API key.
 
-## Data modes
+## Privacy boundary
 
-- `fixture`: default, deterministic, credential-free demo.
-- `live`: reserved for explicit Gmail, Pinterest, and OpenAI integrations.
-
-The live connector files deliberately raise a clear not-implemented error until
-OAuth, consent, deletion, and privacy behavior are designed and tested.
-
-## Team workflow
-
-1. Branch from `main` for a focused issue.
-2. Keep fixture behavior and tests green.
-3. Open a pull request using the included template.
-4. Run `make check` before merge.
-
-## Hackathon submission placeholders
-
-- Deployed demo URL: _TBD_
-- Public demo video: _TBD_
-- Codex `/feedback` Session ID: _TBD after the core build_
-- Judge credentials or fixture instructions: fixture mode requires none
-- Work completed during submission period: documented by Git history
-
-## Privacy
-
-Never add real mailbox exports, receipts, pin archives, OAuth tokens, or user
-profiles to this repository. Use synthetic data for development and judging.
+Never commit real messages, receipts, Pins, cached images, OAuth tokens, or user
+profiles. Model response storage is disabled. Prompt/output contents are excluded
+from OpenAI traces by default. The local cache stores source images; agents receive
+temporary image data and return only structured interpretations.

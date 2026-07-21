@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" role="img" aria-labelledby="title desc">
+  <title id="title">Synthetic shopping history portrait</title>
+  <desc id="desc">A faceless figure in a charcoal hoodie and cobalt sneakers, carrying a practical black tote in a cool city setting.</desc>
+  <defs>
+    <linearGradient id="city" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#dce3e4"/><stop offset=".58" stop-color="#9ba7a9"/><stop offset="1" stop-color="#647276"/>
+    </linearGradient>
+    <linearGradient id="hoodie" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#7d8586"/><stop offset=".52" stop-color="#535d60"/><stop offset="1" stop-color="#30393c"/>
+    </linearGradient>
+    <linearGradient id="denim" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#34444a"/><stop offset="1" stop-color="#1e2b30"/>
+    </linearGradient>
+    <filter id="soft-shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#1f292c" flood-opacity=".28"/>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".68" numOctaves="2" seed="11" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0" result="mono"/>
+      <feComponentTransfer in="mono"><feFuncA type="table" tableValues="0 .05"/></feComponentTransfer>
+    </filter>
+  </defs>
+
+  <rect width="1000" height="1400" fill="url(#city)"/>
+  <path d="M0 450h245v850H0zM278 310h186v990H278zM756 190h244v1110H756z" fill="#617075" opacity=".48"/>
+  <path d="M34 518h172v118H34zm278-112h118v160H312zm494-125h142v128H806zm0 179h142v128H806z" fill="#e7ecea" opacity=".62"/>
+  <path d="M0 978c202-54 363-31 536-7 174 25 298 5 464-45v474H0z" fill="#758083"/>
+  <path d="M0 1100h1000v300H0z" fill="#aeb6b4"/>
+  <path d="m0 1245 1000-92v40L0 1287z" fill="#e4e5df" opacity=".82"/>
+  <path d="M74 1160h188M778 1082h180" stroke="#d8ddda" stroke-width="19" stroke-linecap="round" opacity=".7"/>
+
+  <ellipse cx="518" cy="1280" rx="258" ry="58" fill="#263337" opacity=".25"/>
+  <g filter="url(#soft-shadow)">
+    <circle cx="520" cy="349" r="83" fill="#596568"/>
+    <path d="M444 335c13-86 119-116 163-34-22-18-52-29-87-29-30 0-56 19-76 63" fill="#323c3f"/>
+    <path d="M427 422c-102 66-148 257-113 600h408c28-345-13-534-111-600-28 55-57 82-92 82-34 0-66-27-92-82" fill="url(#hoodie)"/>
+    <path d="M425 424c26 76 57 112 94 112 38 0 69-36 94-112l50 55c-43 75-90 112-144 112-52 0-99-37-143-112z" fill="#485255"/>
+    <path d="M470 490c5 76 21 119 49 129 27-10 44-53 50-129" fill="none" stroke="#949c9c" stroke-width="8"/>
+    <path d="M370 552 228 906l76 33 145-297M667 552l128 354-76 33-131-297" fill="none" stroke="#586366" stroke-width="62" stroke-linecap="round"/>
+    <path d="M379 1018h147l-36 292H314zm147 0h151l107 292H596z" fill="url(#denim)"/>
+    <path d="M309 1302h191l-9 47H286z" fill="#ecf0ef"/>
+    <path d="M586 1300h206l42 49H578z" fill="#f1f3f1"/>
+    <path d="M301 1302h191l-2 19H301zM597 1300h185l18 20H597z" fill="#315aaa"/>
+    <path d="M706 709h157l20 260H678z" fill="#273235"/>
+    <path d="M720 708c7-62 34-95 67-95 31 0 55 33 61 95" fill="none" stroke="#273235" stroke-width="18"/>
+    <path d="M736 784h90" stroke="#657175" stroke-width="5" opacity=".75"/>
+  </g>
+
+  <path d="M102 802h130v92H102z" fill="#465256" opacity=".55"/>
+  <circle cx="166" cy="848" r="23" fill="#9eaaab" opacity=".7"/>
+  <rect width="1000" height="1400" filter="url(#grain)" opacity=".42"/>
+</svg>

@@ -1,36 +1,38 @@
-"""Manager-style orchestration definition for future live report generation."""
+"""Grounded synthesis agent used after deterministic scoring."""
 
 from typing import Any
 
-from realcart_api.agents.aspiration import create_aspiration_agent
-from realcart_api.agents.purchase_signal import create_purchase_signal_agent
+from realcart_api.agents.model_config import create_model_settings
 from realcart_api.schemas import ReportNarrative
+from realcart_api.settings import ReasoningEffort
 
 
 def create_report_manager_agent(
-    tagger_model: str = "gpt-5.6-terra", synthesis_model: str = "gpt-5.6-sol"
+    synthesis_model: str = "gpt-5.6-sol",
+    reasoning_effort: ReasoningEffort = "medium",
 ) -> Any:
     from agents import Agent
 
-    aspiration = create_aspiration_agent(tagger_model)
-    purchase = create_purchase_signal_agent(tagger_model)
     return Agent(
         name="Insight Report Manager",
         instructions=(
-            "Call the two specialists for bounded tagging work. Application code calculates "
-            "all numeric scores. Synthesize only grounded reflection prompts with evidence "
-            "IDs. Do not produce purchase recommendations, rankings, or alternatives."
+            "Synthesize the supplied saved-image style signals, repeated board themes, purchase "
+            "patterns, and precomputed numeric Signal Distance into a personal shopping-pattern "
+            "model and a short "
+            "self-reflection report. "
+            "Treat scenes and atmosphere as narrative context, not literal products the user "
+            "wants. Cite only evidence IDs present in the input. Do not change or recalculate "
+            "scores. Lead with observed shopping outcomes: keeps, returns, exchanges, prices, "
+            "merchants, use, and feedback. Use saved images as a contextual style reference. "
+            "Notice when a repeatedly saved style is also repeatedly bought and returned, but "
+            "never generalize from one item. Treat both sources as partial evidence. Never imply "
+            "saved images are an "
+            "ideal or better self, or purchases are the authentic or real self. Purchases may "
+            "reflect budget, fit, need, availability, and circumstance. Do not produce purchase "
+            "recommendations, rankings, alternatives, "
+            "psychological claims, or invented evidence."
         ),
         model=synthesis_model,
-        tools=[
-            aspiration.as_tool(
-                tool_name="analyze_aspirational_style",
-                tool_description="Analyze saved-item evidence into a typed style profile.",
-            ),
-            purchase.as_tool(
-                tool_name="analyze_purchase_signals",
-                tool_description="Analyze normalized purchase and survey evidence.",
-            ),
-        ],
+        model_settings=create_model_settings(reasoning_effort),
         output_type=ReportNarrative,
     )

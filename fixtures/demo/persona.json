@@ -2,74 +2,245 @@
   "persona": {
     "id": "quiet-luxury-casual",
     "display_name": "Demo: Maya",
-    "description": "A synthetic persona whose saved style is more structured and formal than her everyday purchases."
+    "description": "A synthetic persona whose vision board is warmer, calmer, more natural, and more polished than her everyday purchases."
   },
-  "aspiration": {
-    "dimensions": {
-      "color_boldness": 0.72,
-      "formality": 0.81,
-      "price_tier": 0.76,
-      "silhouette_structure": 0.84
+  "aspirational_items": [
+    {
+      "id": "pin-01",
+      "source": "pinterest_fixture",
+      "label": "Sunlit Mediterranean courtyard",
+      "board_name": "The life I want to inhabit",
+      "intent_type": "atmosphere_reference",
+      "literal_content": ["limestone courtyard", "olive tree", "linen seating"],
+      "themes": ["warm", "natural", "calm", "timeless"],
+      "visual_evidence": ["warm limestone", "soft sunlight", "linen texture", "muted earth tones"],
+      "confidence": 0.9,
+      "dimensions": {
+        "color_warmth": 0.92,
+        "color_saturation": 0.38,
+        "visual_contrast": 0.45,
+        "structure": 0.62,
+        "texture_naturalness": 0.94,
+        "ornamentation": 0.58,
+        "polish": 0.72
+      }
     },
-    "evidence_ids": ["pin-01", "pin-02", "pin-03", "pin-04"]
-  },
-  "behavior": {
-    "dimensions": {
-      "color_boldness": 0.44,
-      "formality": 0.39,
-      "price_tier": 0.47,
-      "silhouette_structure": 0.36
+    {
+      "id": "pin-02",
+      "source": "pinterest_fixture",
+      "label": "Linen bedroom in warm morning light",
+      "board_name": "The life I want to inhabit",
+      "intent_type": "scene_reference",
+      "literal_content": ["linen bedroom", "plaster walls", "morning light"],
+      "themes": ["warm", "natural", "calm", "soft"],
+      "visual_evidence": ["unbleached linen", "diffused light", "low contrast", "organic texture"],
+      "confidence": 0.88,
+      "dimensions": {
+        "color_warmth": 0.88,
+        "color_saturation": 0.25,
+        "visual_contrast": 0.28,
+        "structure": 0.35,
+        "texture_naturalness": 0.96,
+        "ornamentation": 0.3,
+        "polish": 0.62
+      }
     },
-    "evidence_ids": ["purchase-01", "purchase-02", "purchase-03", "survey-01"],
-    "typical_spend_range": [25, 120],
-    "regret_profile": {
-      "color_boldness": 0.68,
-      "formality": 0.75,
-      "price_tier": 0.82,
-      "silhouette_structure": 0.79
+    {
+      "id": "pin-03",
+      "source": "pinterest_fixture",
+      "label": "Candlelit restaurant with aged brass",
+      "board_name": "Evenings with atmosphere",
+      "intent_type": "atmosphere_reference",
+      "literal_content": ["intimate restaurant", "aged brass", "dark wood", "candlelight"],
+      "themes": ["warm", "romantic", "intimate", "polished"],
+      "visual_evidence": ["amber light", "aged brass", "dark wood", "layered table setting"],
+      "confidence": 0.8,
+      "dimensions": {
+        "color_warmth": 0.84,
+        "color_saturation": 0.42,
+        "visual_contrast": 0.72,
+        "structure": 0.68,
+        "texture_naturalness": 0.78,
+        "ornamentation": 0.74,
+        "polish": 0.86
+      }
+    },
+    {
+      "id": "pin-04",
+      "source": "pinterest_fixture",
+      "label": "Camel coat on a quiet city street",
+      "board_name": "How I want to move through the city",
+      "intent_type": "mixed",
+      "literal_content": ["tailored camel coat", "stone street", "minimal storefront"],
+      "themes": ["structured", "minimal", "calm", "polished"],
+      "visual_evidence": ["clean coat silhouette", "restrained palette", "orderly composition"],
+      "confidence": 0.84,
+      "dimensions": {
+        "color_warmth": 0.76,
+        "color_saturation": 0.32,
+        "visual_contrast": 0.55,
+        "structure": 0.88,
+        "texture_naturalness": 0.72,
+        "ornamentation": 0.36,
+        "polish": 0.9
+      }
     }
-  },
+  ],
+  "purchase_items": [
+    {
+      "id": "purchase-01",
+      "source": "gmail_fixture",
+      "label": "Oversized charcoal cotton hoodie",
+      "merchant": "Northline Basics",
+      "price": 68,
+      "currency": "USD",
+      "purchased_at": "2026-05-18",
+      "returned": false,
+      "category": "tops",
+      "colors": ["charcoal", "cool gray"],
+      "style_tags": ["casual", "oversized", "soft", "lounge", "low-polish"],
+      "confidence": 1,
+      "image": {
+        "id": "fixture-hoodie",
+        "source": "fixture",
+        "image_url": "http://127.0.0.1:8000/api/fixture-assets/hoodie.svg",
+        "alt_text": "Synthetic gray cotton hoodie fixture",
+        "mime_type": "image/svg+xml"
+      },
+      "dimensions": {
+        "color_warmth": 0.18,
+        "color_saturation": 0.12,
+        "visual_contrast": 0.18,
+        "structure": 0.08,
+        "texture_naturalness": 0.52,
+        "ornamentation": 0.03,
+        "polish": 0.1
+      }
+    },
+    {
+      "id": "purchase-02",
+      "source": "gmail_fixture",
+      "label": "Cobalt technical running sneakers",
+      "merchant": "Pace Form",
+      "price": 120,
+      "currency": "USD",
+      "purchased_at": "2026-04-27",
+      "returned": false,
+      "category": "shoes",
+      "colors": ["cobalt", "white"],
+      "style_tags": ["sporty", "technical", "practical", "high-contrast"],
+      "confidence": 1,
+      "dimensions": {
+        "color_warmth": 0.12,
+        "color_saturation": 0.78,
+        "visual_contrast": 0.82,
+        "structure": 0.55,
+        "texture_naturalness": 0.12,
+        "ornamentation": 0.48,
+        "polish": 0.3
+      }
+    },
+    {
+      "id": "purchase-03",
+      "source": "gmail_fixture",
+      "label": "Black nylon slouch tote",
+      "merchant": "Day Carry",
+      "price": 25,
+      "currency": "USD",
+      "purchased_at": "2026-06-12",
+      "returned": false,
+      "category": "bags",
+      "colors": ["black"],
+      "style_tags": ["utilitarian", "practical", "oversized", "unstructured", "synthetic"],
+      "confidence": 1,
+      "dimensions": {
+        "color_warmth": 0.14,
+        "color_saturation": 0.08,
+        "visual_contrast": 0.4,
+        "structure": 0.12,
+        "texture_naturalness": 0.1,
+        "ornamentation": 0.02,
+        "polish": 0.12
+      }
+    },
+    {
+      "id": "purchase-04",
+      "source": "gmail_fixture",
+      "label": "Returned structured camel blazer",
+      "merchant": "Studio Archive",
+      "price": 189,
+      "currency": "USD",
+      "purchased_at": "2026-06-04",
+      "returned": true,
+      "category": "outerwear",
+      "colors": ["camel"],
+      "style_tags": ["tailored", "formal", "structured"],
+      "confidence": 1,
+      "image": {
+        "id": "fixture-blazer",
+        "source": "fixture",
+        "image_url": "http://127.0.0.1:8000/api/fixture-assets/blazer.svg",
+        "alt_text": "Synthetic camel structured blazer fixture",
+        "mime_type": "image/svg+xml"
+      },
+      "dimensions": {
+        "color_warmth": 0.78,
+        "color_saturation": 0.3,
+        "visual_contrast": 0.5,
+        "structure": 0.86,
+        "texture_naturalness": 0.7,
+        "ornamentation": 0.35,
+        "polish": 0.88
+      }
+    }
+  ],
   "evidence": [
     {
       "id": "pin-01",
       "source": "pinterest_fixture",
-      "label": "Tailored camel blazer",
+      "label": "Sunlit Mediterranean courtyard",
       "kind": "aspirational"
     },
     {
       "id": "pin-02",
       "source": "pinterest_fixture",
-      "label": "Structured woven tote",
+      "label": "Linen bedroom in warm morning light",
       "kind": "aspirational"
     },
     {
       "id": "pin-03",
       "source": "pinterest_fixture",
-      "label": "Minimal gold jewelry",
+      "label": "Candlelit restaurant with aged brass",
       "kind": "aspirational"
     },
     {
       "id": "pin-04",
       "source": "pinterest_fixture",
-      "label": "Wide-leg tailored trousers",
+      "label": "Camel coat on a quiet city street",
       "kind": "aspirational"
     },
     {
       "id": "purchase-01",
       "source": "gmail_fixture",
-      "label": "Everyday cotton hoodie",
+      "label": "Oversized charcoal cotton hoodie",
       "kind": "purchase"
     },
     {
       "id": "purchase-02",
       "source": "gmail_fixture",
-      "label": "Running sneakers",
+      "label": "Cobalt technical running sneakers",
       "kind": "purchase"
     },
     {
       "id": "purchase-03",
       "source": "gmail_fixture",
-      "label": "Soft unstructured tote",
+      "label": "Black nylon slouch tote",
+      "kind": "purchase"
+    },
+    {
+      "id": "purchase-04",
+      "source": "gmail_fixture",
+      "label": "Returned structured camel blazer",
       "kind": "purchase"
     },
     {
@@ -81,26 +252,110 @@
   ],
   "survey": [
     {
-      "id": "survey-question-01",
+      "id": "purchase-check-in-01",
       "item_id": "purchase-01",
-      "question": "How often do you still wear the everyday cotton hoodie?",
-      "options": ["often", "rarely", "never"]
+      "item_name": "Oversized charcoal cotton hoodie",
+      "merchant": "Northline Basics",
+      "price": 68,
+      "currency": "USD",
+      "purchased_at": "2026-05-18",
+      "returned": false,
+      "image": {
+        "id": "fixture-hoodie",
+        "source": "fixture",
+        "image_url": "http://127.0.0.1:8000/api/fixture-assets/hoodie.svg",
+        "alt_text": "Synthetic gray cotton hoodie fixture",
+        "mime_type": "image/svg+xml"
+      },
+      "comment_prompt": "Anything else about how this hoodie fits into your life?",
+      "prompts": [
+        {
+          "id": "hoodie-feeling",
+          "key": "emotional_feedback",
+          "question": "How do you feel about it now?",
+          "options": ["Love it", "Neutral", "Regret it"]
+        },
+        {
+          "id": "hoodie-frequency",
+          "key": "usage_frequency",
+          "question": "How often do you wear or use it?",
+          "options": ["Often", "Sometimes", "Rarely", "Never"]
+        },
+        {
+          "id": "hoodie-motivation",
+          "key": "purchase_motivation",
+          "question": "What drove the purchase?",
+          "options": ["Needed it", "Matched my taste", "On sale", "Impulse or influence"]
+        }
+      ]
     },
     {
-      "id": "survey-question-02",
-      "item_id": "purchase-03",
-      "question": "How do you feel about the soft unstructured tote now?",
-      "options": ["love it", "neutral", "regret it"]
+      "id": "purchase-check-in-02",
+      "item_id": "purchase-04",
+      "item_name": "Structured camel blazer",
+      "merchant": "Studio Archive",
+      "price": 189,
+      "currency": "USD",
+      "purchased_at": "2026-06-04",
+      "returned": true,
+      "image": {
+        "id": "fixture-blazer",
+        "source": "fixture",
+        "image_url": "http://127.0.0.1:8000/api/fixture-assets/blazer.svg",
+        "alt_text": "Synthetic camel structured blazer fixture",
+        "mime_type": "image/svg+xml"
+      },
+      "comment_prompt": "Anything else you want us to understand about this return?",
+      "prompts": [
+        {
+          "id": "blazer-return-reason",
+          "key": "return_reason",
+          "question": "Why did you return it?",
+          "options": ["Fit or comfort", "Quality", "Looked different", "Price or value", "Changed my mind"]
+        },
+        {
+          "id": "blazer-return-sentiment",
+          "key": "return_sentiment",
+          "question": "How did returning it feel?",
+          "options": ["Relieved", "Neutral", "Still wanted it", "Regret returning it"]
+        },
+        {
+          "id": "blazer-motivation",
+          "key": "purchase_motivation",
+          "question": "What drove the purchase?",
+          "options": ["Needed it", "Matched my taste", "On sale", "Impulse or influence"]
+        }
+      ]
     }
   ],
-  "candidate": {
-    "name": "Structured saffron shoulder bag",
-    "price": 145,
-    "dimensions": {
-      "color_boldness": 0.78,
-      "formality": 0.72,
-      "price_tier": 0.73,
-      "silhouette_structure": 0.86
+  "portraits": [
+    {
+      "kind": "style_world",
+      "title": "Saved Style Signals",
+      "image": {
+        "id": "fixture-style-world",
+        "source": "fixture",
+        "image_url": "http://127.0.0.1:8000/api/fixture-assets/style-world.svg",
+        "alt_text": "Synthetic visual portrait of Maya's saved style signals",
+        "mime_type": "image/svg+xml"
+      },
+      "evidence_ids": ["pin-01", "pin-02", "pin-03", "pin-04"],
+      "model": "fixture",
+      "generation_mode": "fixture"
+    },
+    {
+      "kind": "purchase_reality",
+      "title": "Purchase Patterns",
+      "image": {
+        "id": "fixture-purchase-reality",
+        "source": "fixture",
+        "image_url": "http://127.0.0.1:8000/api/fixture-assets/purchase-reality.svg",
+        "alt_text": "Synthetic visual portrait of Maya's purchase patterns",
+        "mime_type": "image/svg+xml"
+      },
+      "evidence_ids": ["purchase-01", "purchase-02", "purchase-03", "purchase-04"],
+      "model": "fixture",
+      "generation_mode": "fixture"
     }
-  }
+  ]
 }

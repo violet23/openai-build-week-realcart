@@ -1,3 +1,11 @@
+export interface ImageAsset {
+  id: string;
+  source: "fixture" | "gmail" | "pinterest" | "generated";
+  image_url: string;
+  alt_text: string;
+  mime_type: string;
+}
+
 export interface GapDimension {
   key: string;
   label: string;
@@ -19,6 +27,30 @@ export interface GroundedInsight {
   evidence_ids: string[];
 }
 
+export interface ScoreProvenance {
+  aspirational_item_count: number;
+  purchase_item_count: number;
+  kept_purchase_count: number;
+  returned_item_count: number;
+  profile_method: "fixture_item_average" | "agent_profiles";
+}
+
+export interface VisionTheme {
+  name: string;
+  strength: number;
+  confidence: number;
+  evidence_ids: string[];
+}
+
+export interface GeneratedPortrait {
+  kind: "style_world" | "purchase_reality";
+  title: string;
+  image: ImageAsset;
+  evidence_ids: string[];
+  model: string;
+  generation_mode: "fixture" | "openai";
+}
+
 export interface GapReport {
   persona_id: string;
   persona_name: string;
@@ -27,39 +59,62 @@ export interface GapReport {
   dimensions: GapDimension[];
   insights: GroundedInsight[];
   evidence: EvidenceItem[];
+  score_provenance: ScoreProvenance;
+  vision_themes: VisionTheme[];
+  portraits: GeneratedPortrait[];
 }
 
-export interface SurveyQuestion {
+export type SurveyPromptKey =
+  | "emotional_feedback"
+  | "usage_frequency"
+  | "purchase_motivation"
+  | "return_reason"
+  | "return_sentiment";
+
+export interface SurveyPrompt {
   id: string;
-  item_id: string;
+  key: SurveyPromptKey;
   question: string;
   options: string[];
 }
 
-export interface CandidateItem {
-  name: string;
-  price: number;
-  dimensions: Record<string, number>;
+export interface PurchaseSurveyItem {
+  id: string;
+  item_id: string;
+  item_name: string;
+  merchant: string;
+  price: number | null;
+  currency: string;
+  purchased_at: string;
+  returned: boolean;
+  image: ImageAsset | null;
+  prompts: SurveyPrompt[];
+  comment_prompt: string;
 }
 
 export interface DemoResponse {
   persona: Record<string, string>;
   report: GapReport;
-  survey: SurveyQuestion[];
-  candidate: CandidateItem;
+  survey: PurchaseSurveyItem[];
 }
 
-export interface OpinionDimension {
-  label: string;
-  score: number;
-  note: string;
+export interface SurveyAnswer {
+  item_id: string;
+  values: Record<string, string>;
+  notes: string;
 }
 
-export interface SecondOpinionResponse {
-  candidate_name: string;
-  reading: string;
-  dimensions: OpinionDimension[];
-  evidence_ids: string[];
+export interface SourceConnection {
+  source: "gmail" | "pinterest";
+  configured: boolean;
+  connected: boolean;
+  environment: "gmail" | "sandbox";
+  connect_url: string;
+}
+
+export interface ConnectionOverview {
+  data_mode: string;
+  sources: SourceConnection[];
 }
 
 const API_BASE_URL =
@@ -68,7 +123,8 @@ const API_BASE_URL =
 async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, init);
   if (!response.ok) {
-    throw new Error(`RealCart API returned ${response.status}`);
+    const payload = (await response.json().catch(() => null)) as { detail?: string } | null;
+    throw new Error(payload?.detail ?? `RealCart API returned ${response.status}`);
   }
   return (await response.json()) as T;
 }
@@ -77,12 +133,14 @@ export function loadDemo(): Promise<DemoResponse> {
   return fetchJson<DemoResponse>("/api/demo");
 }
 
-export function loadSecondOpinion(
-  candidate: CandidateItem,
-): Promise<SecondOpinionResponse> {
-  return fetchJson<SecondOpinionResponse>("/api/second-opinion", {
+export function loadConnections(): Promise<ConnectionOverview> {
+  return fetchJson<ConnectionOverview>("/api/connections");
+}
+
+export function submitAnalysis(answers: SurveyAnswer[]): Promise<DemoResponse> {
+  return fetchJson<DemoResponse>("/api/analyze", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(candidate),
+    body: JSON.stringify({ answers }),
   });
 }

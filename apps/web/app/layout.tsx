@@ -5,7 +5,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "RealCart — Un-Algorithm",
-  description: "Understand yourself a little better — not to sell you anything.",
+  description:
+    "Compare saved style signals and purchase patterns without treating either as a more authentic self.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
