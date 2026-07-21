@@ -96,61 +96,65 @@ export default function Home() {
     return [
       {
         tone: "return",
-        title: `${returnRate}% return rate in this sample`,
-        body: `${report.score_provenance.returned_item_count} of ${report.score_provenance.purchase_item_count} recorded purchases was returned. Returns are behavior evidence—not failures.`,
+        metric: `${returnRate}%`,
+        title: "returned",
+        body: `${report.score_provenance.returned_item_count} of ${report.score_provenance.purchase_item_count} purchases`,
       },
       returnedItem
         ? {
             tone: "match",
-            title: "A style match was still returned",
-            body: `${returnedItem.item_name} echoes the warm, structured references in the saved board, but it did not become a kept purchase. Fit, comfort, value, or context may explain why.`,
+            metric: formatCurrency(returnedItem.price, returnedItem.currency),
+            title: "style match returned",
+            body: `${returnedItem.item_name} matched warm + structured references.`,
           }
         : null,
       prices.length
         ? {
             tone: "price",
-            title: `${formatCurrency(Math.min(...prices), "USD")}–${formatCurrency(Math.max(...prices), "USD")} observed`,
+            metric: `${formatCurrency(Math.min(...prices), "USD")}–${formatCurrency(Math.max(...prices), "USD")}`,
+            title: "surveyed price range",
             body: returnedItem?.price
-              ? `The highest-priced surveyed item (${formatCurrency(returnedItem.price, returnedItem.currency)}) was returned. The survey can separate price sensitivity from fit or style.`
-              : "Price is one factor RealCart tracks alongside returns, use, and feeling.",
+              ? "Highest-priced surveyed item was returned."
+              : "Tracked with use, feeling, and returns.",
           }
         : null,
       keptItem && returnedItem
         ? {
             tone: "brand",
-            title: "Brand clues need repetition",
-            body: `${keptItem.merchant} appears with a kept item; ${returnedItem.merchant} appears with a return. RealCart waits for repeated keep-and-use evidence before calling a brand a preference.`,
+            metric: "0",
+            title: "confirmed favorite brands",
+            body: `${keptItem.merchant}: kept · ${returnedItem.merchant}: returned`,
           }
         : null,
       strongestDifference
         ? {
             tone: "difference",
+            metric: `${Math.round(strongestDifference.gap * 100)} pts`,
             title: `${strongestDifference.label} differs most`,
-            body: `The style reference is ${Math.round(strongestDifference.aspiration * 100)} and shopping history is ${Math.round(strongestDifference.behavior * 100)} on this dimension—a clue to investigate, not a verdict.`,
+            body: `History ${Math.round(strongestDifference.behavior * 100)} · Reference ${Math.round(strongestDifference.aspiration * 100)}`,
           }
         : null,
       {
         tone: "reference",
-        title: "Your saved reference repeats",
+        metric: `${Math.min(3, report.vision_themes.length)}`,
+        title: "top reference themes",
         body: report.vision_themes
           .slice(0, 3)
           .map((theme) => theme.name.toLowerCase())
-          .join(", ")
-          .concat(". It is context for interpreting shopping outcomes, not the source of truth."),
+          .join(" · "),
       },
       surveySaved && surveySignals.length
         ? {
             tone: "survey",
-            title: "Your answers refined this view",
-            body: `New context included: ${surveySignals.join(", ")}. The shopping-pattern weighting and comparison were rebuilt.`,
+            metric: `${surveySignals.length}`,
+            title: "survey signals added",
+            body: surveySignals.join(" · "),
           }
         : null,
-      ...report.insights.map((insight) => ({
-        tone: "model",
-        title: neutralizeCopy(insight.title),
-        body: neutralizeCopy(insight.body),
-      })),
-    ].filter((item): item is { tone: string; title: string; body: string } => item !== null);
+    ].filter(
+      (item): item is { tone: string; metric: string; title: string; body: string } =>
+        item !== null,
+    );
   }, [demo, surveyAnswers, surveySaved]);
 
   function generateProfile(event: FormEvent<HTMLFormElement>) {
@@ -402,8 +406,8 @@ export default function Home() {
             <section className="analysis-panel detail-panel" role="tabpanel">
               <div className="analysis-title">
                 <div>
-                  <p className="eyebrow">BEHAVIOR FIRST / STYLE AS REFERENCE</p>
-                  <h2>Where the patterns meet—and where they do not.</h2>
+                  <p className="eyebrow">AT A GLANCE</p>
+                  <h2>Shopping history vs. style reference.</h2>
                 </div>
                 <div className="score-pill">
                   <strong>{demo.report.gap_score}</strong>
@@ -413,13 +417,13 @@ export default function Home() {
 
               <section className="comparison-section">
                 <div className="comparison-counts">
-                  <span><strong>{demo.report.score_provenance.purchase_item_count}</strong>purchases</span>
-                  <span><strong>{demo.report.score_provenance.kept_purchase_count}</strong>kept</span>
-                  <span><strong>{demo.report.score_provenance.returned_item_count}</strong>returned</span>
+                  <span><strong>{demo.report.score_provenance.purchase_item_count}</strong>shopping records</span>
+                  <span><strong>{Math.round((demo.report.score_provenance.kept_purchase_count / demo.report.score_provenance.purchase_item_count) * 100)}%</strong>kept</span>
+                  <span><strong>{Math.round((demo.report.score_provenance.returned_item_count / demo.report.score_provenance.purchase_item_count) * 100)}%</strong>returned</span>
                   <span><strong>{demo.report.score_provenance.aspirational_item_count}</strong>saved references</span>
                 </div>
                 <div className="dimension-grid">
-                  {demo.report.dimensions.map((dimension) => (
+                  {[...demo.report.dimensions].sort((a, b) => b.gap - a.gap).map((dimension) => (
                     <article className="dimension-card" key={dimension.key}>
                       <div className="dimension-title">
                         <h3>{dimension.label}</h3>
@@ -445,6 +449,7 @@ export default function Home() {
                 <div className="insight-cloud">
                   {insightBubbles.map((insight, index) => (
                     <article className={`insight-bubble ${insight.tone}`} key={`${insight.title}-${index}`}>
+                      <strong className="bubble-metric">{insight.metric}</strong>
                       <h3>{insight.title}</h3>
                       <p>{insight.body}</p>
                     </article>
