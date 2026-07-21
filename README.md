@@ -93,6 +93,10 @@ To generate new Style World and Purchase Reality portraits as well:
 make run-agents-images
 ```
 
+To show real agents and newly generated portraits in the web interface, use
+`make dev-agents-images` with `make dev-web`. Each report load makes two image
+requests, so use this explicit target only when you intend to generate them.
+
 `make` loads the local `.env`. Never commit it or put a key in frontend code.
 
 ## Live Gmail + Pinterest Sandbox
