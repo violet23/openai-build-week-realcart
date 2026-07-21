@@ -38,3 +38,4 @@ credentials/
 private-data/
 *.eml
 *.mbox
+node_modules

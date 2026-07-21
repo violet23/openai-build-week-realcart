@@ -55,13 +55,13 @@ def test_fixture_profiles_are_derived_from_item_records(
         "polish": 0.77,
     }
     assert behavior.dimensions.model_dump() == {
-        "color_warmth": 0.38,
-        "color_saturation": 0.38,
-        "visual_contrast": 0.44,
-        "structure": 0.32,
-        "texture_naturalness": 0.48,
-        "ornamentation": 0.2,
-        "polish": 0.26,
+        "color_warmth": 0.15,
+        "color_saturation": 0.33,
+        "visual_contrast": 0.47,
+        "structure": 0.25,
+        "texture_naturalness": 0.25,
+        "ornamentation": 0.18,
+        "polish": 0.17,
     }
     assert behavior.evidence_ids == ["purchase-01", "purchase-02", "purchase-03"]
 
@@ -70,7 +70,7 @@ def test_fixture_report_is_grounded(fixture_payload: dict[str, Any]) -> None:
     report = build_gap_report(fixture_payload)
     known_ids = {item.id for item in report.evidence}
 
-    assert report.gap_score == 29
+    assert report.gap_score == 37
     assert report.score_provenance.aspirational_item_count == 4
     assert report.score_provenance.purchase_item_count == 4
     assert report.score_provenance.kept_purchase_count == 3

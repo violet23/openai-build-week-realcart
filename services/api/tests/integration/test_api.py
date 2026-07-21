@@ -34,7 +34,7 @@ async def test_demo_vertical_slice() -> None:
         "profile_method": "fixture_item_average",
     }
     assert len(payload["survey"]) == 2
-    assert payload["survey"][0]["merchant"] == "Everlane"
+    assert payload["survey"][0]["merchant"] == "Northline Basics"
     assert payload["survey"][0]["price"] == 68
     assert payload["survey"][0]["image"]["image_url"].endswith("hoodie.svg")
     assert payload["survey"][0]["returned"] is False

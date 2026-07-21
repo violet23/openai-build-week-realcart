@@ -90,15 +90,15 @@
     {
       "id": "purchase-01",
       "source": "gmail_fixture",
-      "label": "Everyday cotton hoodie",
-      "merchant": "Everlane",
+      "label": "Oversized charcoal cotton hoodie",
+      "merchant": "Northline Basics",
       "price": 68,
       "currency": "USD",
       "purchased_at": "2026-05-18",
       "returned": false,
       "category": "tops",
-      "colors": ["gray"],
-      "style_tags": ["casual", "soft", "everyday"],
+      "colors": ["charcoal", "cool gray"],
+      "style_tags": ["casual", "oversized", "soft", "lounge", "low-polish"],
       "confidence": 1,
       "image": {
         "id": "fixture-hoodie",
@@ -108,59 +108,59 @@
         "mime_type": "image/svg+xml"
       },
       "dimensions": {
-        "color_warmth": 0.35,
-        "color_saturation": 0.2,
-        "visual_contrast": 0.28,
-        "structure": 0.18,
-        "texture_naturalness": 0.65,
-        "ornamentation": 0.08,
-        "polish": 0.22
+        "color_warmth": 0.18,
+        "color_saturation": 0.12,
+        "visual_contrast": 0.18,
+        "structure": 0.08,
+        "texture_naturalness": 0.52,
+        "ornamentation": 0.03,
+        "polish": 0.1
       }
     },
     {
       "id": "purchase-02",
       "source": "gmail_fixture",
-      "label": "Running sneakers",
-      "merchant": "Asics",
+      "label": "Cobalt technical running sneakers",
+      "merchant": "Pace Form",
       "price": 120,
       "currency": "USD",
       "purchased_at": "2026-04-27",
       "returned": false,
       "category": "shoes",
-      "colors": ["blue", "white"],
-      "style_tags": ["sporty", "practical", "casual"],
+      "colors": ["cobalt", "white"],
+      "style_tags": ["sporty", "technical", "practical", "high-contrast"],
       "confidence": 1,
       "dimensions": {
-        "color_warmth": 0.32,
-        "color_saturation": 0.55,
-        "visual_contrast": 0.68,
-        "structure": 0.48,
-        "texture_naturalness": 0.28,
-        "ornamentation": 0.35,
+        "color_warmth": 0.12,
+        "color_saturation": 0.78,
+        "visual_contrast": 0.82,
+        "structure": 0.55,
+        "texture_naturalness": 0.12,
+        "ornamentation": 0.48,
         "polish": 0.3
       }
     },
     {
       "id": "purchase-03",
       "source": "gmail_fixture",
-      "label": "Soft unstructured tote",
-      "merchant": "Baggu",
+      "label": "Black nylon slouch tote",
+      "merchant": "Day Carry",
       "price": 25,
       "currency": "USD",
       "purchased_at": "2026-06-12",
       "returned": false,
       "category": "bags",
-      "colors": ["olive"],
-      "style_tags": ["soft", "practical", "unstructured"],
+      "colors": ["black"],
+      "style_tags": ["utilitarian", "practical", "oversized", "unstructured", "synthetic"],
       "confidence": 1,
       "dimensions": {
-        "color_warmth": 0.47,
-        "color_saturation": 0.39,
-        "visual_contrast": 0.36,
-        "structure": 0.3,
-        "texture_naturalness": 0.51,
-        "ornamentation": 0.17,
-        "polish": 0.26
+        "color_warmth": 0.14,
+        "color_saturation": 0.08,
+        "visual_contrast": 0.4,
+        "structure": 0.12,
+        "texture_naturalness": 0.1,
+        "ornamentation": 0.02,
+        "polish": 0.12
       }
     },
     {
@@ -222,19 +222,19 @@
     {
       "id": "purchase-01",
       "source": "gmail_fixture",
-      "label": "Everyday cotton hoodie",
+      "label": "Oversized charcoal cotton hoodie",
       "kind": "purchase"
     },
     {
       "id": "purchase-02",
       "source": "gmail_fixture",
-      "label": "Running sneakers",
+      "label": "Cobalt technical running sneakers",
       "kind": "purchase"
     },
     {
       "id": "purchase-03",
       "source": "gmail_fixture",
-      "label": "Soft unstructured tote",
+      "label": "Black nylon slouch tote",
       "kind": "purchase"
     },
     {
@@ -254,8 +254,8 @@
     {
       "id": "purchase-check-in-01",
       "item_id": "purchase-01",
-      "item_name": "Everyday cotton hoodie",
-      "merchant": "Everlane",
+      "item_name": "Oversized charcoal cotton hoodie",
+      "merchant": "Northline Basics",
       "price": 68,
       "currency": "USD",
       "purchased_at": "2026-05-18",

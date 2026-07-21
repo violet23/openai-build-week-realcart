@@ -14,11 +14,11 @@ from realcart_api.scoring import build_gap_report
 async def test_openai_portraits_are_stored_as_two_generated_assets(
     fixture_payload: dict[str, Any], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    calls: list[str] = []
+    calls: list[dict[str, Any]] = []
 
     class FakeImages:
         async def generate(self, **kwargs: Any) -> Any:
-            calls.append(str(kwargs["prompt"]))
+            calls.append(kwargs)
             return SimpleNamespace(
                 data=[
                     SimpleNamespace(
@@ -52,3 +52,15 @@ async def test_openai_portraits_are_stored_as_two_generated_assets(
         for portrait in portraits
     )
     assert len(calls) == 2
+    assert all(call["model"] == "gpt-image-2" for call in calls)
+    assert all(call["output_format"] == "webp" for call in calls)
+    assert all("response_format" not in call for call in calls)
+    prompts = [str(call["prompt"]) for call in calls]
+    style_world_prompt = next(prompt for prompt in prompts if "Saved-image evidence" in prompt)
+    purchase_reality_prompt = next(
+        prompt for prompt in prompts if "Observed purchase evidence" in prompt
+    )
+    assert "Sunlit Mediterranean courtyard" in style_world_prompt
+    assert "Oversized charcoal cotton hoodie" in purchase_reality_prompt
+    assert "Do not borrow the Style World's themes" in purchase_reality_prompt
+    assert "returned is a rejected or unrealized signal" in purchase_reality_prompt

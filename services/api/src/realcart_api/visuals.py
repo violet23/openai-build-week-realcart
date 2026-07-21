@@ -22,21 +22,39 @@ def _portrait_prompt(report: GapReport, kind: Literal["style_world", "purchase_r
         f"{item.label}: {getattr(item, 'aspiration' if kind == 'style_world' else 'behavior'):.2f}"
         for item in report.dimensions
     )
-    themes = ", ".join(theme.name for theme in report.vision_themes[:5]) or "no repeated theme"
-    subject = (
-        "the saved-image Style World"
-        if kind == "style_world"
-        else "observed Purchase Reality"
+    comparison = "; ".join(
+        f"{item.label} {item.aspiration:.2f} in Style World versus "
+        f"{item.behavior:.2f} in Purchase Reality"
+        for item in sorted(report.dimensions, key=lambda item: item.gap, reverse=True)[:4]
     )
+    if kind == "style_world":
+        themes = ", ".join(theme.name for theme in report.vision_themes[:5]) or "none"
+        labels = ", ".join(
+            item.label for item in report.evidence if item.kind == "aspirational"
+        )
+        evidence_direction = (
+            f"Repeated Style World themes: {themes}. Saved-image evidence: {labels}. "
+            "Make this the composed, aspirational side of the comparison: cinematic, "
+            "intentional, and atmosphere-rich."
+        )
+    else:
+        labels = ", ".join(item.label for item in report.evidence if item.kind == "purchase")
+        evidence_direction = (
+            f"Observed purchase evidence: {labels}. Build the scene only from kept everyday "
+            "purchase signals. Evidence explicitly labeled returned is a rejected or unrealized "
+            "signal and must not become the main worn look. Do not borrow the Style World's "
+            "themes, warm architecture, props, or atmosphere. Make this a grounded documentary "
+            "portrait of actual repeated behavior, visibly distinct wherever the dimensions differ."
+        )
     return (
         "Create one editorial fashion-and-lifestyle self-portrait as a symbolic visual profile, "
         "not a portrait of a real identifiable person. Show a faceless full-body silhouette in an "
         "environment whose palette, materials, structure, texture, ornamentation, and polish "
-        f"express {subject}. Style dimensions: {dimensions}. Repeated Style World themes: "
-        f"{themes}. Use a refined magazine-collage aesthetic, soft natural depth, and a coherent "
-        "single composition. Do not include text, numbers, product logos, brand marks, shopping "
-        "interfaces, split screens, or a recommendation. The image is a reflective summary, not "
-        "a claim about identity or psychology. Vertical 2:3 composition."
+        f"express this profile. Profile dimensions: {dimensions}. Strongest comparison points: "
+        f"{comparison}. {evidence_direction} Honor the supplied dimensions instead of averaging "
+        "the two profiles. Use a coherent vertical 2:3 composition. Do not include text, numbers, "
+        "product logos, brand marks, shopping interfaces, split screens, or a recommendation. "
+        "The image is a reflective summary, not a claim about identity or psychology."
     )
 
 
@@ -53,7 +71,6 @@ async def _generate_one(
         quality="medium",
         size="1024x1536",
         output_format="webp",
-        response_format="b64_json",
     )
     data = cast(Any, response).data
     encoded = data[0].b64_json if data else None

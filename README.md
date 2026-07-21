@@ -84,6 +84,9 @@ Then run:
 make run-agents
 ```
 
+To inspect the same real-agent path in the web interface, run `make dev-agents`
+instead of `make dev-api`, then start `make dev-web` in the second terminal.
+
 To generate new Style World and Purchase Reality portraits as well:
 
 ```bash
@@ -168,6 +171,55 @@ latency and multimodal API cost predictable. Adjust `GMAIL_MAX_MESSAGES` and
 | fixture | fixture | fixture | Default, deterministic, credential-free demo |
 | fixture | agents | fixture/openai | Test real agents on synthetic evidence |
 | live | agents | openai | Gmail + Pinterest Sandbox + generated portraits |
+
+## How we collaborated with Codex
+
+Codex was our implementation partner throughout the build. It accelerated the
+initial monorepo scaffold, the typed frontend/backend contract, the FastAPI and
+Next.js vertical slice, synthetic evidence fixtures, deterministic scoring,
+agent definitions, tests, OAuth connector prototypes, multimodal image handling,
+and repeated debugging of local tooling and OpenAI API errors. Codex also helped
+turn product-language discussions into concrete changes across prompts, schemas,
+copy, fixtures, and UI behavior rather than leaving those decisions in a separate
+proposal document.
+
+The team retained the important product and design decisions. We defined
+Pinterest as a Style World rather than a wishlist; narrowed “taste” to fashion
+and its surrounding lifestyle; removed the buy/do-not-buy Second Opinion flow;
+made self-understanding the primary outcome; designed different surveys for kept
+and returned items; and required every score and insight to remain traceable to
+specific evidence. We also chose a privacy-safe fixture experience as the judge
+default and kept live Gmail/Pinterest access explicit and optional.
+
+GPT-5.6 contributes reasoning, not hidden arithmetic. Two `gpt-5.6-terra`
+specialists concurrently convert Style World and Purchase Reality evidence into
+the same typed visual dimensions. Deterministic Python calculates the differences,
+then `gpt-5.6-sol` writes a grounded narrative from those precomputed scores.
+This division was an intentional engineering decision: models interpret ambiguous
+visual and behavioral signals, while inspectable application code owns the score.
+A real fixture-backed agent run was verified on July 21, 2026 with trace ID
+`trace_3b81a100a024433b8a678d395857eb91`.
+
+## Judge testing path
+
+The recommended judge path is the credential-free fixture demo. It exercises the
+complete report, evidence provenance, product-image surveys, returned-item logic,
+and portraits without reading personal accounts or consuming API credit:
+
+```bash
+make setup
+make dev-api
+```
+
+In a second terminal:
+
+```bash
+make dev-web
+```
+
+Then open [http://localhost:3000](http://localhost:3000). The optional real-model
+and live-connector paths are documented above, but judges never need our API keys,
+OAuth secrets, personal Gmail, or Pinterest account.
 
 ## Verification
 

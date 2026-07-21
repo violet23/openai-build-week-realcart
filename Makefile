@@ -14,7 +14,7 @@ VENV := services/api/.venv
 API_PYTHON := $(VENV)/bin/python
 API_PIP := $(VENV)/bin/pip
 
-.PHONY: setup dev-api dev-live dev-web run run-json run-agents run-agents-images test lint typecheck build check
+.PHONY: setup dev-api dev-agents dev-live dev-web run run-json run-agents run-agents-images test lint typecheck build check
 
 setup:
 	$(PYTHON) -m venv $(VENV)
@@ -22,7 +22,10 @@ setup:
 	$(PNPM) install
 
 dev-api:
-	DATA_MODE=fixture $(VENV)/bin/uvicorn realcart_api.main:app --app-dir services/api/src --reload --host 127.0.0.1 --port 8000
+	DATA_MODE=fixture ANALYSIS_MODE=fixture IMAGE_GENERATION_MODE=fixture $(VENV)/bin/uvicorn realcart_api.main:app --app-dir services/api/src --reload --host 127.0.0.1 --port 8000
+
+dev-agents:
+	DATA_MODE=fixture ANALYSIS_MODE=agents IMAGE_GENERATION_MODE=fixture $(VENV)/bin/uvicorn realcart_api.main:app --app-dir services/api/src --reload --host 127.0.0.1 --port 8000
 
 dev-live:
 	DATA_MODE=live ANALYSIS_MODE=agents IMAGE_GENERATION_MODE=openai $(VENV)/bin/uvicorn realcart_api.main:app --app-dir services/api/src --reload --host 127.0.0.1 --port 8000
@@ -31,19 +34,19 @@ dev-web:
 	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/next dev
 
 run:
-	DATA_MODE=fixture ANALYSIS_MODE=fixture $(VENV)/bin/realcart --format markdown
+	DATA_MODE=fixture ANALYSIS_MODE=fixture IMAGE_GENERATION_MODE=fixture $(VENV)/bin/realcart --format markdown
 
 run-json:
-	DATA_MODE=fixture ANALYSIS_MODE=fixture $(VENV)/bin/realcart --format json
+	DATA_MODE=fixture ANALYSIS_MODE=fixture IMAGE_GENERATION_MODE=fixture $(VENV)/bin/realcart --format json
 
 run-agents:
-	DATA_MODE=fixture $(VENV)/bin/realcart --analysis-mode agents --format markdown
+	DATA_MODE=fixture ANALYSIS_MODE=agents IMAGE_GENERATION_MODE=fixture $(VENV)/bin/realcart --format markdown
 
 run-agents-images:
 	DATA_MODE=fixture ANALYSIS_MODE=agents IMAGE_GENERATION_MODE=openai $(VENV)/bin/realcart --format markdown
 
 test:
-	$(API_PYTHON) -m pytest services/api/tests
+	DATA_MODE=fixture ANALYSIS_MODE=fixture IMAGE_GENERATION_MODE=fixture OPENAI_TRACING_ENABLED=false $(API_PYTHON) -m pytest services/api/tests
 	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/vitest run
 
 lint:
