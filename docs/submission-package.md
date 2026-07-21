@@ -17,8 +17,9 @@ collects and the products that become part of everyday life. It treats visual
 boards as repeated visual attention rather than a wishlist or ideal self, then
 compares those signals with purchase history, returns, usage, and emotional feedback.
 
-The experience begins with two partial evidence sources: saved visual signals and
-purchase patterns. Neither is treated as better or more authentic. A short
+The experience begins with shopping outcomes as its behavioral baseline and saved
+visual signals as a contextual style reference. Neither is treated as a complete or
+more authentic self. A short
 product-image survey adds context a receipt cannot provide, such
 as whether an item is still used, how it feels now, what motivated the purchase,
 and why it was returned. RealCart then produces two symbolic portraits, typed

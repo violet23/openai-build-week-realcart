@@ -84,3 +84,24 @@ def test_fixture_report_is_grounded(fixture_payload: dict[str, Any]) -> None:
     ]
     assert report.insights
     assert all(set(insight.evidence_ids) <= known_ids for insight in report.insights)
+
+
+def test_survey_answers_reweight_kept_purchase_pattern(
+    fixture_payload: dict[str, Any],
+) -> None:
+    baseline = build_gap_report(fixture_payload)
+    fixture_payload["survey_answers"] = [
+        {
+            "item_id": "purchase-01",
+            "values": {
+                "usage_frequency": "Never",
+                "emotional_feedback": "Regret it",
+            },
+            "notes": "It never worked for me.",
+        }
+    ]
+
+    refined = build_gap_report(fixture_payload)
+
+    assert refined.gap_score != baseline.gap_score
+    assert refined.dimensions != baseline.dimensions

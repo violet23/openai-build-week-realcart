@@ -226,6 +226,23 @@ async def _synthesize_narrative(
             "aspiration_profile": aspiration.model_dump(),
             "vision_themes": [theme.model_dump() for theme in aspiration.themes],
             "behavior_profile": behavior.model_dump(),
+            "purchase_records": [
+                {
+                    key: item.get(key)
+                    for key in (
+                        "id",
+                        "label",
+                        "merchant",
+                        "price",
+                        "currency",
+                        "returned",
+                        "category",
+                        "style_tags",
+                    )
+                }
+                for item in payload["purchase_items"]
+            ],
+            "survey_answers": payload.get("survey_answers", []),
             "gap_score": scored_report.gap_score,
             "dimensions": [item.model_dump() for item in scored_report.dimensions],
             "allowed_evidence_ids": [item.id for item in scored_report.evidence],

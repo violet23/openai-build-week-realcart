@@ -60,6 +60,35 @@ def aggregate_style_items(
     )
 
 
+def _purchase_items_with_survey_weights(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    """Use follow-up answers to weight how representative a kept item appears."""
+
+    answers_by_item = {
+        str(answer.get("item_id")): answer.get("values", {})
+        for answer in payload.get("survey_answers", [])
+    }
+    usage_weights = {"Often": 1.0, "Sometimes": 0.75, "Rarely": 0.35, "Never": 0.15}
+    feeling_weights = {"Love it": 1.0, "Neutral": 0.7, "Regret it": 0.25}
+    weighted_items: list[dict[str, Any]] = []
+    for item in payload["purchase_items"]:
+        weighted = dict(item)
+        values = answers_by_item.get(str(item.get("id")), {})
+        signals = [
+            usage_weights[value]
+            for value in [values.get("usage_frequency")]
+            if value in usage_weights
+        ]
+        signals.extend(
+            feeling_weights[value]
+            for value in [values.get("emotional_feedback")]
+            if value in feeling_weights
+        )
+        if signals and not bool(item.get("returned")):
+            weighted["confidence"] = round(sum(signals) / len(signals), 2)
+        weighted_items.append(weighted)
+    return weighted_items
+
+
 def aggregate_vision_themes(raw_items: list[dict[str, Any]]) -> list[VisionTheme]:
     """Keep repeated board-level themes without forcing them into the distance score."""
 
@@ -157,7 +186,7 @@ def build_gap_report(
     )
     aspiration = aspiration or aggregate_style_items(payload["aspirational_items"])
     behavior = behavior or aggregate_style_items(
-        payload["purchase_items"], exclude_returned=True
+        _purchase_items_with_survey_weights(payload), exclude_returned=True
     )
     dimensions = calculate_gap_dimensions(aspiration, behavior)
     persona: dict[str, str] = payload["persona"]

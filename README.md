@@ -8,12 +8,12 @@ is self-understanding: it reveals patterns that may be valuable even when the us
 is not planning a purchase. RealCart does not search for products, rank choices,
 or issue buy/do-not-buy verdicts.
 
-Pinterest saves are interpreted as repeated visual attention rather than a wishlist
-or an ideal self. Gmail records contribute purchase patterns shaped by preference,
-budget, need, fit, availability, and circumstance—not a “real self.” Two multimodal
-specialists read normalized records and images, deterministic code calculates the
-Signal Distance, and a report manager writes evidence-grounded insights. Neither
-source is privileged; the report can also contain two symbolic signal portraits.
+Shopping history—purchases, keeps, returns, exchanges, price, use, and feedback—is
+the primary record of observed buying outcomes. Pinterest saves provide a contextual
+style reference rather than a wishlist or ideal self. Two multimodal specialists read
+normalized records and images, deterministic code calculates the Pattern Difference,
+and a report manager writes evidence-grounded insights. The report can also contain
+two symbolic portraits; neither is presented as a complete or authentic self.
 
 ## What works now
 
@@ -23,8 +23,9 @@ source is privileged; the report can also contain two symbolic signal portraits.
 - Concurrent Saved Style Signals and Purchase Patterns agents using `gpt-5.6-terra`.
 - A report manager using `gpt-5.6-sol` and deterministic Python scoring.
 - Two optional report images generated with `gpt-image-2`.
-- Survey submission that reruns the configured analysis pipeline.
-- A Next.js report viewer with source status, portraits, evidence, scores, and surveys.
+- Survey submission that reweights fixture shopping signals or informs the real agents.
+- A Next.js profile page with demo inputs, two portraits, a refinement survey, concise
+  comparisons, and shopping-pattern insight bubbles.
 
 The removed Decision Reflection / “want to buy” feature is not part of the API or UI.
 

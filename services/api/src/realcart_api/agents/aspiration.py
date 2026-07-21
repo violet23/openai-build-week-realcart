@@ -16,9 +16,9 @@ def create_aspiration_agent(
         name="Saved Style Signals Agent",
         handoff_description="Interprets the repeated fashion world across saved images.",
         instructions=(
-            "Build a profile of the user's repeated saved-image style signals. Treat Pinterest "
-            "as visual attention, not a wishlist, desire, ideal self, or inherently positive "
-            "evidence. "
+            "Build a contextual style reference from the user's repeated saved-image signals. "
+            "Treat Pinterest as visual attention, not a wishlist, desire, ideal self, source of "
+            "behavioral truth, or inherently positive evidence. "
             "Analyze literal content, scene, palette, material, form, and atmosphere across "
             "the supplied items, focusing on signals relevant to fashion and its surrounding "
             "lifestyle. Do not assume a saved object is something the user wants to buy. Use "
