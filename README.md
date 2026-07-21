@@ -29,6 +29,14 @@ two symbolic portraits; neither is presented as a complete or authentic self.
 
 The removed Decision Reflection / “want to buy” feature is not part of the API or UI.
 
+## Hackathon submission facts
+
+- **Category:** Apps for Your Life
+- **Required tools:** Codex collaboration plus GPT-5.6 specialist and synthesis agents
+- **Judge path:** credential-free synthetic fixture; no API keys or test accounts required
+- **License:** MIT
+- **Repository:** public at `https://github.com/violet23/openai-build-week-realcart`
+
 ## Repository layout
 
 ```text
@@ -158,8 +166,11 @@ make dev-live
 make dev-web
 ```
 
-Open the app, connect both source cards, then reload once both say Connected. Live
-mode uses the two GPT-5.6 specialists, the report manager, and `gpt-image-2`.
+With the API running, authorize Gmail at
+`http://127.0.0.1:8000/api/auth/gmail/start` and Pinterest at
+`http://127.0.0.1:8000/api/auth/pinterest/start`. After both callbacks complete,
+open the web app. Live mode uses the two GPT-5.6 specialists, the report manager,
+and `gpt-image-2`.
 
 Product images are best-effort: many receipt templates contain only logos, block
 remote images, or use expired/authenticated URLs. RealCart prefers attached/inline
@@ -203,8 +214,7 @@ the same typed visual dimensions. Deterministic Python calculates the difference
 then `gpt-5.6-sol` writes a grounded narrative from those precomputed scores.
 This division was an intentional engineering decision: models interpret ambiguous
 visual and behavioral signals, while inspectable application code owns the score.
-A real fixture-backed agent run was verified on July 21, 2026 with trace ID
-`trace_3b81a100a024433b8a678d395857eb91`.
+A real fixture-backed agent run was verified on July 21, 2026.
 
 ## Judge testing path
 

@@ -17,7 +17,7 @@ __pycache__/
 dist/
 build/
 
-# Ignore any local artifacts left by the removed frontend scaffold.
+# Generated frontend artifacts
 node_modules/
 .next/
 coverage/
@@ -38,4 +38,3 @@ credentials/
 private-data/
 *.eml
 *.mbox
-node_modules
