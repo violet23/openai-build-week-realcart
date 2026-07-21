@@ -1,10 +1,9 @@
 from typing import Any
 
-from realcart_api.schemas import CandidateItem, StyleProfile
+from realcart_api.schemas import StyleProfile
 from realcart_api.scoring.gap import (
     aggregate_style_items,
     build_gap_report,
-    build_second_opinion,
     calculate_gap_dimensions,
     calculate_gap_score,
 )
@@ -85,13 +84,3 @@ def test_fixture_report_is_grounded(fixture_payload: dict[str, Any]) -> None:
     ]
     assert report.insights
     assert all(set(insight.evidence_ids) <= known_ids for insight in report.insights)
-
-
-def test_second_opinion_avoids_verdict(fixture_payload: dict[str, Any]) -> None:
-    candidate = CandidateItem.model_validate(fixture_payload["candidate"])
-    opinion = build_second_opinion(fixture_payload, candidate)
-    lowered = opinion.reading.lower()
-
-    assert "recommend" not in lowered
-    assert "you should buy" not in lowered
-    assert len(opinion.dimensions) == 3

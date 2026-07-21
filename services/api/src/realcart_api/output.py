@@ -29,6 +29,8 @@ def render_markdown(run: AnalysisRun) -> str:
             f"- **Synthesis:** {runtime.synthesis_model} "
             f"({runtime.synthesis_reasoning_effort} reasoning)"
         )
+    if runtime.image_model is not None:
+        lines.append(f"- **Report portraits:** {runtime.image_model}")
     if runtime.trace_id is not None:
         lines.append(f"- **Trace ID:** `{runtime.trace_id}`")
     lines.extend(
@@ -36,8 +38,8 @@ def render_markdown(run: AnalysisRun) -> str:
         "",
         "## Style-gap provenance",
         "",
-        f"- **Synthetic vision-board pins:** {report.score_provenance.aspirational_item_count}",
-        f"- **Synthetic purchases:** {report.score_provenance.purchase_item_count}",
+        f"- **Style World records:** {report.score_provenance.aspirational_item_count}",
+        f"- **Purchase records:** {report.score_provenance.purchase_item_count}",
         f"- **Kept purchases in Purchase Reality:** {report.score_provenance.kept_purchase_count}",
         f"- **Returned purchases excluded:** {report.score_provenance.returned_item_count}",
         f"- **Profile method:** {report.score_provenance.profile_method}",
@@ -50,6 +52,13 @@ def render_markdown(run: AnalysisRun) -> str:
         f"(evidence: {', '.join(theme.evidence_ids)})"
         for theme in report.vision_themes
     )
+    if report.portraits:
+        lines.extend(["", "## Visual portraits", ""])
+        lines.extend(
+            f"- **{portrait.title}:** {portrait.image.image_url} "
+            f"({portrait.generation_mode}, {portrait.model})"
+            for portrait in report.portraits
+        )
     lines.extend(
         [
             "",

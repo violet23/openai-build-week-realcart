@@ -1,5 +1,10 @@
 PYTHON ?= python3
 PNPM ?= pnpm
+
+ifneq (,$(wildcard .env))
+include .env
+export
+endif
 SYSTEM_NODE := $(shell command -v node 2>/dev/null)
 CODEX_NODE := $(HOME)/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node
 NODE ?= $(if $(SYSTEM_NODE),$(SYSTEM_NODE),$(CODEX_NODE))
@@ -9,7 +14,7 @@ VENV := services/api/.venv
 API_PYTHON := $(VENV)/bin/python
 API_PIP := $(VENV)/bin/pip
 
-.PHONY: setup dev-api dev-web run run-json run-agents test lint typecheck build check
+.PHONY: setup dev-api dev-live dev-web run run-json run-agents run-agents-images test lint typecheck build check
 
 setup:
 	$(PYTHON) -m venv $(VENV)
@@ -18,6 +23,9 @@ setup:
 
 dev-api:
 	DATA_MODE=fixture $(VENV)/bin/uvicorn realcart_api.main:app --app-dir services/api/src --reload --host 127.0.0.1 --port 8000
+
+dev-live:
+	DATA_MODE=live ANALYSIS_MODE=agents IMAGE_GENERATION_MODE=openai $(VENV)/bin/uvicorn realcart_api.main:app --app-dir services/api/src --reload --host 127.0.0.1 --port 8000
 
 dev-web:
 	cd apps/web && PATH="$(WEB_PATH)" ./node_modules/.bin/next dev
@@ -30,6 +38,9 @@ run-json:
 
 run-agents:
 	DATA_MODE=fixture $(VENV)/bin/realcart --analysis-mode agents --format markdown
+
+run-agents-images:
+	DATA_MODE=fixture ANALYSIS_MODE=agents IMAGE_GENERATION_MODE=openai $(VENV)/bin/realcart --format markdown
 
 test:
 	$(API_PYTHON) -m pytest services/api/tests

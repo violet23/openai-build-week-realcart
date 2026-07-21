@@ -1,3 +1,11 @@
+export interface ImageAsset {
+  id: string;
+  source: "fixture" | "gmail" | "pinterest" | "generated";
+  image_url: string;
+  alt_text: string;
+  mime_type: string;
+}
+
 export interface GapDimension {
   key: string;
   label: string;
@@ -34,6 +42,15 @@ export interface VisionTheme {
   evidence_ids: string[];
 }
 
+export interface GeneratedPortrait {
+  kind: "style_world" | "purchase_reality";
+  title: string;
+  image: ImageAsset;
+  evidence_ids: string[];
+  model: string;
+  generation_mode: "fixture" | "openai";
+}
+
 export interface GapReport {
   persona_id: string;
   persona_name: string;
@@ -44,6 +61,7 @@ export interface GapReport {
   evidence: EvidenceItem[];
   score_provenance: ScoreProvenance;
   vision_themes: VisionTheme[];
+  portraits: GeneratedPortrait[];
 }
 
 export type SurveyPromptKey =
@@ -65,38 +83,38 @@ export interface PurchaseSurveyItem {
   item_id: string;
   item_name: string;
   merchant: string;
-  price: number;
+  price: number | null;
   currency: string;
   purchased_at: string;
   returned: boolean;
+  image: ImageAsset | null;
   prompts: SurveyPrompt[];
   comment_prompt: string;
-}
-
-export interface CandidateItem {
-  name: string;
-  price: number;
-  dimensions: Record<string, number>;
 }
 
 export interface DemoResponse {
   persona: Record<string, string>;
   report: GapReport;
   survey: PurchaseSurveyItem[];
-  candidate: CandidateItem;
 }
 
-export interface OpinionDimension {
-  label: string;
-  score: number;
-  note: string;
+export interface SurveyAnswer {
+  item_id: string;
+  values: Record<string, string>;
+  notes: string;
 }
 
-export interface SecondOpinionResponse {
-  candidate_name: string;
-  reading: string;
-  dimensions: OpinionDimension[];
-  evidence_ids: string[];
+export interface SourceConnection {
+  source: "gmail" | "pinterest";
+  configured: boolean;
+  connected: boolean;
+  environment: "gmail" | "sandbox";
+  connect_url: string;
+}
+
+export interface ConnectionOverview {
+  data_mode: string;
+  sources: SourceConnection[];
 }
 
 const API_BASE_URL =
@@ -105,7 +123,8 @@ const API_BASE_URL =
 async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, init);
   if (!response.ok) {
-    throw new Error(`RealCart API returned ${response.status}`);
+    const payload = (await response.json().catch(() => null)) as { detail?: string } | null;
+    throw new Error(payload?.detail ?? `RealCart API returned ${response.status}`);
   }
   return (await response.json()) as T;
 }
@@ -114,12 +133,14 @@ export function loadDemo(): Promise<DemoResponse> {
   return fetchJson<DemoResponse>("/api/demo");
 }
 
-export function loadSecondOpinion(
-  candidate: CandidateItem,
-): Promise<SecondOpinionResponse> {
-  return fetchJson<SecondOpinionResponse>("/api/second-opinion", {
+export function loadConnections(): Promise<ConnectionOverview> {
+  return fetchJson<ConnectionOverview>("/api/connections");
+}
+
+export function submitAnalysis(answers: SurveyAnswer[]): Promise<DemoResponse> {
+  return fetchJson<DemoResponse>("/api/analyze", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(candidate),
+    body: JSON.stringify({ answers }),
   });
 }

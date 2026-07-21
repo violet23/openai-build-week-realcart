@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" role="img" aria-labelledby="title desc">
+  <title id="title">Synthetic Purchase Reality portrait</title>
+  <desc id="desc">A faceless practical fashion silhouette in a cool everyday city setting.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d9dcda"/><stop offset="1" stop-color="#929b9e"/></linearGradient>
+    <linearGradient id="hoodie" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8f9697"/><stop offset="1" stop-color="#596366"/></linearGradient>
+  </defs>
+  <rect width="1000" height="1400" fill="url(#bg)"/>
+  <path d="M0 610 220 460h220v940H0zm680-220h320v1010H680z" fill="#737e82" opacity=".58"/>
+  <path d="M55 680h315v80H55zm650-190h235v100H705z" fill="#e8e7e2" opacity=".6"/>
+  <path d="M500 330c50 0 86 45 86 98s-36 94-86 94-86-41-86-94 36-98 86-98" fill="#62696a"/>
+  <path d="M416 500c-78 58-112 225-92 574h352c18-349-16-516-92-574-22 44-49 67-84 67s-62-23-84-67" fill="url(#hoodie)"/>
+  <path d="M351 610 235 943l80 30 126-278m208-85 116 333-80 30-126-278" fill="none" stroke="#70797b" stroke-width="62"/>
+  <path d="M400 1074h101l-26 250H350zm99 0h101l150 250H625z" fill="#394143"/>
+  <path d="M333 1324h156l-8 35H318zm276 0h178l18 35H600z" fill="#dce5e8"/>
+  <path d="M650 795h128l35 220H622z" fill="#53614c"/>
+  <text x="60" y="88" fill="#364043" font-family="Georgia, serif" font-size="46" letter-spacing="7">PURCHASE REALITY</text>
+  <text x="62" y="132" fill="#536064" font-family="Arial, sans-serif" font-size="20" letter-spacing="3">SYNTHETIC VISUAL FIXTURE</text>
+</svg>

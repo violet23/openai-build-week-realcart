@@ -5,8 +5,7 @@
 RealCart turns a user's Style World, purchase history, returns, usage, and
 emotional feedback into a personal shopping-pattern model. Its primary value is
 revealing patterns the user may not have noticed, even when they are not shopping.
-Optional Decision Reflection surfaces the factors shaping a later decision without
-telling the user what to buy.
+It does not evaluate candidate products or tell the user what to buy.
 
 ## Repository map
 
@@ -18,7 +17,7 @@ telling the user what to buy.
 
 ## Working agreements
 
-- Keep `DATA_MODE=fixture` as the default until live integrations are explicitly requested.
+- Keep `DATA_MODE=fixture` as the safe default; live integrations require explicit opt-in.
 - Never commit real emails, pins, OAuth tokens, credentials, or personal data.
 - Keep API retrieval deterministic. Gmail and Pinterest integrations are connectors/tools, not agents.
 - Agent outputs must use typed schemas and cite evidence IDs.

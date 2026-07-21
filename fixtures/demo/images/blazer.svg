@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Synthetic camel structured blazer</title>
+  <desc id="desc">A structured camel blazer fixture on a muted studio background.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfd8cb"/>
+      <stop offset="1" stop-color="#b7aa9a"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="20"/>
+    </filter>
+  </defs>
+  <rect width="900" height="1100" fill="url(#bg)"/>
+  <ellipse cx="450" cy="945" rx="275" ry="50" fill="#5d4c3e" opacity=".22" filter="url(#shadow)"/>
+  <path d="M316 242 184 320l-56 414 122 17 54-291 18 454h256l18-454 54 291 122-17-56-414-132-78-70-42H386z" fill="#b17a4e"/>
+  <path d="m386 200-38 68 75 273 27-126 27 126 75-273-38-68-64 82z" fill="#c18b5e"/>
+  <path d="M450 415v475" stroke="#8f5d39" stroke-width="8"/>
+  <path d="M337 662h76v19h-76zm150 0h76v19h-76z" fill="#8f5d39"/>
+  <circle cx="470" cy="596" r="11" fill="#594238"/>
+  <circle cx="470" cy="668" r="11" fill="#594238"/>
+  <text x="52" y="1030" fill="#4d4036" font-family="Arial, sans-serif" font-size="28" letter-spacing="4">SYNTHETIC PRODUCT FIXTURE</text>
+</svg>

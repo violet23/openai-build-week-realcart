@@ -1,4 +1,4 @@
-"""Connector protocol for fixture and future live implementations."""
+"""Connector protocol and shared live-source errors."""
 
 from typing import Any, Protocol
 
@@ -10,4 +10,4 @@ class SignalConnector(Protocol):
 
 
 class LiveConnectorNotConfigured(RuntimeError):
-    """Raised when a live connector is used before its privacy gate is complete."""
+    """Raised when a live connector lacks credentials or usable provider data."""

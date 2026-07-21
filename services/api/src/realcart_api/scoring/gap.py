@@ -1,18 +1,15 @@
-"""Deterministic Style Gap and Decision Reflection calculations."""
+"""Deterministic Style Gap calculations."""
 
-from collections.abc import Mapping
 from typing import Any, Literal
 
 from realcart_api.schemas import (
-    CandidateItem,
     EvidenceItem,
     GapDimension,
     GapReport,
+    GeneratedPortrait,
     GroundedInsight,
-    OpinionDimension,
     ReportNarrative,
     ScoreProvenance,
-    SecondOpinionResponse,
     StyleDimensions,
     StyleProfile,
     StyleSignalItem,
@@ -32,14 +29,6 @@ DIMENSION_LABELS = {
 
 def _clamp(value: float) -> float:
     return max(0.0, min(1.0, value))
-
-
-def _score_similarity(left: Mapping[str, float], right: Mapping[str, float]) -> int:
-    shared = sorted(set(left) & set(right))
-    if not shared:
-        return 0
-    distance = sum(abs(_clamp(left[key]) - _clamp(right[key])) for key in shared)
-    return round((1 - distance / len(shared)) * 100)
 
 
 def aggregate_style_items(
@@ -226,65 +215,8 @@ def build_gap_report(
             profile_method=profile_method,
         ),
         vision_themes=vision_themes,
-    )
-
-
-def _spend_fit(price: float, spend_range: list[float]) -> int:
-    lower, upper = spend_range
-    if lower <= price <= upper:
-        return 100
-    distance = lower - price if price < lower else price - upper
-    scale = max(upper - lower, 1)
-    return round(max(0, 100 - distance / scale * 100))
-
-
-def build_second_opinion(
-    payload: dict[str, Any], candidate: CandidateItem
-) -> SecondOpinionResponse:
-    aspiration = aggregate_style_items(payload["aspirational_items"])
-    kept_purchases = [
-        item for item in payload["purchase_items"] if not bool(item.get("returned"))
-    ]
-    returned_purchases = [
-        item for item in payload["purchase_items"] if bool(item.get("returned"))
-    ]
-    prices = [float(item["price"]) for item in kept_purchases]
-    if not prices or not returned_purchases:
-        raise ValueError(
-            "Decision Reflection requires kept and returned purchase fixtures"
-        )
-    regret_profile = aggregate_style_items(returned_purchases)
-    aesthetic_fit = _score_similarity(
-        candidate.dimensions, aspiration.dimensions.model_dump()
-    )
-    spend_fit = _spend_fit(candidate.price, [min(prices), max(prices)])
-    regret_similarity = _score_similarity(
-        candidate.dimensions, regret_profile.dimensions.model_dump()
-    )
-
-    return SecondOpinionResponse(
-        candidate_name=candidate.name,
-        reading=(
-            "This item aligns with the warm, polished Style World, sits above the synthetic "
-            "usual spend range, and overlaps with a prior return or regret pattern. These are "
-            "factors shaping the decision—not instructions about what to buy."
-        ),
-        dimensions=[
-            OpinionDimension(
-                label="Style World alignment",
-                score=aesthetic_fit,
-                note="Similarity to the transferable signals in the Style World.",
-            ),
-            OpinionDimension(
-                label="Spending-pattern context",
-                score=spend_fit,
-                note="Position relative to the observed Purchase Reality spend range.",
-            ),
-            OpinionDimension(
-                label="Return or regret overlap",
-                score=regret_similarity,
-                note="Higher means more overlap with previously returned or regretted signals.",
-            ),
+        portraits=[
+            GeneratedPortrait.model_validate(item)
+            for item in payload.get("portraits", [])
         ],
-        evidence_ids=[*aspiration.evidence_ids[:2], "survey-01"],
     )

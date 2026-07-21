@@ -35,6 +35,14 @@ class VisionProfile(StyleProfile):
     themes: list[VisionTheme]
 
 
+class ImageAsset(BaseModel):
+    id: str
+    source: Literal["fixture", "gmail", "pinterest", "generated"]
+    image_url: str
+    alt_text: str
+    mime_type: str
+
+
 class StyleSignalItem(BaseModel):
     id: str
     source: str
@@ -48,6 +56,7 @@ class StyleSignalItem(BaseModel):
     literal_content: list[str] = Field(default_factory=list)
     themes: list[str] = Field(default_factory=list)
     visual_evidence: list[str] = Field(default_factory=list)
+    image: ImageAsset | None = None
 
 
 class EvidenceItem(BaseModel):
@@ -75,12 +84,23 @@ class PurchaseSurveyItem(BaseModel):
     item_id: str
     item_name: str
     merchant: str
-    price: float = Field(ge=0)
+    price: float | None = Field(default=None, ge=0)
     currency: str = "USD"
     purchased_at: str
     returned: bool
+    image: ImageAsset | None = None
     prompts: list[SurveyPrompt]
     comment_prompt: str
+
+
+class SurveyAnswer(BaseModel):
+    item_id: str
+    values: dict[str, str]
+    notes: str = Field(default="", max_length=500)
+
+
+class AnalysisRequest(BaseModel):
+    answers: list[SurveyAnswer] = Field(default_factory=list)
 
 
 class GapDimension(BaseModel):
@@ -105,6 +125,15 @@ class ScoreProvenance(BaseModel):
     profile_method: Literal["fixture_item_average", "agent_profiles"]
 
 
+class GeneratedPortrait(BaseModel):
+    kind: Literal["style_world", "purchase_reality"]
+    title: str
+    image: ImageAsset
+    evidence_ids: list[str]
+    model: str
+    generation_mode: Literal["fixture", "openai"]
+
+
 class GapReport(BaseModel):
     persona_id: str
     persona_name: str
@@ -115,46 +144,18 @@ class GapReport(BaseModel):
     evidence: list[EvidenceItem]
     score_provenance: ScoreProvenance
     vision_themes: list[VisionTheme]
-
-
-class CandidateItem(BaseModel):
-    name: str
-    price: float = Field(ge=0)
-    dimensions: dict[str, float]
-
-
-class SecondOpinionRequest(CandidateItem):
-    pass
-
-
-class OpinionDimension(BaseModel):
-    label: str
-    score: int = Field(ge=0, le=100)
-    note: str
-
-
-class SecondOpinionResponse(BaseModel):
-    candidate_name: str
-    reading: str
-    dimensions: list[OpinionDimension]
-    evidence_ids: list[str]
+    portraits: list[GeneratedPortrait] = Field(default_factory=list)
 
 
 class DemoResponse(BaseModel):
     persona: dict[str, str]
     report: GapReport
     survey: list[PurchaseSurveyItem]
-    candidate: CandidateItem
 
 
 class ReportNarrative(BaseModel):
     summary: str
     insights: list[GroundedInsight]
-
-
-class SecondOpinionNarrative(BaseModel):
-    reading: str
-    notes: list[str]
 
 
 class AnalysisStage(BaseModel):
@@ -169,7 +170,21 @@ class ModelRuntime(BaseModel):
     specialist_reasoning_effort: str | None = None
     synthesis_model: str | None = None
     synthesis_reasoning_effort: str | None = None
+    image_model: str | None = None
     trace_id: str | None = None
+
+
+class SourceConnection(BaseModel):
+    source: Literal["gmail", "pinterest"]
+    configured: bool
+    connected: bool
+    environment: Literal["gmail", "sandbox"]
+    connect_url: str
+
+
+class ConnectionOverview(BaseModel):
+    data_mode: str
+    sources: list[SourceConnection]
 
 
 class AnalysisRun(BaseModel):

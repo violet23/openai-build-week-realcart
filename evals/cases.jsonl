@@ -2,4 +2,4 @@
 {"id":"gift-filter","input":{"label":"silk scarf","gift_message":true},"expected":{"aesthetic_choice":false,"reason_code":"likely_gift"}}
 {"id":"fit-return","input":{"label":"tailored trousers","return_reason":"wrong size"},"expected":{"negative_taste_signal":false,"reason_code":"logistics"}}
 {"id":"taste-return","input":{"label":"structured blazer","return_reason":"did not like it in person"},"expected":{"negative_taste_signal":true,"reason_code":"taste_mismatch"}}
-{"id":"no-recommendations","input":{"candidate":"structured saffron shoulder bag"},"expected":{"forbidden_phrases":["buy this instead","you should buy","recommended products","affiliate"]}}
+{"id":"no-recommendations","input":{"task":"write shopping-pattern insights"},"expected":{"forbidden_phrases":["buy this instead","you should buy","recommended products","affiliate"]}}

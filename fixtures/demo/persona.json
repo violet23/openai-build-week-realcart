@@ -100,6 +100,13 @@
       "colors": ["gray"],
       "style_tags": ["casual", "soft", "everyday"],
       "confidence": 1,
+      "image": {
+        "id": "fixture-hoodie",
+        "source": "fixture",
+        "image_url": "http://127.0.0.1:8000/api/fixture-assets/hoodie.svg",
+        "alt_text": "Synthetic gray cotton hoodie fixture",
+        "mime_type": "image/svg+xml"
+      },
       "dimensions": {
         "color_warmth": 0.35,
         "color_saturation": 0.2,
@@ -169,6 +176,13 @@
       "colors": ["camel"],
       "style_tags": ["tailored", "formal", "structured"],
       "confidence": 1,
+      "image": {
+        "id": "fixture-blazer",
+        "source": "fixture",
+        "image_url": "http://127.0.0.1:8000/api/fixture-assets/blazer.svg",
+        "alt_text": "Synthetic camel structured blazer fixture",
+        "mime_type": "image/svg+xml"
+      },
       "dimensions": {
         "color_warmth": 0.78,
         "color_saturation": 0.3,
@@ -246,6 +260,13 @@
       "currency": "USD",
       "purchased_at": "2026-05-18",
       "returned": false,
+      "image": {
+        "id": "fixture-hoodie",
+        "source": "fixture",
+        "image_url": "http://127.0.0.1:8000/api/fixture-assets/hoodie.svg",
+        "alt_text": "Synthetic gray cotton hoodie fixture",
+        "mime_type": "image/svg+xml"
+      },
       "comment_prompt": "Anything else about how this hoodie fits into your life?",
       "prompts": [
         {
@@ -277,6 +298,13 @@
       "currency": "USD",
       "purchased_at": "2026-06-04",
       "returned": true,
+      "image": {
+        "id": "fixture-blazer",
+        "source": "fixture",
+        "image_url": "http://127.0.0.1:8000/api/fixture-assets/blazer.svg",
+        "alt_text": "Synthetic camel structured blazer fixture",
+        "mime_type": "image/svg+xml"
+      },
       "comment_prompt": "Anything else you want us to understand about this return?",
       "prompts": [
         {
@@ -300,17 +328,34 @@
       ]
     }
   ],
-  "candidate": {
-    "name": "Structured saffron shoulder bag",
-    "price": 145,
-    "dimensions": {
-      "color_warmth": 0.84,
-      "color_saturation": 0.7,
-      "visual_contrast": 0.65,
-      "structure": 0.86,
-      "texture_naturalness": 0.68,
-      "ornamentation": 0.55,
-      "polish": 0.82
+  "portraits": [
+    {
+      "kind": "style_world",
+      "title": "Style World",
+      "image": {
+        "id": "fixture-style-world",
+        "source": "fixture",
+        "image_url": "http://127.0.0.1:8000/api/fixture-assets/style-world.svg",
+        "alt_text": "Synthetic visual portrait of Maya's Style World",
+        "mime_type": "image/svg+xml"
+      },
+      "evidence_ids": ["pin-01", "pin-02", "pin-03", "pin-04"],
+      "model": "fixture",
+      "generation_mode": "fixture"
+    },
+    {
+      "kind": "purchase_reality",
+      "title": "Purchase Reality",
+      "image": {
+        "id": "fixture-purchase-reality",
+        "source": "fixture",
+        "image_url": "http://127.0.0.1:8000/api/fixture-assets/purchase-reality.svg",
+        "alt_text": "Synthetic visual portrait of Maya's Purchase Reality",
+        "mime_type": "image/svg+xml"
+      },
+      "evidence_ids": ["purchase-01", "purchase-02", "purchase-03", "purchase-04"],
+      "model": "fixture",
+      "generation_mode": "fixture"
     }
-  }
+  ]
 }

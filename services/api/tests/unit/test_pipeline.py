@@ -12,6 +12,7 @@ from realcart_api.output import render_markdown
 from realcart_api.pipeline import (
     PipelineConfigurationError,
     _model_execution_error_message,
+    _multimodal_input,
     run_pipeline,
 )
 from realcart_api.schemas import (
@@ -21,6 +22,31 @@ from realcart_api.schemas import (
     VisionProfile,
     VisionTheme,
 )
+
+
+def test_multimodal_input_pairs_images_with_evidence_ids() -> None:
+    result = _multimodal_input(
+        task="Analyze images",
+        evidence=[{"id": "pin-live", "kind": "aspirational"}],
+        items=[
+            {
+                "id": "pin-live",
+                "label": "Warm street scene",
+                "dimensions": {"fixture_only": 1},
+                "_image_data_url": "data:image/jpeg;base64,YWJj",
+            }
+        ],
+        extra={},
+    )
+
+    content = result[0]["content"]
+    assert [item["type"] for item in content] == [
+        "input_text",
+        "input_text",
+        "input_image",
+    ]
+    assert content[1]["text"] == "Image evidence for item pin-live"
+    assert content[2]["image_url"].startswith("data:image/jpeg;base64,")
 
 
 @pytest.mark.asyncio
@@ -33,6 +59,7 @@ async def test_fixture_pipeline_is_complete_and_credential_free() -> None:
         "specialist_analysis",
         "scoring",
         "synthesis",
+        "visual_generation",
     ]
     assert run.model_runtime.provider == "fixture"
     assert run.model_runtime.specialist_model is None
@@ -88,7 +115,7 @@ async def test_agent_mode_uses_real_gpt_5_6_configuration(
 ) -> None:
     calls: list[tuple[Any, Any]] = []
 
-    async def fake_run(agent: Any, _input: str, *, run_config: Any) -> Any:
+    async def fake_run(agent: Any, _input: Any, *, run_config: Any) -> Any:
         calls.append((agent, run_config))
         if agent.name == "Style World Agent":
             output: Any = VisionProfile(

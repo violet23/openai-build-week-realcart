@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Synthetic gray cotton hoodie</title>
+  <desc id="desc">A simple gray hoodie fixture on a warm studio background.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#efe6d7"/>
+      <stop offset="1" stop-color="#d8c9b4"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+  </defs>
+  <rect width="900" height="1100" fill="url(#bg)"/>
+  <ellipse cx="450" cy="930" rx="260" ry="55" fill="#776f68" opacity=".2" filter="url(#shadow)"/>
+  <path d="M330 240c30-62 78-92 120-92s90 30 120 92l-42 114H372z" fill="#7d7e7b"/>
+  <path d="M315 258 190 330l-78 370 126 24 55-253 22 421h270l22-421 55 253 126-24-78-370-125-72-55 132H370z" fill="#8b8c88"/>
+  <path d="M370 258c18 65 42 99 80 132 38-33 62-67 80-132" fill="none" stroke="#70716e" stroke-width="14"/>
+  <path d="M351 690h198l-18 148H369z" fill="#858682" stroke="#737470" stroke-width="8"/>
+  <path d="M450 390v122" stroke="#6a6b68" stroke-width="7"/>
+  <circle cx="442" cy="525" r="9" fill="#565754"/>
+  <circle cx="458" cy="525" r="9" fill="#565754"/>
+  <text x="52" y="1030" fill="#4d4943" font-family="Arial, sans-serif" font-size="28" letter-spacing="4">SYNTHETIC PRODUCT FIXTURE</text>
+</svg>
