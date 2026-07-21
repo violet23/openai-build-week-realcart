@@ -165,13 +165,13 @@ async def _run_specialist_agents(
     from agents import Runner
 
     aspiration_input = _multimodal_input(
-        task="Build the Style World and its repeated board themes.",
+        task="Build repeated saved-image style signals and their board-level themes.",
         evidence=_evidence_for(payload, "aspirational"),
         items=payload["aspirational_items"],
         extra={},
     )
     purchase_input = _multimodal_input(
-        task="Build Purchase Reality from observed shopping behavior.",
+        task="Build purchase patterns from observed shopping behavior and context.",
         evidence=[
             *_evidence_for(payload, "purchase"),
             *_evidence_for(payload, "survey"),
@@ -308,13 +308,13 @@ async def run_pipeline(
                 AnalysisStage(
                     name="specialist_analysis",
                     detail=(
-                        "Aggregated confidence-weighted Style World signals and Purchase "
-                        "Reality into deterministic profiles."
+                        "Aggregated confidence-weighted saved-image and kept-purchase signals "
+                        "into deterministic profiles."
                     ),
                 ),
                 AnalysisStage(
                     name="scoring",
-                    detail="Calculated numeric gaps in application code.",
+                    detail="Calculated numeric signal differences in application code.",
                 ),
                 AnalysisStage(
                     name="synthesis",
@@ -358,8 +358,8 @@ async def run_pipeline(
                     AnalysisStage(
                         name="specialist_analysis",
                         detail=(
-                            "Ran Style World and Purchase Reality specialists concurrently with "
-                            f"{settings.tagger_model}."
+                            "Ran Saved Style Signals and Purchase Patterns specialists "
+                            f"concurrently with {settings.tagger_model}."
                         ),
                     )
                 )

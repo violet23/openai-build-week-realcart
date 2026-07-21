@@ -129,12 +129,12 @@ the rebuilt report and survey package.
 ```json
 {
   "kind": "style_world",
-  "title": "Style World",
+  "title": "Saved Style Signals",
   "image": {
     "id": "generated-content-hash",
     "source": "generated",
     "image_url": "http://127.0.0.1:8000/api/assets/generated-content-hash",
-    "alt_text": "Generated visual portrait of the Style World",
+    "alt_text": "Generated visual portrait of saved style signals",
     "mime_type": "image/webp"
   },
   "evidence_ids": ["pin-1", "pin-2"],

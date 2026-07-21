@@ -1,4 +1,4 @@
-"""Deterministic Style Gap calculations."""
+"""Deterministic signal-distance calculations."""
 
 from typing import Any, Literal
 
@@ -61,7 +61,7 @@ def aggregate_style_items(
 
 
 def aggregate_vision_themes(raw_items: list[dict[str, Any]]) -> list[VisionTheme]:
-    """Keep repeated board-level themes without forcing them into the Style Gap."""
+    """Keep repeated board-level themes without forcing them into the distance score."""
 
     items = [StyleSignalItem.model_validate(item) for item in raw_items]
     total_confidence = sum(item.confidence for item in items)
@@ -100,7 +100,7 @@ def calculate_gap_dimensions(
     behavior_dimensions = behavior.dimensions.model_dump()
     shared = sorted(set(aspiration_dimensions) & set(behavior_dimensions))
     if not shared:
-        raise ValueError("Style World and Purchase Reality must share at least one dimension")
+        raise ValueError("Saved-image and purchase profiles must share at least one dimension")
 
     return [
         GapDimension(
@@ -130,12 +130,12 @@ def _build_insights(
         direction = "higher" if dimension.aspiration > dimension.behavior else "lower"
         insights.append(
             GroundedInsight(
-                title=f"Your Style World {dimension.label.lower()} is {direction}",
+                title=f"Saved and purchase signals differ in {dimension.label.lower()}",
                 body=(
-                    f"The {dimension.label.lower()} signal differs by "
-                    f"{round(dimension.gap * 100)} points between your Style World "
-                    "and kept Purchase Reality. "
-                    "Treat this as a reflection prompt rather than a shopping verdict."
+                    f"Saved-image evidence is {direction} by "
+                    f"{round(dimension.gap * 100)} points on {dimension.label.lower()} than "
+                    "kept-purchase evidence. This measures a difference between two partial "
+                    "evidence sets, not quality or authenticity."
                 ),
                 evidence_ids=evidence_ids,
             )
@@ -194,9 +194,9 @@ def build_gap_report(
             narrative.summary
             if narrative is not None
             else (
-                "Your Style World repeatedly points to a warm, natural, calm fashion life, "
-                "while your kept Purchase Reality leans more practical, cooler, and less "
-                "polished."
+                "Saved-image signals repeat a warm, natural, calm visual direction, while "
+                "kept-purchase signals are cooler, more practical, and less polished. Both are "
+                "partial evidence, and neither is treated as the authentic self."
             )
         ),
         gap_score=calculate_gap_score(dimensions),

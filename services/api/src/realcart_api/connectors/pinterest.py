@@ -1,4 +1,4 @@
-"""Pinterest Sandbox connector for image-backed Style World evidence."""
+"""Pinterest Sandbox connector for image-backed saved style signals."""
 
 from __future__ import annotations
 

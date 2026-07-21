@@ -331,12 +331,12 @@
   "portraits": [
     {
       "kind": "style_world",
-      "title": "Style World",
+      "title": "Saved Style Signals",
       "image": {
         "id": "fixture-style-world",
         "source": "fixture",
         "image_url": "http://127.0.0.1:8000/api/fixture-assets/style-world.svg",
-        "alt_text": "Synthetic visual portrait of Maya's Style World",
+        "alt_text": "Synthetic visual portrait of Maya's saved style signals",
         "mime_type": "image/svg+xml"
       },
       "evidence_ids": ["pin-01", "pin-02", "pin-03", "pin-04"],
@@ -345,12 +345,12 @@
     },
     {
       "kind": "purchase_reality",
-      "title": "Purchase Reality",
+      "title": "Purchase Patterns",
       "image": {
         "id": "fixture-purchase-reality",
         "source": "fixture",
         "image_url": "http://127.0.0.1:8000/api/fixture-assets/purchase-reality.svg",
-        "alt_text": "Synthetic visual portrait of Maya's Purchase Reality",
+        "alt_text": "Synthetic visual portrait of Maya's purchase patterns",
         "mime_type": "image/svg+xml"
       },
       "evidence_ids": ["purchase-01", "purchase-02", "purchase-03", "purchase-04"],

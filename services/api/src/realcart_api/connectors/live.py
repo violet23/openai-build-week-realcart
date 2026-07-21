@@ -1,4 +1,4 @@
-"""Combined live connector for Gmail Purchase Reality and Pinterest Style World."""
+"""Combined live connector for Gmail purchase patterns and Pinterest saved signals."""
 
 from __future__ import annotations
 

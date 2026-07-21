@@ -12,6 +12,23 @@ import {
 } from "@/lib/api";
 import { formatScore } from "@/lib/scoring";
 
+type TabId = "overview" | "signals" | "check-in" | "comparison";
+
+const tabs: { id: TabId; label: string }[] = [
+  { id: "overview", label: "Overview" },
+  { id: "signals", label: "Signals" },
+  { id: "check-in", label: "Check-in" },
+  { id: "comparison", label: "Comparison" },
+];
+
+function neutralizeCopy(value: string) {
+  return value
+    .replaceAll("Style World", "Saved Style Signals")
+    .replaceAll("Purchase Reality", "Purchase Patterns")
+    .replaceAll("Style Gap", "Signal Distance")
+    .replaceAll("style gap", "signal distance");
+}
+
 function formatCurrency(value: number | null, currency: string) {
   if (value === null) return "Price not found";
   return new Intl.NumberFormat("en-US", {
@@ -38,6 +55,7 @@ export default function Home() {
   const [surveyComments, setSurveyComments] = useState<Record<string, string>>({});
   const [surveySaved, setSurveySaved] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabId>("overview");
 
   useEffect(() => {
     loadConnections().then(setConnections).catch(() => undefined);
@@ -85,6 +103,7 @@ export default function Home() {
       }));
       setDemo(await submitAnalysis(answers));
       setSurveySaved(true);
+      setActiveTab("comparison");
     } catch (reason: unknown) {
       setError(reason instanceof Error ? reason.message : "Unable to rerun the analysis");
     } finally {
@@ -99,12 +118,15 @@ export default function Home() {
           UN-ALGORITHM / {connections?.data_mode === "live" ? "LIVE SOURCES" : "FIXTURE DEMO"}
         </p>
         <h1>RealCart</h1>
-        <p className="tagline">Get closer to yourself. Know what you actually like.</p>
+        <p className="tagline">Notice what draws you in—and what becomes part of your life.</p>
         <p className="hero-philosophy">
-          RealCart turns your Style World, purchase history, returns, usage and emotional
-          feedback into a personal shopping-pattern model. It reveals patterns in your taste
-          and behavior you may not have noticed—an overlooked part of yourself worth
-          understanding even when you are not shopping.
+          RealCart compares saved visual signals with purchase history, returns, usage and
+          emotional feedback. Both are partial: saved images show attention and imagination;
+          purchases also reflect need, budget, fit, availability and circumstance.
+        </p>
+        <p className="framing-note">
+          <strong>Neither source is the “real you.”</strong> The comparison describes patterns
+          between two kinds of evidence—it does not rank one as better or more authentic.
         </p>
         <p className="privacy-note">
           {connections?.data_mode === "live"
@@ -113,137 +135,143 @@ export default function Home() {
         </p>
       </header>
 
-      {connections ? (
-        <section className="connection-panel" aria-label="Data source connections">
-          <div>
-            <p className="eyebrow">YOUR TWO SIGNAL SOURCES</p>
-            <h2>Connect the world you save and the things you bought.</h2>
-          </div>
-          <div className="connection-grid">
-            {connections.sources.map((source) => (
-              <article key={source.source}>
-                <span className={`connection-status ${source.connected ? "connected" : ""}`}>
-                  {source.connected ? "Connected" : source.configured ? "Ready to connect" : "Needs setup"}
-                </span>
-                <h3>{source.source === "gmail" ? "Gmail purchases" : "Pinterest Style World"}</h3>
-                <p>
-                  {source.source === "gmail"
-                    ? "Order, receipt and return messages, including available product images."
-                    : "Sandbox boards and Pin images, interpreted as a vision world—not a wishlist."}
-                </p>
-                {source.configured && !source.connected ? (
-                  <a className="secondary-button" href={source.connect_url}>Connect {source.source}</a>
-                ) : null}
-              </article>
-            ))}
-          </div>
-        </section>
-      ) : null}
-
       {error ? <div className="error">{error}. Check the API terminal for details.</div> : null}
       {!demo && !error ? <p className="loading">Building the reflection…</p> : null}
 
       {demo ? (
-        <>
-          <section className="report-heading">
-            <div>
-              <p className="eyebrow">SHOPPING-PATTERN MODEL</p>
-              <h2>{demo.report.persona_name}</h2>
-              <p>{demo.report.summary}</p>
-            </div>
-            <div className="score-orbit" aria-label={`Style gap ${demo.report.gap_score} out of 100`}>
-              <strong>{demo.report.gap_score}</strong>
-              <span>style gap</span>
-            </div>
-          </section>
-
-          {demo.report.portraits.length ? (
-            <section className="portrait-section">
-              <div>
-                <p className="eyebrow">TWO VISUAL SELVES</p>
-                <h2>The world that draws you in, beside the life your purchases describe.</h2>
-                <p>These are symbolic visual summaries of the evidence—not images of your identity.</p>
-              </div>
-              <div className="portrait-grid">
-                {demo.report.portraits.map((portrait) => (
-                  <figure key={portrait.kind}>
-                    <img src={portrait.image.image_url} alt={portrait.image.alt_text} />
-                    <figcaption>
-                      <strong>{portrait.title}</strong>
-                      <span>{portrait.generation_mode === "openai" ? `Generated with ${portrait.model}` : "Synthetic demo fixture"}</span>
-                    </figcaption>
-                  </figure>
-                ))}
-              </div>
-            </section>
-          ) : null}
-
-          <section className="vision-profile">
-            <div>
-              <p className="eyebrow">STYLE WORLD</p>
-              <h2>The fashion world you return to.</h2>
-              <p>
-                Pinterest is a vision board, not a wishlist. RealCart finds the fashion and
-                lifestyle signals carried by repeated scenes, colors, textures, forms, and
-                atmosphere—only when multiple Pins support them.
-              </p>
-            </div>
-            <div className="vision-theme-grid">
-              {demo.report.vision_themes.map((theme) => (
-                <article key={theme.name}>
-                  <strong>{Math.round(theme.strength * 100)}%</strong>
-                  <h3>{theme.name}</h3>
-                  <p>{theme.evidence_ids.length} supporting Pins · {Math.round(theme.confidence * 100)}% confidence</p>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section className="score-provenance" aria-label="How the style gap was calculated">
-            <div>
-              <p className="eyebrow">HOW THE STYLE GAP WAS CALCULATED</p>
-              <h3>Style World and Purchase Reality become one traceable comparison.</h3>
-            </div>
-            <div className="provenance-flow">
-              <span><strong>{demo.report.score_provenance.aspirational_item_count}</strong>Style World Pins</span>
-              <b aria-hidden="true">→</b>
-              <span><strong>{demo.report.score_provenance.kept_purchase_count}</strong>kept purchases</span>
-              <span><strong>{demo.report.score_provenance.returned_item_count}</strong>returned items excluded</span>
-              <b aria-hidden="true">→</b>
-              <span><strong>{demo.report.gap_score}</strong>style gap</span>
-            </div>
-            <p className="provenance-note">
-              Scenes and atmosphere stay in the narrative. Returns inform behavior patterns but
-              do not count as kept-item style. Every insight remains traceable to source IDs.
-            </p>
-          </section>
-
-          <section className="dimension-grid" aria-label="Style gap dimensions">
-            {demo.report.dimensions.map((dimension) => (
-              <article className="dimension-card" key={dimension.key}>
-                <div className="dimension-title">
-                  <h3>{dimension.label}</h3><span>{formatScore(dimension.gap * 100)}</span>
-                </div>
-                <div className="bar-row"><span>World</span><div className="bar"><i style={{ width: `${dimension.aspiration * 100}%` }} /></div><b>{Math.round(dimension.aspiration * 100)}</b></div>
-                <div className="bar-row behavior"><span>Reality</span><div className="bar"><i style={{ width: `${dimension.behavior * 100}%` }} /></div><b>{Math.round(dimension.behavior * 100)}</b></div>
-              </article>
+        <div className="tab-shell">
+          <nav className="tab-list" role="tablist" aria-label="RealCart report sections">
+            {tabs.map((tab) => (
+              <button
+                aria-controls={`panel-${tab.id}`}
+                aria-selected={activeTab === tab.id}
+                className={activeTab === tab.id ? "active" : undefined}
+                id={`tab-${tab.id}`}
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                role="tab"
+                type="button"
+              >
+                {tab.label}
+                {tab.id === "check-in" ? ` ${surveyProgress.answered}/${surveyProgress.total}` : ""}
+              </button>
             ))}
-          </section>
+          </nav>
 
-          <section className="insights">
-            <p className="eyebrow">WHAT THE SIGNALS SUGGEST</p>
-            {demo.report.insights.map((insight) => (
-              <article key={insight.title}>
-                <h3>{insight.title}</h3><p>{insight.body}</p>
-                <small>Evidence: {insight.evidence_ids.map((id) => evidence.get(id) ?? id).join(" · ")}</small>
-              </article>
-            ))}
-          </section>
+          <div
+            aria-labelledby={`tab-${activeTab}`}
+            className="tab-panel"
+            id={`panel-${activeTab}`}
+            role="tabpanel"
+          >
+            {activeTab === "overview" ? (
+              <>
+                <section className="report-heading">
+                  <div>
+                    <p className="eyebrow">SHOPPING-PATTERN MODEL</p>
+                    <h2>{demo.report.persona_name}</h2>
+                    <p>{neutralizeCopy(demo.report.summary)}</p>
+                  </div>
+                  <div
+                    className="score-orbit"
+                    aria-label={`Signal distance ${demo.report.gap_score} out of 100`}
+                  >
+                    <strong>{demo.report.gap_score}</strong>
+                    <span>signal distance</span>
+                  </div>
+                </section>
+                <aside className="interpretation-note">
+                  <strong>A distance is not a grade.</strong> A higher number means these two
+                  evidence sets differ more across the measured dimensions. It does not mean the
+                  saved world is better, or that purchases reveal a truer self.
+                </aside>
+                {demo.report.portraits.length ? (
+                  <section className="portrait-section">
+                    <div>
+                      <p className="eyebrow">TWO SIGNAL PORTRAITS</p>
+                      <h2>Two partial views, placed side by side without ranking either one.</h2>
+                      <p>These are symbolic summaries of evidence—not images of identity.</p>
+                    </div>
+                    <div className="portrait-grid">
+                      {demo.report.portraits.map((portrait) => (
+                        <figure key={portrait.kind}>
+                          <img src={portrait.image.image_url} alt={portrait.image.alt_text} />
+                          <figcaption>
+                            <strong>
+                              {portrait.kind === "style_world"
+                                ? "Saved Style Signals"
+                                : "Purchase Patterns"}
+                            </strong>
+                            <span>
+                              {portrait.generation_mode === "openai"
+                                ? `Generated with ${portrait.model}`
+                                : "Synthetic demo fixture"}
+                            </span>
+                          </figcaption>
+                        </figure>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+              </>
+            ) : null}
 
-          <section className="survey-section">
+            {activeTab === "signals" ? (
+              <>
+                {connections ? (
+                  <section className="connection-panel" aria-label="Data source connections">
+                    <div>
+                      <p className="eyebrow">TWO INCOMPLETE SIGNAL SOURCES</p>
+                      <h2>Saved attention and shopping behavior offer different context.</h2>
+                    </div>
+                    <div className="connection-grid">
+                      {connections.sources.map((source) => (
+                        <article key={source.source}>
+                          <span className={`connection-status ${source.connected ? "connected" : ""}`}>
+                            {source.connected ? "Connected" : source.configured ? "Ready to connect" : "Needs setup"}
+                          </span>
+                          <h3>{source.source === "gmail" ? "Purchase records" : "Saved visual references"}</h3>
+                          <p>
+                            {source.source === "gmail"
+                              ? "Orders and returns reflect preference plus budget, function, fit, timing and availability."
+                              : "Repeated images reveal visual attention—not desire, intent, an ideal self, or a wishlist."}
+                          </p>
+                          {source.configured && !source.connected ? (
+                            <a className="secondary-button" href={source.connect_url}>Connect {source.source}</a>
+                          ) : null}
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+                <section className="vision-profile">
+                  <div>
+                    <p className="eyebrow">SAVED STYLE SIGNALS</p>
+                    <h2>Patterns in the visual world that repeatedly holds your attention.</h2>
+                    <p>
+                      RealCart looks for repeated scenes, colors, textures, forms and atmosphere.
+                      A saved image is evidence of attention, not proof that the person wants to
+                      own it or live exactly that way.
+                    </p>
+                  </div>
+                  <div className="vision-theme-grid">
+                    {demo.report.vision_themes.map((theme) => (
+                      <article key={theme.name}>
+                        <strong>{Math.round(theme.strength * 100)}%</strong>
+                        <h3>{theme.name}</h3>
+                        <p>{theme.evidence_ids.length} supporting saves · {Math.round(theme.confidence * 100)}% confidence</p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              </>
+            ) : null}
+
+            {activeTab === "check-in" ? (
+              <section className="survey-section">
             <div className="survey-heading">
               <div>
-                <p className="eyebrow">PURCHASE REALITY CHECK-IN</p>
+                <p className="eyebrow">PURCHASE CONTEXT CHECK-IN</p>
                 <h2>A receipt says you bought it. You tell us what happened next.</h2>
                 <p>
                   RealCart pairs order and return records—and their available product images—with
@@ -288,17 +316,62 @@ export default function Home() {
               ))}
             </div>
             <div className="survey-actions">
-              <p>These answers become evidence for Purchase Reality—not a shopping recommendation.</p>
+              <p>These answers add context to purchase patterns. They are not a shopping recommendation or a judgment.</p>
               <button className="primary-button" type="button" disabled={!surveyProgress.complete || analyzing} onClick={analyzeSurvey}>
                 {analyzing ? "Rebuilding your reflection…" : "Add signals and rerun analysis"}
               </button>
             </div>
             {surveySaved ? <p className="survey-confirmation" role="status">The answers were added and the shopping-pattern model was rebuilt for this session.</p> : null}
-          </section>
-        </>
+              </section>
+            ) : null}
+
+            {activeTab === "comparison" ? (
+              <>
+                <section className="score-provenance" aria-label="How signal distance was calculated">
+                  <div>
+                    <p className="eyebrow">HOW SIGNAL DISTANCE WAS CALCULATED</p>
+                    <h3>Saved style signals and kept-purchase signals become one neutral comparison.</h3>
+                  </div>
+                  <div className="provenance-flow">
+                    <span><strong>{demo.report.score_provenance.aspirational_item_count}</strong>saved references</span>
+                    <b aria-hidden="true">→</b>
+                    <span><strong>{demo.report.score_provenance.kept_purchase_count}</strong>kept purchases</span>
+                    <span><strong>{demo.report.score_provenance.returned_item_count}</strong>returns kept as context</span>
+                    <b aria-hidden="true">→</b>
+                    <span><strong>{demo.report.gap_score}</strong>signal distance</span>
+                  </div>
+                  <p className="provenance-note">
+                    Returns inform the pattern but are excluded from the kept-item profile. The
+                    score measures difference, not quality, authenticity, discipline or buying power.
+                  </p>
+                </section>
+                <section className="dimension-grid" aria-label="Signal distance dimensions">
+                  {demo.report.dimensions.map((dimension) => (
+                    <article className="dimension-card" key={dimension.key}>
+                      <div className="dimension-title">
+                        <h3>{dimension.label}</h3><span>{formatScore(dimension.gap * 100)}</span>
+                      </div>
+                      <div className="bar-row"><span>Saved</span><div className="bar"><i style={{ width: `${dimension.aspiration * 100}%` }} /></div><b>{Math.round(dimension.aspiration * 100)}</b></div>
+                      <div className="bar-row behavior"><span>Bought</span><div className="bar"><i style={{ width: `${dimension.behavior * 100}%` }} /></div><b>{Math.round(dimension.behavior * 100)}</b></div>
+                    </article>
+                  ))}
+                </section>
+                <section className="insights">
+                  <p className="eyebrow">WHAT THE SIGNALS SUGGEST</p>
+                  {demo.report.insights.map((insight) => (
+                    <article key={insight.title}>
+                      <h3>{neutralizeCopy(insight.title)}</h3><p>{neutralizeCopy(insight.body)}</p>
+                      <small>Evidence: {insight.evidence_ids.map((id) => evidence.get(id) ?? id).join(" · ")}</small>
+                    </article>
+                  ))}
+                </section>
+              </>
+            ) : null}
+          </div>
+        </div>
       ) : null}
 
-      <footer>RealCart reflects the patterns in what draws you in and what became part of your life.</footer>
+      <footer>Neither source is your “real self.” RealCart reflects relationships between signals.</footer>
     </main>
   );
 }

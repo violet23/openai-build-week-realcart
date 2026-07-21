@@ -2,16 +2,17 @@
 
 ## Product boundary
 
-RealCart models the relationship between a user's fashion-and-lifestyle Style
-World and observed shopping behavior. It has no candidate-product, product-search,
+RealCart models the relationship between a user's saved fashion-and-lifestyle
+signals and observed shopping behavior. Neither is treated as a better or more
+authentic self. It has no candidate-product, product-search,
 ranking, affiliate, or purchase-verdict path.
 
 ## Data and model flow
 
 ```text
-Pinterest Sandbox -- boards + Pins + cached images --> Style World Agent ----+
+Pinterest Sandbox -- boards + Pins + cached images --> Saved Signals Agent --+
                                                                           |
-Gmail OAuth -- orders + returns + cached images --> Purchase Reality Agent -+-->
+Gmail OAuth -- orders + returns + cached images --> Purchase Patterns Agent +-->
 survey answers ------------------------------------------------------------+   deterministic scoring
                                                                               |
                                                                               v
@@ -37,15 +38,17 @@ evidence IDs—not stored image binaries.
 - **Gmail connector:** read-only search, full MIME-message parsing, attachment
   retrieval, order/return normalization, and best-effort product-image caching.
 - **Pinterest connector:** sandbox board/Pin pagination, image import, and
-  Style World evidence normalization.
-- **Style World Agent:** interprets saved images as repeated scenes, atmosphere,
-  palette, materials, form, and transferable fashion signals—not literal desire.
-- **Purchase Reality Agent:** interprets purchases, returns, images, usage, and
-  emotional feedback while distinguishing logistical returns from taste signals.
-- **Scoring code:** owns the seven dimension comparisons and 0–100 Style Gap.
+  saved-image evidence normalization.
+- **Saved Style Signals Agent:** interprets saved images as repeated scenes,
+  atmosphere, palette, materials, form, and transferable fashion signals—not
+  literal desire, an ideal self, or an inherently positive signal.
+- **Purchase Patterns Agent:** interprets purchases, returns, images, usage, and
+  emotional feedback while accounting for constraints and distinguishing logistical
+  returns from taste signals.
+- **Scoring code:** owns the seven dimension comparisons and 0–100 Signal Distance.
 - **Report Manager:** receives typed specialist profiles and precomputed scores,
   then writes prose that may cite only known evidence IDs.
-- **Visual generator:** creates symbolic Style World and Purchase Reality portraits
+- **Visual generator:** creates symbolic saved-signal and purchase-pattern portraits
   from the structured report; it does not depict or identify the actual user.
 - **Asset store:** caches images under `private-data/assets` and exposes hash-based,
   read-only local URLs.

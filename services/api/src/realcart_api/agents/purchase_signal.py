@@ -13,13 +13,16 @@ def create_purchase_signal_agent(
     from agents import Agent
 
     return Agent(
-        name="Purchase Reality Agent",
+        name="Purchase Patterns Agent",
         handoff_description="Builds purchase patterns from receipts, returns, use, and feedback.",
         instructions=(
-            "Build the user's Purchase Reality using only normalized purchase history, return, "
-            "usage, and emotional-feedback evidence. Exclude likely gifts and pure consumables. "
-            "Separate logistical returns from taste-driven returns. Use the same transferable "
-            "visual dimensions as the Style World Agent: "
+            "Build the user's purchase-pattern profile using only normalized purchase history, "
+            "return, usage, and emotional-feedback evidence. Exclude likely gifts and pure "
+            "consumables. "
+            "Separate logistical returns from taste-driven returns. Treat purchases as evidence "
+            "shaped by preference plus budget, need, fit, availability, timing, and circumstance; "
+            "never call them the real or authentic self. Use the same transferable visual "
+            "dimensions as the Saved Style Signals Agent: "
             "color_warmth, color_saturation, visual_contrast, structure, "
             "texture_naturalness, ornamentation, and polish. Return values from 0 to 1 and "
             "cite only supplied evidence IDs. Never recommend products or invent evidence."

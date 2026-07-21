@@ -6,7 +6,7 @@ Apps for Your Life
 
 ## One-line description
 
-RealCart turns a personal Style World, purchases, returns, usage, and emotional
+RealCart turns saved visual signals, purchases, returns, usage, and emotional
 feedback into an evidence-backed model of the shopping patterns a person may not
 notice on their own.
 
@@ -14,21 +14,22 @@ notice on their own.
 
 RealCart explores the space between the fashion-and-lifestyle world a person
 collects and the products that become part of everyday life. It treats visual
-boards as a Style World rather than a wishlist, then compares those repeated
-signals with purchase history, returns, usage, and emotional feedback.
+boards as repeated visual attention rather than a wishlist or ideal self, then
+compares those signals with purchase history, returns, usage, and emotional feedback.
 
-The experience begins with two evidence sources: visual inspiration and purchase
-reality. A short product-image survey adds context a receipt cannot provide, such
+The experience begins with two partial evidence sources: saved visual signals and
+purchase patterns. Neither is treated as better or more authentic. A short
+product-image survey adds context a receipt cannot provide, such
 as whether an item is still used, how it feels now, what motivated the purchase,
 and why it was returned. RealCart then produces two symbolic portraits, typed
-style dimensions, an inspectable Style Gap, repeated Style World themes, and
+style dimensions, an inspectable Signal Distance, repeated saved-image themes, and
 grounded insights that link back to specific records. It does not recommend
 products or issue buy/do-not-buy verdicts. The goal is self-understanding, even
 when the user is not currently shopping.
 
-The backend uses two concurrent GPT-5.6 specialist agents. The Style World Agent
+The backend uses two concurrent GPT-5.6 specialist agents. The Saved Style Signals Agent
 interprets palette, atmosphere, material, silhouette, and polish across visual
-evidence. The Purchase Reality Agent interprets purchases, returns, usage, and
+evidence. The Purchase Patterns Agent interprets purchases, returns, usage, and
 feedback using the same dimensions. Deterministic Python code calculates every
 numeric difference, and a GPT-5.6 report manager turns the precomputed result into
 an evidence-grounded narrative. GPT Image can optionally generate two contrasting
@@ -39,16 +40,16 @@ the path toward user-authorized data.
 Codex accelerated the repository scaffold, typed contracts, fixture design,
 multi-agent orchestration, scoring implementation, tests, OAuth prototypes,
 multimodal image handling, frontend integration, and API debugging. The team made
-the core product decisions: treating Pinterest as a world rather than a wishlist,
+the core product decisions: treating Pinterest saves as visual attention rather than a wishlist,
 removing shopping verdicts, centering self-knowledge, separating kept and returned
 item surveys, and keeping arithmetic deterministic and traceable.
 
 ## What is working
 
 - Credential-free fixture demo with product-image surveys and returned-item logic.
-- Concurrent Style World and Purchase Reality specialists using `gpt-5.6-terra`.
+- Concurrent Saved Style Signals and Purchase Patterns specialists using `gpt-5.6-terra`.
 - Evidence-grounded synthesis using `gpt-5.6-sol`.
-- Deterministic, item-traceable Style Gap scoring.
+- Deterministic, item-traceable Signal Distance scoring.
 - Two symbolic fixture portraits and optional `gpt-image-2` generation.
 - Read-only Gmail and Pinterest Sandbox connector prototypes.
 - Tested FastAPI backend and Next.js report interface.
@@ -72,9 +73,9 @@ Show the RealCart title and opening explanation.
 
 ### 0:18-0:38 — Evidence sources
 
-> One side is a Style World: scenes, silhouettes, materials, colors, and
-> atmosphere. It is not treated as a wishlist. The other side is Purchase
-> Reality: order records, returns, and product images. This demo uses synthetic
+> One source is saved visual signals: scenes, silhouettes, materials, colors, and
+> atmosphere. The other is purchase patterns: order records, returns, and product
+> images. Neither is an ideal self or a real self. This demo uses synthetic
 > evidence for privacy and reproducibility; the repository also contains
 > read-only connector prototypes.
 
@@ -92,16 +93,17 @@ Show the hoodie survey and the returned blazer survey.
 ### 1:03-1:42 — Report
 
 > Maya's report compares the same seven visual dimensions on both sides. Her
-> Style World is warm, natural, structured, and polished. Her kept purchases are
+> saved signals are warm, natural, structured, and polished. Her kept purchases are
 > cooler, more technical, casual, and practical. Returned purchases remain useful
 > evidence but are excluded from the kept-purchase profile. Every theme, score,
-> and insight points back to concrete evidence.
+> and insight points back to concrete evidence. The score is distance between two
+> partial evidence sets, not a grade of either one.
 
 Show the 37 score, portraits, dimension bars, themes, and evidence provenance.
 
 ### 1:42-2:13 — Multi-agent implementation
 
-> Two GPT-5.6 specialists run concurrently. One interprets the visual Style World;
+> Two GPT-5.6 specialists run concurrently. One interprets saved visual signals;
 > the other interprets purchases, returns, and survey feedback. Both return typed
 > profiles. Application code—not a language model—calculates the numeric gap. A
 > GPT-5.6 report manager then writes the grounded narrative from those scores. We

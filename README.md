@@ -2,24 +2,25 @@
 
 **Get closer to yourself. Know what you actually like.**
 
-RealCart turns a fashion-and-lifestyle Style World, purchase history, returns,
+RealCart turns saved fashion-and-lifestyle signals, purchase history, returns,
 usage, and emotional feedback into a personal shopping-pattern model. Its purpose
 is self-understanding: it reveals patterns that may be valuable even when the user
 is not planning a purchase. RealCart does not search for products, rank choices,
 or issue buy/do-not-buy verdicts.
 
-Pinterest is interpreted as a visual world rather than a wishlist. Gmail order and
-return records form Purchase Reality. Two multimodal specialists read normalized
-records plus their available images, deterministic code calculates the Style Gap,
-and a report manager writes evidence-grounded insights. The report can also contain
-two generated symbolic portraits: Style World and Purchase Reality.
+Pinterest saves are interpreted as repeated visual attention rather than a wishlist
+or an ideal self. Gmail records contribute purchase patterns shaped by preference,
+budget, need, fit, availability, and circumstance—not a “real self.” Two multimodal
+specialists read normalized records and images, deterministic code calculates the
+Signal Distance, and a report manager writes evidence-grounded insights. Neither
+source is privileged; the report can also contain two symbolic signal portraits.
 
 ## What works now
 
 - A credential-free fixture demo with image-backed surveys and two synthetic portraits.
 - Gmail read-only OAuth, purchase/return search, MIME parsing, and product-image import.
 - Pinterest Sandbox OAuth plus board, Pin, and image import.
-- Concurrent Style World and Purchase Reality agents using `gpt-5.6-terra`.
+- Concurrent Saved Style Signals and Purchase Patterns agents using `gpt-5.6-terra`.
 - A report manager using `gpt-5.6-sol` and deterministic Python scoring.
 - Two optional report images generated with `gpt-image-2`.
 - Survey submission that reruns the configured analysis pipeline.
@@ -87,7 +88,7 @@ make run-agents
 To inspect the same real-agent path in the web interface, run `make dev-agents`
 instead of `make dev-api`, then start `make dev-web` in the second terminal.
 
-To generate new Style World and Purchase Reality portraits as well:
+To generate new Saved Style Signals and Purchase Patterns portraits as well:
 
 ```bash
 make run-agents-images
@@ -188,7 +189,7 @@ copy, fixtures, and UI behavior rather than leaving those decisions in a separat
 proposal document.
 
 The team retained the important product and design decisions. We defined
-Pinterest as a Style World rather than a wishlist; narrowed “taste” to fashion
+Pinterest as saved visual attention rather than a wishlist or ideal self; narrowed “taste” to fashion
 and its surrounding lifestyle; removed the buy/do-not-buy Second Opinion flow;
 made self-understanding the primary outcome; designed different surveys for kept
 and returned items; and required every score and insight to remain traceable to
@@ -196,7 +197,7 @@ specific evidence. We also chose a privacy-safe fixture experience as the judge
 default and kept live Gmail/Pinterest access explicit and optional.
 
 GPT-5.6 contributes reasoning, not hidden arithmetic. Two `gpt-5.6-terra`
-specialists concurrently convert Style World and Purchase Reality evidence into
+specialists concurrently convert saved-image and purchase-pattern evidence into
 the same typed visual dimensions. Deterministic Python calculates the differences,
 then `gpt-5.6-sol` writes a grounded narrative from those precomputed scores.
 This division was an intentional engineering decision: models interpret ambiguous

@@ -62,5 +62,5 @@ async def test_openai_portraits_are_stored_as_two_generated_assets(
     )
     assert "Sunlit Mediterranean courtyard" in style_world_prompt
     assert "Oversized charcoal cotton hoodie" in purchase_reality_prompt
-    assert "Do not borrow the Style World's themes" in purchase_reality_prompt
+    assert "Do not borrow the saved-image themes" in purchase_reality_prompt
     assert "returned is a rejected or unrealized signal" in purchase_reality_prompt

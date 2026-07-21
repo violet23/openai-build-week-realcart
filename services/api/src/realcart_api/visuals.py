@@ -23,8 +23,8 @@ def _portrait_prompt(report: GapReport, kind: Literal["style_world", "purchase_r
         for item in report.dimensions
     )
     comparison = "; ".join(
-        f"{item.label} {item.aspiration:.2f} in Style World versus "
-        f"{item.behavior:.2f} in Purchase Reality"
+        f"{item.label} {item.aspiration:.2f} in saved-image signals versus "
+        f"{item.behavior:.2f} in purchase patterns"
         for item in sorted(report.dimensions, key=lambda item: item.gap, reverse=True)[:4]
     )
     if kind == "style_world":
@@ -33,18 +33,19 @@ def _portrait_prompt(report: GapReport, kind: Literal["style_world", "purchase_r
             item.label for item in report.evidence if item.kind == "aspirational"
         )
         evidence_direction = (
-            f"Repeated Style World themes: {themes}. Saved-image evidence: {labels}. "
-            "Make this the composed, aspirational side of the comparison: cinematic, "
-            "intentional, and atmosphere-rich."
+            f"Repeated saved-image themes: {themes}. Saved-image evidence: {labels}. "
+            "Render repeated visual attention without idealizing it or presenting it as a better "
+            "self. Use an atmospheric editorial language only where the evidence supports it."
         )
     else:
         labels = ", ".join(item.label for item in report.evidence if item.kind == "purchase")
         evidence_direction = (
             f"Observed purchase evidence: {labels}. Build the scene only from kept everyday "
             "purchase signals. Evidence explicitly labeled returned is a rejected or unrealized "
-            "signal and must not become the main worn look. Do not borrow the Style World's "
+            "signal and must not become the main worn look. Do not borrow the saved-image "
             "themes, warm architecture, props, or atmosphere. Make this a grounded documentary "
-            "portrait of actual repeated behavior, visibly distinct wherever the dimensions differ."
+            "portrait of repeated purchase patterns, visibly distinct wherever the dimensions "
+            "differ. Do not present purchases as the person's authentic or real self."
         )
     return (
         "Create one editorial fashion-and-lifestyle self-portrait as a symbolic visual profile, "
@@ -80,15 +81,15 @@ async def _generate_one(
         base64.b64decode(encoded),
         source="generated",
         alt_text=(
-            "Generated visual portrait of the Style World"
+            "Generated visual portrait of saved style signals"
             if kind == "style_world"
-            else "Generated visual portrait of Purchase Reality"
+            else "Generated visual portrait of purchase patterns"
         ),
         mime_type="image/webp",
     )
     return GeneratedPortrait(
         kind=kind,
-        title="Style World" if kind == "style_world" else "Purchase Reality",
+        title="Saved Style Signals" if kind == "style_world" else "Purchase Patterns",
         image=image,
         evidence_ids=[item.id for item in report.evidence],
         model=settings.image_model,

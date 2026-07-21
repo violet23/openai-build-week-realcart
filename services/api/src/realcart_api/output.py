@@ -9,7 +9,7 @@ def render_markdown(run: AnalysisRun) -> str:
     lines = [
         f"# RealCart Shopping-Pattern Report: {report.persona_name}",
         "",
-        f"**Style gap:** {report.gap_score}/100",
+        f"**Signal distance:** {report.gap_score}/100",
         "",
         report.summary,
         "",
@@ -36,16 +36,16 @@ def render_markdown(run: AnalysisRun) -> str:
     lines.extend(
         [
         "",
-        "## Style-gap provenance",
+        "## Signal-distance provenance",
         "",
-        f"- **Style World records:** {report.score_provenance.aspirational_item_count}",
+        f"- **Saved-image records:** {report.score_provenance.aspirational_item_count}",
         f"- **Purchase records:** {report.score_provenance.purchase_item_count}",
-        f"- **Kept purchases in Purchase Reality:** {report.score_provenance.kept_purchase_count}",
+        f"- **Kept purchases in Purchase Patterns:** {report.score_provenance.kept_purchase_count}",
         f"- **Returned purchases excluded:** {report.score_provenance.returned_item_count}",
         f"- **Profile method:** {report.score_provenance.profile_method}",
         ]
     )
-    lines.extend(["", "## Style World themes", ""])
+    lines.extend(["", "## Repeated saved-image themes", ""])
     lines.extend(
         f"- **{theme.name}:** {round(theme.strength * 100)}% strength, "
         f"{round(theme.confidence * 100)}% confidence "
@@ -64,7 +64,7 @@ def render_markdown(run: AnalysisRun) -> str:
             "",
             "## Dimensions",
             "",
-            "| Dimension | Style World | Purchase Reality | Gap |",
+            "| Dimension | Saved Style Signals | Purchase Patterns | Difference |",
             "| --- | ---: | ---: | ---: |",
         ]
     )

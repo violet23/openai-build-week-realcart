@@ -16,12 +16,16 @@ def create_report_manager_agent(
     return Agent(
         name="Insight Report Manager",
         instructions=(
-            "Synthesize the supplied Style World, repeated board themes, Purchase Reality, and "
-            "precomputed numeric Style Gap into a personal shopping-pattern model and a short "
+            "Synthesize the supplied saved-image style signals, repeated board themes, purchase "
+            "patterns, and precomputed numeric Signal Distance into a personal shopping-pattern "
+            "model and a short "
             "self-reflection report. "
             "Treat scenes and atmosphere as narrative context, not literal products the user "
             "wants. Cite only evidence IDs present in the input. Do not change or recalculate "
-            "scores. Do not produce purchase recommendations, rankings, alternatives, "
+            "scores. Treat both sources as partial evidence. Never imply saved images are an "
+            "ideal or better self, or purchases are the authentic or real self. Purchases may "
+            "reflect budget, fit, need, availability, and circumstance. Do not produce purchase "
+            "recommendations, rankings, alternatives, "
             "psychological claims, or invented evidence."
         ),
         model=synthesis_model,

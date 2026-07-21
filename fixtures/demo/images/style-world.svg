@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" role="img" aria-labelledby="title desc">
-  <title id="title">Synthetic Style World portrait</title>
+  <title id="title">Synthetic saved style signals portrait</title>
   <desc id="desc">A faceless fashion silhouette in a warm natural Mediterranean setting.</desc>
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ead8bb"/><stop offset="1" stop-color="#c99f73"/></linearGradient>
@@ -15,6 +15,6 @@
   <path d="M500 700 390 980l78 28 115-241m154-67 118 280-78 28-120-241" fill="none" stroke="#a27a51" stroke-width="54"/>
   <path d="M566 602h108l-18 180H584z" fill="#ede2cf"/>
   <path d="M548 1108h84l-25 220h-98zm120 0h84l45 220h-98z" fill="#4d443b"/>
-  <text x="60" y="88" fill="#554637" font-family="Georgia, serif" font-size="46" letter-spacing="8">STYLE WORLD</text>
+  <text x="60" y="88" fill="#554637" font-family="Georgia, serif" font-size="34" letter-spacing="4">SAVED STYLE SIGNALS</text>
   <text x="62" y="132" fill="#6f5b48" font-family="Arial, sans-serif" font-size="20" letter-spacing="3">SYNTHETIC VISUAL FIXTURE</text>
 </svg>

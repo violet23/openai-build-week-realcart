@@ -70,6 +70,18 @@ h3 { font-size: 1rem; }
   line-height: 1.7;
 }
 
+.framing-note {
+  max-width: 760px;
+  margin: 18px 0 0;
+  padding: 16px 18px;
+  border-left: 4px solid var(--sage-dark);
+  border-radius: 0 12px 12px 0;
+  background: #eef1e9;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.framing-note strong { color: var(--ink); }
+
 .privacy-note {
   display: inline-block;
   margin: 16px 0 0;
@@ -87,6 +99,47 @@ h3 { font-size: 1rem; }
   border-radius: 14px;
   background: #fff1ed;
 }
+
+.tab-shell { margin-top: 6px; }
+.tab-list {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin-bottom: 28px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 253, 250, 0.9);
+  box-shadow: var(--shadow);
+}
+.tab-list button {
+  flex: 1 0 auto;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 750;
+}
+.tab-list button:hover { color: var(--ink); }
+.tab-list button:focus-visible { outline: 3px solid rgba(82, 101, 72, 0.28); }
+.tab-list button.active {
+  background: var(--ink);
+  color: white;
+}
+.tab-panel { min-height: 520px; }
+
+.interpretation-note {
+  margin: 0 0 24px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #f3eee4;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.interpretation-note strong { color: var(--ink); }
 
 .report-heading {
   display: flex;
@@ -202,7 +255,7 @@ h3 { font-size: 1rem; }
 .insights article p { color: var(--muted); line-height: 1.6; }
 .insights small { color: var(--sage-dark); }
 
-.connection-panel { margin: 0 0 48px; }
+.connection-panel { margin: 0 0 24px; }
 .connection-panel > div:first-child { max-width: 760px; }
 .connection-grid, .portrait-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 .connection-grid article {
@@ -389,4 +442,6 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   .insights, .survey-section, .portrait-section, .connection-panel { padding: 22px; }
   .survey-product { grid-template-columns: 1fr; }
   .survey-product > img { height: 260px; }
+  .tab-list { border-radius: 18px; }
+  .tab-list button { padding-inline: 14px; }
 }

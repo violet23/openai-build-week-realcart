@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" role="img" aria-labelledby="title desc">
-  <title id="title">Synthetic Purchase Reality portrait</title>
+  <title id="title">Synthetic purchase patterns portrait</title>
   <desc id="desc">A faceless practical fashion silhouette in a cool everyday city setting.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d9dcda"/><stop offset="1" stop-color="#929b9e"/></linearGradient>
@@ -14,6 +14,6 @@
   <path d="M400 1074h101l-26 250H350zm99 0h101l150 250H625z" fill="#394143"/>
   <path d="M333 1324h156l-8 35H318zm276 0h178l18 35H600z" fill="#dce5e8"/>
   <path d="M650 795h128l35 220H622z" fill="#53614c"/>
-  <text x="60" y="88" fill="#364043" font-family="Georgia, serif" font-size="46" letter-spacing="7">PURCHASE REALITY</text>
+  <text x="60" y="88" fill="#364043" font-family="Georgia, serif" font-size="40" letter-spacing="5">PURCHASE PATTERNS</text>
   <text x="62" y="132" fill="#536064" font-family="Arial, sans-serif" font-size="20" letter-spacing="3">SYNTHETIC VISUAL FIXTURE</text>
 </svg>
